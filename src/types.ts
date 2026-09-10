@@ -13,7 +13,7 @@ export type Query = {
 
 export type Crit =
   | { kind: 'lit'; value: string }        // "계" 같은 리터럴
-  | { kind: 'year' }                      // TEXT(헤더셀,"0") — 실행 시 격자에서 읽는다
+  | { kind: 'year'; ref: string }         // TEXT(C$6,"0") — 실행 시 ref 가 가리키는 셀에서 읽는다
   | { kind: 'cell'; ref: string };        // $A14 · C$6 등
 
 export type Expr =

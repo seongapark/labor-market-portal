@@ -31,7 +31,16 @@ function gridCell(ctx: ExecCtx, sheet: string, ref: string): string | number | n
 }
 
 function critValue(c: Crit, ctx: ExecCtx): string {
-  if (c.kind === 'year') return ctx.year;
+  if (c.kind === 'year') {
+    // FIX ROUND 1: TEXT(C$6,"0") 은 "C6 가 가리키는 값을 정수로" 다 — 연도는 c.ref 가
+    // 가리키는 셀 그 자체에서 읽는다. ctx.year 는 그 셀이 없을 때만 쓰는 예비값이다
+    // (Task 7·8 이 이미 ExecCtx.year 를 넘기고 있어 시그니처를 건드리지 않으려 남긴다).
+    const v = gridCell(ctx, ctx.sheet, c.ref);
+    if (v === null) return ctx.year;
+    // prd_de·TIME_PERIOD 는 TEXT 열이다 — 숫자를 그대로 두면 "2025.0" 같은 꼴이
+    // 되므로 정수 문자열로 맞추고, 이미 문자열이면 값은 손대지 않고 앞뒤 공백만 지운다.
+    return typeof v === 'number' ? String(Math.round(v) === v ? Math.round(v) : v) : v.trim();
+  }
   if (c.kind === 'lit') return c.value;
   // Crit 의 cell 은 sheet 를 갖지 않는다 — SUMIFS/COUNTIFS 조건은 이 데이터에서 항상
   // 지금 시트를 가리키기 때문이다 (RULING 8). ctx.grids[ctx.sheet] 에서 읽는다.

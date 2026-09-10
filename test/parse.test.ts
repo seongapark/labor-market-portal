@@ -37,7 +37,7 @@ test('단일 SUMIFS 를 질의로 옮긴다', () => {
   assert.equal(q.src, 'kosis');
   assert.equal(q.table, 'DT_1DA7012S');
   assert.equal(q.value, 'DT');
-  assert.deepEqual(q.where.PRD_DE, { kind: 'year' });
+  assert.deepEqual(q.where.PRD_DE, { kind: 'year', ref: 'C6' });
   assert.deepEqual(q.where.C1_NM, { kind: 'lit', value: '계' });
   assert.deepEqual(q.where.ITM_NM, { kind: 'lit', value: '취업자' });
 });
@@ -92,6 +92,23 @@ test('COUNTIFS 는 countifs 가 된다', () => {
     '=COUNTIFS([1]DT_1DA7012S!$G:$G,"취업자",[1]DT_1DA7012S!$C:$C,">0")', ctx);
   assert.equal(e.op, 'countifs');
   assert.deepEqual((e as { q: any }).q.where.DT, { kind: 'lit', value: '>0' });
+});
+
+// FIX ROUND 1: TEXT(C$6,"0") 은 그 셀에서 연도를 읽어야 하므로 ref 를 함께 남긴다.
+// TEXT() 인자가 단일 같은시트 셀 참조가 아닌 형태(실측 8,195건 중 45건)는 무엇을
+// 읽어야 할지 알 수 없어 unsupported 로 남긴다 — 추측하지 않는다.
+test('FIX ROUND 1: TEXT(셀,"0") 조건은 그 셀을 ref 로 지닌 year 가 된다', () => {
+  const e = parseFormula(
+    '=SUMIFS([1]DT_1DA7012S!$C:$C,[1]DT_1DA7012S!$H:$H,TEXT($C$6,"0"))', ctx);
+  const q = (e as { q: any }).q;
+  assert.deepEqual(q.where.PRD_DE, { kind: 'year', ref: 'C6' });
+});
+
+test('FIX ROUND 1: TEXT() 인자가 셀 하나가 아니면 unsupported 로 남긴다', () => {
+  const e = parseFormula(
+    '=SUMIFS([1]DT_1DA7012S!$C:$C,[1]DT_1DA7012S!$H:$H,TEXT(C6+1,"0"))', ctx);
+  assert.equal(e.op, 'unsupported');
+  assert.match((e as { reason: string }).reason, /TEXT/);
 });
 
 test('못 다루는 형태는 unsupported 로 이유를 남긴다', () => {

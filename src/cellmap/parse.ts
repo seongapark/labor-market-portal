@@ -69,6 +69,26 @@ function argTokens(p: P): Token[][] {
   return args;
 }
 
+/** fn TEXT, lp, … 로 시작하는 토큰열에서 TEXT() 의 인자 목록을 뽑는다
+    (argTokens 와 같은 규칙이지만 파서 상태 없이 평평한 토큰열 위에서 동작한다) */
+function textCallArgs(toks: Token[]): Token[][] {
+  const args: Token[][] = [];
+  let cur: Token[] = [];
+  let depth = 0;
+  for (let i = 2; i < toks.length; i++) {   // 0=fn TEXT, 1=lp
+    const t = toks[i];
+    if (t.t === 'lp') depth++;
+    if (t.t === 'rp') {
+      if (depth === 0) break;
+      depth--;
+    }
+    if (t.t === 'comma' && depth === 0) { args.push(cur); cur = []; continue; }
+    cur.push(t);
+  }
+  if (cur.length) args.push(cur);
+  return args;
+}
+
 /** 조건 인자 하나를 Crit 으로 */
 function toCrit(toks: Token[]): Crit {
   if (toks.length === 1) {
@@ -79,8 +99,20 @@ function toCrit(toks: Token[]): Crit {
       return { kind: 'cell', ref: plainRef(t.a1) };
     }
   }
-  // TEXT(셀,"0") — 연도 조건
-  if (toks[0]?.t === 'fn' && toks[0].v === 'TEXT') return { kind: 'year' };
+  // RULING(9/10, 8195건 중 8150건 실측): TEXT(<셀 하나>,"0") — 연도 조건은 그 셀이
+  // 가리키는 값을 실행 시점에 읽는다. 셀 하나가 아닌 형태(45건, 실측)는 무엇을 읽어야
+  // 할지 알 수 없어 unsupported 로 남긴다 — 추측하지 않는다.
+  if (toks[0]?.t === 'fn' && toks[0].v === 'TEXT') {
+    const args = textCallArgs(toks);
+    const first = args[0];
+    if (first && first.length === 1) {
+      const t = first[0];
+      if (t.t === 'ref' && t.ext === null && t.sheet === null) {
+        return { kind: 'year', ref: plainRef(t.a1) };
+      }
+    }
+    throw new Error('TEXT 조건의 인자가 단일 같은시트 셀 참조가 아니다: ' + JSON.stringify(toks));
+  }
   throw new Error('조건을 못 읽었다: ' + JSON.stringify(toks));
 }
 
