@@ -52,6 +52,27 @@ def find_header(rows):
     return header, header_idx + 1, rest
 
 
+def dump_grid(src: str, path: str, out_root: str) -> None:
+    """시트를 헤더 해석 없이 좌표 그대로 덤프한다. 별도데이터·패널처럼 헤더 자체가
+       표 헤더가 아닌 시트(블록 여러 개, 검색조건 안내문, 값 레이블 등)를 위한 경로다.
+       비어있지 않은 셀마다 {r, c, v} 한 줄(1-based). 제목행도 포함해 그대로 남긴다."""
+    wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+    outdir = os.path.join(out_root, 'raw', 'grid', src)
+    os.makedirs(outdir, exist_ok=True)
+    for ws in wb.worksheets:
+        n = 0
+        with open(os.path.join(outdir, ws.title + '.jsonl'), 'w', encoding='utf-8') as fh:
+            for r, row in enumerate(ws.iter_rows(values_only=True), start=1):
+                for c, cell in enumerate(row, start=1):
+                    v = cell_text(cell)
+                    if v is None:
+                        continue
+                    fh.write(json.dumps({'r': r, 'c': c, 'v': v}, ensure_ascii=False) + '\n')
+                    n += 1
+        print('  grid %-8s %-28s %d셀' % (src, ws.title, n), flush=True)
+    wb.close()
+
+
 def dump_source(src: str, path: str, out_root: str) -> dict:
     wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
     heads = {}
@@ -93,9 +114,20 @@ def main():
     ap.add_argument('--only', action='append', choices=list(SOURCES),
                     help='이 원천만 덤프한다 (여러 번 줄 수 있다)')
     ap.add_argument('--out', default='data', help='산출 루트 (기본 data)')
+    ap.add_argument('--grid', choices=list(SOURCES),
+                    help='그리드 모드: 헤더 해석 없이 좌표 그대로 이 원천 하나를 덤프한다'
+                         ' (data/raw/grid/<src>/<sheet>.jsonl)')
     a = ap.parse_args()
 
     d = booklet_dir()
+
+    if a.grid:
+        p = os.path.join(d, SOURCES[a.grid])
+        if not os.path.exists(p):
+            raise SystemExit('건너뜀 — 파일 없음: %s' % p)
+        dump_grid(a.grid, p, a.out)
+        return
+
     want = a.only or list(SOURCES)
     all_heads = {}
     for src in want:
