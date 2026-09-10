@@ -45,12 +45,17 @@ export function summarize(rows: CellResult[]): Summary {
   const m = byVerdict.match ?? 0;
   const mm = byVerdict.mismatch ?? 0;
   const er = byVerdict.error ?? 0;
+  const un = byVerdict.unsupported ?? 0;
+  // presentation(같은시트 INDEX/MATCH/RANK 정렬)은 대조가 아니므로 분모에 넣지 않는다.
   const comparable = m + mm + er;
   return {
     total: rows.length,
     comparable,
     rate: comparable ? m / comparable : 0,
-    gatePassed: mm === 0 && er === 0,
+    // presentation 은 관문에서 일부러 뺀다 — 구현하지 않기로 한 결정이지, 빚이 아니다.
+    // unsupported 가 남아 있으면 stage 2 가 데이터 계층에서 그 셀을 렌더링할 근거가
+    // 없다는 뜻이라 관문을 통과시키지 않는다.
+    gatePassed: mm === 0 && er === 0 && un === 0,
     byVerdict, byPart,
   };
 }
@@ -98,19 +103,20 @@ function main() {
     `- 대조 가능 **${s.comparable}** (확정본에 값이 있고 파싱된 것)`,
     `- 일치 **${s.byVerdict.match ?? 0}** · 불일치 **${s.byVerdict.mismatch ?? 0}** · 실행오류 **${s.byVerdict.error ?? 0}**`,
     `- 파싱 못함 ${s.byVerdict.unsupported ?? 0} · 확정본에 값 없음 ${s.byVerdict['no-oracle'] ?? 0}`,
+    `- 표현(presentation) **${s.byVerdict.presentation ?? 0}** — OECD 부록의 같은시트 INDEX/MATCH/RANK 정렬 수식. 원천 통합문서를 참조하지 않는 표시 로직이라 SQL 로 재구현하지 않기로 정했다. 대조 분모·관문 모두에서 제외한다.`,
     `- 일치율 **${(s.rate * 100).toFixed(3)}%**`,
     '',
-    `## 관문: ${s.gatePassed ? '통과 (불일치 0 · 오류 0)' : '미통과'}`,
+    `## 관문: ${s.gatePassed ? '통과' : '미통과'} (불일치 0 · 오류 0 · 파싱못함 0 — presentation 은 제외)`,
     '',
     '## 파트별',
     '',
-    '| 파트 | 대조 | 일치 | 불일치 | 오류 | 파싱못함 | 값없음 | 일치율 |',
-    '|---|---|---|---|---|---|---|---|',
+    '| 파트 | 대조 | 일치 | 불일치 | 오류 | 파싱못함 | 표현 | 값없음 | 일치율 |',
+    '|---|---|---|---|---|---|---|---|---|',
   ];
   for (const part of Object.keys(s.byPart).sort()) {
     const b = s.byPart[part];
     const comp = (b.match ?? 0) + (b.mismatch ?? 0) + (b.error ?? 0);
-    lines.push(`| ${part} | ${comp} | ${b.match ?? 0} | ${b.mismatch ?? 0} | ${b.error ?? 0} | ${b.unsupported ?? 0} | ${b['no-oracle'] ?? 0} | ${comp ? ((b.match ?? 0) / comp * 100).toFixed(2) : '—'}% |`);
+    lines.push(`| ${part} | ${comp} | ${b.match ?? 0} | ${b.mismatch ?? 0} | ${b.error ?? 0} | ${b.unsupported ?? 0} | ${b.presentation ?? 0} | ${b['no-oracle'] ?? 0} | ${comp ? ((b.match ?? 0) / comp * 100).toFixed(2) : '—'}% |`);
   }
   writeFileSync(join('reports', 'verify-summary.md'), lines.join('\n') + '\n');
 
@@ -121,6 +127,9 @@ function main() {
   // 파싱 실패 이유별 집계 — 다음에 무엇을 지원해야 하는지 알려준다.
   // 근본원인(reasonKey)으로 묶는다 — 정확한 문자열로만 묶으면 좌표·JSON 덤프가
   // 박힌 이유 하나가 count-1 행 수백 개로 쪼개져 순위표 아래로 흩어진다.
+  // presentation 은 여기서 뺀다 — 구현하지 않기로 한 결정이라, 이 순위표(=남은 작업
+  // 순서)에 섞이면 다음 단위가 무엇부터 해야 하는지 왜곡된다.
+  const presentationCount = rows.filter((r) => r.verdict === 'presentation').length;
   const reasons = new Map<string, { n: number; sample: CellResult }>();
   for (const r of rows) {
     if (r.verdict !== 'unsupported' && r.verdict !== 'error') continue;
@@ -129,7 +138,9 @@ function main() {
     if (cur) cur.n++;
     else reasons.set(key, { n: 1, sample: r });
   }
-  const rl = ['# 파싱·실행 실패 이유', '', '근본원인(reasonKey) 기준으로 묶었다 — 좌표·JSON 덤프 등 변동 꼬리는 지우고, 함수명처럼 꼬리 자체가 요점인 경우는 남긴다.', '', '| 건수 | 근본원인 | 대표 이유 | 대표 좌표 |', '|---|---|---|---|'];
+  const rl = ['# 파싱·실행 실패 이유', '',
+    `표현(presentation) 판정 **${presentationCount}**건은 제외했다 — OECD 부록의 같은시트 정렬 수식으로, 구현하지 않기로 정했다.`,
+    '', '근본원인(reasonKey) 기준으로 묶었다 — 좌표·JSON 덤프 등 변동 꼬리는 지우고, 함수명처럼 꼬리 자체가 요점인 경우는 남긴다.', '', '| 건수 | 근본원인 | 대표 이유 | 대표 좌표 |', '|---|---|---|---|'];
   for (const [key, v] of [...reasons].sort((a, b) => b[1].n - a[1].n)) {
     const full = (v.sample.reason ?? '(이유없음)').replace(/\|/g, '\\|');
     rl.push(`| ${v.n} | ${key.replace(/\|/g, '\\|')} | ${full} | ${v.sample.part}!${v.sample.sheet}!${v.sample.ref} |`);

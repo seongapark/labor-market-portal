@@ -69,11 +69,40 @@ test('verifyPart: 확정본에 값이 없는 좌표는 no-oracle', () => {
 test('verifyPart: 파싱 못한 수식은 unsupported 로 이유가 남는다', () => {
   const db = openDb(':memory:');
   const headers: Headers = { kosis: {}, oecd: {}, etc: {}, panel: {} };
+  // INDEX/MATCH/RANK 가 아닌 함수를 써야 한다 — 그 셋은 이제 외부참조가 없으면
+  // presentation 으로 갈라진다(아래 별도 테스트). 여기서는 그 분류와 무관한
+  // "그냥 못 다루는 함수"를 확인한다.
   const formulas = { extmap: {},
-    sheets: { p1: { A1: '=INDEX(_정렬기준!$A$3:$A$41,MATCH(ROW(),_정렬기준!$D$3:$D$41,0))' } } };
+    sheets: { p1: { A1: '=VLOOKUP(A2,B1:C10,2,0)' } } };
   const res = verifyPart('partX', formulas, { p1: { A1: 5 } }, db, headers, '2025');
   assert.equal(res[0].verdict, 'unsupported');
   assert.ok(res[0].reason && res[0].reason.length > 0);
+});
+
+// TASK 9 단위 2 — presentation 판정: OECD 부록의 INDEX/MATCH/RANK 정렬 수식은
+// 원천 통합문서를 참조하지 않으면 데이터 대조가 아니라 표현(presentation)이다.
+test('verifyPart: INDEX 가 실패하고 외부참조가 없으면 presentation', () => {
+  const db = openDb(':memory:');
+  const headers: Headers = { kosis: {}, oecd: {}, etc: {}, panel: {} };
+  // 같은시트 범위(RANK 류)와 보조시트(_정렬기준) 참조 둘 다 "외부참조 없음"에 해당한다.
+  const formulas = { extmap: {},
+    sheets: { p1: { A1: '=INDEX(_정렬기준!$A$3:$A$41,MATCH(ROW(),_정렬기준!$D$3:$D$41,0))' } } };
+  const res = verifyPart('partX', formulas, { p1: { A1: 5 } }, db, headers, '2025');
+  assert.equal(res[0].verdict, 'presentation');
+  assert.ok(res[0].reason && res[0].reason.length > 0);
+  assert.equal(res[0].got, null);
+  assert.equal(res[0].expected, 5);
+});
+
+// 이 테스트가 없으면 분류기가 "외부참조가 있는지"를 실제로 확인하지 않고도
+// 통과할 수 있다 — INDEX 를 쓰면 무조건 presentation 으로 삼키는 회귀를 잡는다.
+test('verifyPart: INDEX 가 실패해도 외부통합문서 참조가 있으면 unsupported (presentation 아님)', () => {
+  const db = openDb(':memory:');
+  const headers: Headers = { kosis: { T: ['ITM_NM', 'DT'] }, oecd: {}, etc: {}, panel: {} };
+  const formulas = { extmap: { '1': 'KOSIS_원데이터.xlsx' },
+    sheets: { p1: { A1: '=INDEX([1]T!$A:$A,1)' } } };
+  const res = verifyPart('partX', formulas, { p1: { A1: 5 } }, db, headers, '2025');
+  assert.equal(res[0].verdict, 'unsupported');
 });
 
 // FIX ROUND 1: 보조시트는 대조 지면(res 의 sheet)으로는 절대 나오지 않지만, 다른 지면이

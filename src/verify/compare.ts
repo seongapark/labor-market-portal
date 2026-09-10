@@ -1,9 +1,31 @@
 import type { DatabaseSync } from 'node:sqlite';
 import { parseFormula } from '../cellmap/parse.ts';
 import { execute } from '../query/execute.ts';
+import { tokenize } from '../cellmap/tokenize.ts';
 import type { Grid, Headers } from '../types.ts';
 
-export type Verdict = 'match' | 'mismatch' | 'unsupported' | 'no-oracle' | 'error';
+export type Verdict = 'match' | 'mismatch' | 'unsupported' | 'no-oracle' | 'error' | 'presentation';
+
+// booklet 의 OECD 부록 페이지는 같은 시트의 값을 INDEX/MATCH/RANK 로 정렬·표시만
+// 한다 — 원천 통합문서에서 아무 것도 가져오지 않는다. 이 정렬 로직은 SQL 로 재구현하지
+// 않기로 계획 단계에서 결정했다: 이건 데이터가 아니라 표현(presentation)이다.
+// 실측 규칙(추측 아님): 파싱 실패 3,364건 중 외부통합문서 참조(ref.ext !== null)를
+// 하나라도 품은 건 0건이었다 — 전부 같은시트 참조([1]시트!같은 형태 없이)만 쓴다.
+// 그래서 판정 기준은 "같은시트 정렬 함수 이름이 이유에 나오는가" + "외부 참조가
+// 없는가" 의 AND 다. 정규식으로 대괄호([1])를 찾지 않는다 — 문자열 리터럴 안에
+// "[1]" 이 들어 있을 수 있어서다. tokenize 로 실제 토큰을 봐야 한다.
+const PRESENTATION_FN = /\b(INDEX|MATCH|RANK)\b/;
+
+function isPresentation(formula: string, reason: string): boolean {
+  if (!PRESENTATION_FN.test(reason)) return false;
+  let toks;
+  try {
+    toks = tokenize(formula);
+  } catch {
+    return false; // 토큰화조차 안 되면 외부 참조 여부를 확인할 수 없다 — 보수적으로 unsupported
+  }
+  return !toks.some((t) => t.t === 'ref' && t.ext !== null);
+}
 
 export type CellResult = {
   part: string; sheet: string; ref: string;
@@ -60,7 +82,8 @@ export function verifyPart(
       }
       const e = parseFormula(formula, ctx);
       if (e.op === 'unsupported') {
-        out.push({ part, sheet, ref, verdict: 'unsupported', expected, got: null, reason: e.reason });
+        const verdict: Verdict = isPresentation(formula, e.reason) ? 'presentation' : 'unsupported';
+        out.push({ part, sheet, ref, verdict, expected, got: null, reason: e.reason });
         continue;
       }
       let got: number | string | null = null;
