@@ -45,7 +45,7 @@ export function verifyPart(
   // 셀 참조('p68'!$F$5, 2,616건)와 보조시트(_시계열, 2,092건) 참조가 실측으로 나와,
   // 단일 시트의 grid 로는 풀 수 없다. oracle 자체가 이미 { 시트명 → { 셀 → 값 } } 모양이라
   // 그대로 grids 로 넘긴다 — 보조시트도 참조 대상으로는 남기고, 대조 지면으로만 건너뛴다.
-  const grids = oracle as unknown as Record<string, Grid>;
+  const grids: Record<string, Grid> = oracle;
 
   for (const [sheet, cells] of Object.entries(formulas.sheets)) {
     if (sheet.startsWith('_')) continue;        // 보조시트는 지면이 아니다
