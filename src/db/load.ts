@@ -137,8 +137,8 @@ export function loadGridJsonl(db: DatabaseSync, src: Src, sheet: string, lines: 
 
 export type LoadResult = { table: string; rows: number };
 
-export function loadAll(db: DatabaseSync, rawDir: string): Record<string, LoadResult> {
-  const out: Record<string, LoadResult> = {};
+export function loadAll(db: DatabaseSync, rawDir: string): Partial<Record<Src, LoadResult>> {
+  const out: Partial<Record<Src, LoadResult>> = {};
 
   // kosis → obs
   {

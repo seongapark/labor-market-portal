@@ -64,9 +64,9 @@ def dump_grid(src: str, path: str, out_root: str) -> None:
         with open(os.path.join(outdir, ws.title + '.jsonl'), 'w', encoding='utf-8') as fh:
             for r, row in enumerate(ws.iter_rows(values_only=True), start=1):
                 for c, cell in enumerate(row, start=1):
-                    v = cell_text(cell)
-                    if v is None:
+                    if not _non_empty(cell):   # None 뿐 아니라 공백뿐인 문자열도 뺀다
                         continue
+                    v = cell_text(cell)
                     fh.write(json.dumps({'r': r, 'c': c, 'v': v}, ensure_ascii=False) + '\n')
                     n += 1
         print('  grid %-8s %-28s %d셀' % (src, ws.title, n), flush=True)
