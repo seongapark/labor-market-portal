@@ -25,7 +25,7 @@ export type Expr =
   | { op: 'mul'; a: Expr; b: Expr }
   | { op: 'pct'; inner: Expr }            // 뒤에 % 가 붙은 것 (×100 아니다 — 엑셀 % 는 ÷100)
   | { op: 'const'; v: number }
-  | { op: 'cell'; ref: string }           // 같은 시트 셀
+  | { op: 'cell'; sheet?: string; ref: string }  // 셀 (sheet 없으면 같은 시트)
   | { op: 'zeroDash'; inner: Expr }       // IF(x=0,"-",x)
   | { op: 'unsupported'; reason: string; formula: string };
 
