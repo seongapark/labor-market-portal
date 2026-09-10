@@ -1,0 +1,16 @@
+{
+  "name": "labor-market-portal",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24.0.0" },
+  "scripts": {
+    "test": "node --test test/",
+    "typecheck": "tsc --noEmit",
+    "dump:raw": "python tools/extract/dump_raw.py",
+    "dump:oracle": "python tools/extract/dump_oracle.py",
+    "dump:formulas": "python tools/extract/dump_formulas.py",
+    "smoke:raw": "node scripts/smoke-raw.ts",
+    "verify": "node scripts/verify-all.ts"
+  },
+  "devDependencies": { "typescript": "^5.6.0" }
+}
