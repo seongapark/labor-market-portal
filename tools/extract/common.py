@@ -45,7 +45,7 @@ def cell_text(v):
     if isinstance(v, bool):
         return str(v)
     if isinstance(v, float):
-        return round(v, 6)
+        return v
     if isinstance(v, int):
         return v
     return str(v).strip()
