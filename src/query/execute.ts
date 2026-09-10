@@ -127,6 +127,36 @@ function num(v: number | string | null): number {
   return Number.isFinite(n) ? n : 0;
 }
 
+/** Task 9 단위 4 (CHANGE 3): 산술(add/sub/mul/div/pct) 전용. num() 과 달리 숫자로도
+    빈 값으로도 못 읽는 문자열 피연산자를 0 으로 조용히 뭉개지 않고 오류(null)를 낸다.
+    엑셀은 텍스트를 산술에 넣으면 #VALUE! 를 낸다 — IFERROR(B10*100/A10-100,"-") 에서
+    A10="실질임금"(라벨)이면 우리도 "-" 를 내야지 -100 을 내면 안 된다.
+    null(이미 오류인 하위식) 은 그대로 오류로 흘려보낸다. 빈 문자열은 지금까지처럼
+    0 이다(Number('') === 0) — zeroDash 가 기대는 5,754건과 무관하다: zeroDash 는 이
+    함수를 쓰지 않고 num() 을 그대로 쓴다(SUM 이 이미 0 을 낸다). */
+function numOrErr(v: number | string | null): number | null {
+  if (v === null) return null;
+  if (typeof v === 'number') return Number.isFinite(v) ? v : null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
+/** Task 9 단위 4 (CHANGE 2): NUMBERVALUE — 숫자면 그대로, 문자열이면 천단위 구분자를
+    지우고 끝의 '%' 는 ÷100 으로 읽는다. 못 읽으면 오류(null) — 0 이 아니다. */
+function numberValue(v: number | string | null): number | null {
+  if (v === null) return null;
+  if (typeof v === 'number') return Number.isFinite(v) ? v : null;
+  let s = v.trim();
+  if (s === '') return null;
+  let pct = false;
+  if (s.endsWith('%')) { pct = true; s = s.slice(0, -1).trim(); }
+  s = s.replace(/,/g, '');
+  if (s === '') return null;
+  const n = Number(s);
+  if (!Number.isFinite(n)) return null;
+  return pct ? n / 100 : n;
+}
+
 /** Task 9 단위 3: if 가 참으로 볼 값 — 0 이 아니고 빈 문자열도 아니면 참이다.
     null 은 거짓이다(연도 조건 셀이 없어 던지는 경우는 여기 오지 않는다 — 그건 예외다). */
 function truthy(v: number | string | null): boolean {
@@ -157,10 +187,16 @@ function cmpResult(rel: 'eq' | 'ne' | 'lt' | 'lte' | 'gt' | 'gte',
 
 /** TEXT(x,"0.0") — 반올림은 반올림기준 0.5 를 항상 0에서 먼 쪽으로 보낸다(사사오입).
     정수로 올려붙인 뒤 다시 나누고 toFixed 로 자릿수를 맞춘다 — 부동소수 오차가
-    반올림 경계에 걸리는 것을 피한다. */
+    반올림 경계에 걸리는 것을 피한다.
+    Task 9 단위 4 (CHANGE 4): 엑셀은 부동소수 오차를 그대로 반올림하지 않는다 — 먼저
+    유효자릿수 15 자리로 줄인 값을 쓴다. 21.049999999999997 은 수학적으로는 21.0 으로
+    반올림되지만, 15 유효자릿수로 줄이면 정확히 21.05 가 되고 그 다음에야 사사오입해
+    21.1 이 된다. 두 단계를 순서대로 밟아야 한다 — 한 번에 반올림하면 21.0 이 나와
+    틀린다(part3!p223!O31 실측). */
 function textFixed(n: number, decimals: number): string {
+  const n15 = Number(n.toPrecision(15));
   const factor = 10 ** decimals;
-  const rounded = Math.sign(n) * Math.round(Math.abs(n) * factor);
+  const rounded = Math.sign(n15) * Math.round(Math.abs(n15) * factor);
   return (rounded / factor).toFixed(decimals);
 }
 
@@ -170,15 +206,39 @@ export function execute(e: Expr, ctx: ExecCtx): number | string | null {
     case 'countifs': return runIfs(e.q, ctx, 'COUNT');
     case 'const': return e.v;
     case 'cell': return gridCell(ctx, e.sheet ?? ctx.sheet, e.ref);
-    case 'add': return e.args.reduce((s, a) => s + num(execute(a, ctx)), 0);
-    case 'sub': return num(execute(e.a, ctx)) - num(execute(e.b, ctx));
-    case 'mul': return num(execute(e.a, ctx)) * num(execute(e.b, ctx));
-    case 'div': {
-      const b = num(execute(e.b, ctx));
-      if (b === 0) return null;              // 엑셀은 #DIV/0! — 대조에서 걸러낸다
-      return num(execute(e.a, ctx)) / b;
+    case 'add': {
+      let sum = 0;
+      for (const a of e.args) {
+        const v = numOrErr(execute(a, ctx));
+        if (v === null) return null;          // 텍스트 피연산자 — 엑셀은 #VALUE!
+        sum += v;
+      }
+      return sum;
     }
-    case 'pct': return num(execute(e.inner, ctx)) / 100;
+    case 'sub': {
+      const a = numOrErr(execute(e.a, ctx));
+      const b = numOrErr(execute(e.b, ctx));
+      if (a === null || b === null) return null;
+      return a - b;
+    }
+    case 'mul': {
+      const a = numOrErr(execute(e.a, ctx));
+      const b = numOrErr(execute(e.b, ctx));
+      if (a === null || b === null) return null;
+      return a * b;
+    }
+    case 'div': {
+      const a = numOrErr(execute(e.a, ctx));
+      const b = numOrErr(execute(e.b, ctx));
+      if (a === null || b === null) return null;
+      if (b === 0) return null;              // 엑셀은 #DIV/0! — 대조에서 걸러낸다
+      return a / b;
+    }
+    case 'pct': {
+      const v = numOrErr(execute(e.inner, ctx));
+      return v === null ? null : v / 100;
+    }
+    case 'numbervalue': return numberValue(execute(e.inner, ctx));
     case 'zeroDash': {
       const v = num(execute(e.inner, ctx));
       return v === 0 ? '-' : v;

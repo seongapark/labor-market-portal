@@ -43,13 +43,31 @@ export type OracleDump = Record<string, Record<string, string | number>>;
 
 const REL = 1e-9;
 
+/** 유한한 숫자로 읽히는가. 공백만 있는 문자열은 숫자로 치지 않는다 — Number('') 가
+    0 이 되어 sameValue('', 0) 을 참으로 만드는 것을 막는다. */
+function asFiniteNumber(v: unknown): number | null {
+  if (typeof v === 'number') return Number.isFinite(v) ? v : null;
+  if (typeof v === 'string') {
+    if (v.trim() === '') return null;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : null;
+  }
+  return null;
+}
+
+// Task 9 단위 4 (CHANGE 1): 냉동 통합문서의 차트 데이터레이블 열(헤더 "(레이블)")은
+// 오라클을 얼려담을 때 Excel COM 이 TEXT(G9,"0.0") 의 문자열 결과("84.0")를 숫자로
+// 강제 변환해 84 를 남긴다 — 84 와 "84.0" 은 같은 값의 두 표현일 뿐, 둘 다 틀리지
+// 않았다. 실측 65건이 이 원인이었다. 양쪽이 모두 유한한 숫자로 읽히면 숫자로
+// 비교하고(기존 1e-9 상대오차 그대로), 아니면 지금까지처럼 문자열로 비교한다.
 export function sameValue(a: unknown, b: unknown): boolean {
-  if (typeof a === 'string' || typeof b === 'string') return String(a) === String(b);
   if (a === null || b === null || a === undefined || b === undefined) return a === b;
-  const x = Number(a), y = Number(b);
-  if (!Number.isFinite(x) || !Number.isFinite(y)) return false;
-  const scale = Math.max(Math.abs(x), Math.abs(y), 1);
-  return Math.abs(x - y) <= REL * scale;
+  const x = asFiniteNumber(a), y = asFiniteNumber(b);
+  if (x !== null && y !== null) {
+    const scale = Math.max(Math.abs(x), Math.abs(y), 1);
+    return Math.abs(x - y) <= REL * scale;
+  }
+  return String(a) === String(b);
 }
 
 export function verifyPart(

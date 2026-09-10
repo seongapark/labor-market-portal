@@ -1005,40 +1005,32 @@
 {"part":"part1_5","sheet":"p81","ref":"L63","verdict":"presentation","expected":34,"got":null,"reason":"못 다루는 함수: RANK"}
 {"part":"part1_5","sheet":"p82","ref":"A7","verdict":"unsupported","expected":"2022년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"B7","verdict":"unsupported","expected":"69.3%","got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_5","sheet":"p82","ref":"C7","expected":69.3,"got":0,"verdict":"mismatch"}
 {"part":"part1_5","sheet":"p82","ref":"J7","verdict":"unsupported","expected":"2022년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"K7","verdict":"unsupported","expected":754.162,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_5","sheet":"p82","ref":"L7","verdict":"unsupported","expected":158.83,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_5","sheet":"p82","ref":"A8","verdict":"unsupported","expected":"2023년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"B8","verdict":"unsupported","expected":"64.5%","got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_5","sheet":"p82","ref":"C8","expected":64.5,"got":0,"verdict":"mismatch"}
 {"part":"part1_5","sheet":"p82","ref":"J8","verdict":"unsupported","expected":"2023년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"K8","verdict":"unsupported","expected":896.367,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_5","sheet":"p82","ref":"L8","verdict":"unsupported","expected":178.282,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_5","sheet":"p82","ref":"A9","verdict":"unsupported","expected":"2024년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"B9","verdict":"unsupported","expected":"63.3%","got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_5","sheet":"p82","ref":"C9","expected":63.3,"got":0,"verdict":"mismatch"}
 {"part":"part1_5","sheet":"p82","ref":"J9","verdict":"unsupported","expected":"2024년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"K9","verdict":"unsupported","expected":689.014,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_5","sheet":"p82","ref":"L9","verdict":"unsupported","expected":150.594,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_5","sheet":"p82","ref":"A10","verdict":"unsupported","expected":"2025년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"B10","verdict":"unsupported","expected":"63.3%","got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_5","sheet":"p82","ref":"C10","expected":63.3,"got":0,"verdict":"mismatch"}
 {"part":"part1_5","sheet":"p82","ref":"J10","verdict":"unsupported","expected":"2025년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"K10","verdict":"unsupported","expected":672.921,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_5","sheet":"p82","ref":"L10","verdict":"unsupported","expected":154.012,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_5","sheet":"p82","ref":"A32","verdict":"unsupported","expected":"2022년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"B32","verdict":"unsupported","expected":"68.5%","got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_5","sheet":"p82","ref":"C32","expected":68.5,"got":0,"verdict":"mismatch"}
 {"part":"part1_5","sheet":"p82","ref":"A33","verdict":"unsupported","expected":"2023년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"B33","verdict":"unsupported","expected":"67.2%","got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_5","sheet":"p82","ref":"C33","expected":67.2,"got":0,"verdict":"mismatch"}
 {"part":"part1_5","sheet":"p82","ref":"A34","verdict":"unsupported","expected":"2024년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"B34","verdict":"unsupported","expected":"66%","got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_5","sheet":"p82","ref":"C34","expected":66,"got":0,"verdict":"mismatch"}
 {"part":"part1_5","sheet":"p82","ref":"A35","verdict":"unsupported","expected":"2025년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"B35","verdict":"unsupported","expected":"47.7%","got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_5","sheet":"p82","ref":"C35","expected":47.7,"got":0,"verdict":"mismatch"}
 {"part":"part1_5","sheet":"p83","ref":"C6","verdict":"unsupported","expected":846.236,"got":null,"reason":"산술에 외부통합문서 참조가 왔다: C2"}
 {"part":"part1_5","sheet":"p83","ref":"C7","verdict":"unsupported","expected":774.351,"got":null,"reason":"산술에 외부통합문서 참조가 왔다: C3"}
 {"part":"part1_5","sheet":"p83","ref":"C8","verdict":"unsupported","expected":11.422,"got":null,"reason":"산술에 외부통합문서 참조가 왔다: G2"}
@@ -1257,7 +1249,6 @@
 {"part":"part1_5","sheet":"p83","ref":"G58","verdict":"unsupported","expected":"2025직종_제조 단순직","got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_5","sheet":"p83","ref":"H58","verdict":"unsupported","expected":"단순제조","got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_5","sheet":"p83","ref":"I58","verdict":"unsupported","expected":0.37,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_6","sheet":"p87","ref":"B11","expected":"-","got":-100,"verdict":"mismatch"}
 {"part":"part1_6","sheet":"p104 참고박스","ref":"B10","verdict":"unsupported","expected":"2025년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_6","sheet":"p104 참고박스","ref":"C10","verdict":"unsupported","expected":"2025.6월","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\".6월\"}]"}
 {"part":"part1_6","sheet":"p104 참고박스","ref":"D10","verdict":"unsupported","expected":"2025.8월","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\".8월\"}]"}
@@ -3516,7 +3507,6 @@
 {"part":"part3","sheet":"p215","ref":"A8","verdict":"presentation","expected":"스위스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p215","ref":"I8","verdict":"unsupported","expected":30,"got":null,"reason":"외부 범위 참조가 아니다"}
 {"part":"part3","sheet":"p215","ref":"A9","verdict":"presentation","expected":"스웨덴","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p215","ref":"O9","expected":84,"got":"84.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p215","ref":"A10","verdict":"presentation","expected":"덴마크","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p215","ref":"A11","verdict":"presentation","expected":"일본","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p215","ref":"I11","verdict":"unsupported","expected":38,"got":null,"reason":"못 다루는 함수: SUMPRODUCT"}
@@ -3526,7 +3516,6 @@
 {"part":"part3","sheet":"p215","ref":"A15","verdict":"presentation","expected":"노르웨이","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p215","ref":"A16","verdict":"presentation","expected":"독일","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p215","ref":"A17","verdict":"presentation","expected":"포르투갈","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p215","ref":"O17","expected":80,"got":"80.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p215","ref":"A18","verdict":"presentation","expected":"핀란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p215","ref":"A19","verdict":"presentation","expected":"캐나다","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p215","ref":"A20","verdict":"presentation","expected":"리투아니아","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -3535,7 +3524,6 @@
 {"part":"part3","sheet":"p215","ref":"A23","verdict":"presentation","expected":"헝가리","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p215","ref":"A24","verdict":"presentation","expected":"아일랜드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p215","ref":"A25","verdict":"presentation","expected":"체코","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p215","ref":"O25","expected":78,"got":"78.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p215","ref":"A26","verdict":"presentation","expected":"라트비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p215","ref":"A27","verdict":"presentation","expected":"슬로바키아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p215","ref":"A28","verdict":"presentation","expected":"스페인","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -3543,7 +3531,6 @@
 {"part":"part3","sheet":"p215","ref":"A30","verdict":"presentation","expected":"프랑스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p215","ref":"A31","verdict":"presentation","expected":"폴란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p215","ref":"A32","verdict":"presentation","expected":"미국","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p215","ref":"O32","expected":75,"got":"75.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p215","ref":"A33","verdict":"presentation","expected":"룩셈부르크","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p215","ref":"A34","verdict":"presentation","expected":"OECD","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p215","ref":"A35","verdict":"presentation","expected":"벨기에","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -3652,14 +3639,12 @@
 {"part":"part3","sheet":"p216","ref":"A7","verdict":"presentation","expected":"네덜란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p216","ref":"A8","verdict":"presentation","expected":"일본","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p216","ref":"I8","verdict":"unsupported","expected":26,"got":null,"reason":"외부 범위 참조가 아니다"}
-{"part":"part3","sheet":"p216","ref":"O8","expected":80,"got":"80.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p216","ref":"A9","verdict":"presentation","expected":"스위스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p216","ref":"A10","verdict":"presentation","expected":"뉴질랜드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p216","ref":"A11","verdict":"presentation","expected":"호주","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p216","ref":"I11","verdict":"unsupported","expected":38,"got":null,"reason":"못 다루는 함수: SUMPRODUCT"}
 {"part":"part3","sheet":"p216","ref":"A12","verdict":"presentation","expected":"독일","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p216","ref":"A13","verdict":"presentation","expected":"덴마크","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p216","ref":"O13","expected":77,"got":"77.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p216","ref":"A14","verdict":"presentation","expected":"노르웨이","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p216","ref":"A15","verdict":"presentation","expected":"스웨덴","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p216","ref":"A16","verdict":"presentation","expected":"체코","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -3691,7 +3676,6 @@
 {"part":"part3","sheet":"p216","ref":"A42","verdict":"presentation","expected":"이탈리아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p216","ref":"A43","verdict":"presentation","expected":"코스타리카","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p216","ref":"A44","verdict":"presentation","expected":"튀르키예","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p216","ref":"O44","expected":55,"got":"55.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p216","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$49:$A$61\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$48\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
 {"part":"part3","sheet":"p216","ref":"A49","verdict":"presentation","expected":"일본","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p216","ref":"B49","verdict":"presentation","expected":77.26603293613603,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -3789,7 +3773,6 @@
 {"part":"part3","sheet":"p217","ref":"A8","verdict":"presentation","expected":"일본","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"I8","verdict":"unsupported","expected":21,"got":null,"reason":"외부 범위 참조가 아니다"}
 {"part":"part3","sheet":"p217","ref":"A9","verdict":"presentation","expected":"스위스","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p217","ref":"O9","expected":83,"got":"83.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p217","ref":"A10","verdict":"presentation","expected":"뉴질랜드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"A11","verdict":"presentation","expected":"체코","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"I11","verdict":"unsupported","expected":38,"got":null,"reason":"못 다루는 함수: SUMPRODUCT"}
@@ -3797,7 +3780,6 @@
 {"part":"part3","sheet":"p217","ref":"A13","verdict":"presentation","expected":"호주","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"A14","verdict":"presentation","expected":"덴마크","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"A15","verdict":"presentation","expected":"아일랜드","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p217","ref":"O15","expected":79,"got":"79.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p217","ref":"A16","verdict":"presentation","expected":"헝가리","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"A17","verdict":"presentation","expected":"멕시코","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"A18","verdict":"presentation","expected":"영국","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -3807,7 +3789,6 @@
 {"part":"part3","sheet":"p217","ref":"A22","verdict":"presentation","expected":"오스트리아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"A23","verdict":"presentation","expected":"포르투갈","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"A24","verdict":"presentation","expected":"OECD","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p217","ref":"O24","expected":77,"got":"77.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p217","ref":"A25","verdict":"presentation","expected":"캐나다","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"A26","verdict":"presentation","expected":"콜롬비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"A27","verdict":"presentation","expected":"한국","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -3818,7 +3799,6 @@
 {"part":"part3","sheet":"p217","ref":"A32","verdict":"presentation","expected":"리투아니아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"A33","verdict":"presentation","expected":"코스타리카","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"A34","verdict":"presentation","expected":"튀르키예","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p217","ref":"O34","expected":73,"got":"73.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p217","ref":"A35","verdict":"presentation","expected":"라트비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"A36","verdict":"presentation","expected":"핀란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"A37","verdict":"presentation","expected":"그리스","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -3826,7 +3806,6 @@
 {"part":"part3","sheet":"p217","ref":"A39","verdict":"presentation","expected":"스페인","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"A40","verdict":"presentation","expected":"칠레","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"A41","verdict":"presentation","expected":"프랑스","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p217","ref":"O41","expected":72,"got":"72.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p217","ref":"A42","verdict":"presentation","expected":"이탈리아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"A43","verdict":"presentation","expected":"벨기에","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"A44","verdict":"presentation","expected":"이스라엘","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -3945,7 +3924,6 @@
 {"part":"part3","sheet":"p218","ref":"A24","verdict":"presentation","expected":"체코","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p218","ref":"A25","verdict":"presentation","expected":"라트비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p218","ref":"A26","verdict":"presentation","expected":"오스트리아","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p218","ref":"O26","expected":71,"got":"71.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p218","ref":"A27","verdict":"presentation","expected":"슬로베니아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p218","ref":"A28","verdict":"presentation","expected":"이스라엘","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p218","ref":"A29","verdict":"presentation","expected":"슬로바키아","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -3957,7 +3935,6 @@
 {"part":"part3","sheet":"p218","ref":"A35","verdict":"presentation","expected":"OECD","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p218","ref":"A36","verdict":"presentation","expected":"스페인","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p218","ref":"A37","verdict":"presentation","expected":"한국","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p218","ref":"O37","expected":63,"got":"63.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p218","ref":"A38","verdict":"presentation","expected":"그리스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p218","ref":"A39","verdict":"presentation","expected":"칠레","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p218","ref":"A40","verdict":"presentation","expected":"이탈리아","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4079,29 +4056,23 @@
 {"part":"part3","sheet":"p219","ref":"A23","verdict":"presentation","expected":"이스라엘","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"A24","verdict":"presentation","expected":"포르투갈","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"A25","verdict":"presentation","expected":"멕시코","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p219","ref":"O25","expected":50,"got":"50.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p219","ref":"A26","verdict":"presentation","expected":"에스토니아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"A27","verdict":"presentation","expected":"프랑스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"A28","verdict":"presentation","expected":"콜롬비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"A29","verdict":"presentation","expected":"튀르키예","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"A30","verdict":"presentation","expected":"룩셈부르크","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p219","ref":"O30","expected":48,"got":"48.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p219","ref":"A31","verdict":"presentation","expected":"폴란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"A32","verdict":"presentation","expected":"슬로베니아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"A33","verdict":"presentation","expected":"리투아니아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"A34","verdict":"presentation","expected":"라트비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"A35","verdict":"presentation","expected":"헝가리","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"A36","verdict":"presentation","expected":"한국","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p219","ref":"O36","expected":45,"got":"45.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p219","ref":"A37","verdict":"presentation","expected":"스페인","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"A38","verdict":"presentation","expected":"벨기에","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p219","ref":"O38","expected":44,"got":"44.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p219","ref":"A39","verdict":"presentation","expected":"코스타리카","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"A40","verdict":"presentation","expected":"체코","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p219","ref":"O40","expected":42,"got":"42.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p219","ref":"A41","verdict":"presentation","expected":"슬로바키아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"A42","verdict":"presentation","expected":"칠레","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p219","ref":"O42","expected":40,"got":"40.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p219","ref":"A43","verdict":"presentation","expected":"그리스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"A44","verdict":"presentation","expected":"이탈리아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$49:$A$61\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$48\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
@@ -4200,7 +4171,6 @@
 {"part":"part3","sheet":"p220","ref":"A7","verdict":"presentation","expected":"체코","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"A8","verdict":"presentation","expected":"헝가리","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"I8","verdict":"unsupported","expected":32,"got":null,"reason":"외부 범위 참조가 아니다"}
-{"part":"part3","sheet":"p220","ref":"O8","expected":89,"got":"89.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p220","ref":"A9","verdict":"presentation","expected":"포르투갈","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"A10","verdict":"presentation","expected":"아이슬란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"A11","verdict":"presentation","expected":"일본","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4208,14 +4178,11 @@
 {"part":"part3","sheet":"p220","ref":"A12","verdict":"presentation","expected":"폴란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"A13","verdict":"presentation","expected":"스웨덴","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"A14","verdict":"presentation","expected":"슬로바키아","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p220","ref":"O14","expected":87,"got":"87.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p220","ref":"A15","verdict":"presentation","expected":"스위스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"A16","verdict":"presentation","expected":"네덜란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"A17","verdict":"presentation","expected":"룩셈부르크","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"A18","verdict":"presentation","expected":"오스트리아","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p220","ref":"O18","expected":86,"got":"86.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p220","ref":"A19","verdict":"presentation","expected":"리투아니아","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p220","ref":"O19","expected":86,"got":"86.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p220","ref":"A20","verdict":"presentation","expected":"에스토니아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"A21","verdict":"presentation","expected":"아일랜드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"A22","verdict":"presentation","expected":"독일","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4231,12 +4198,10 @@
 {"part":"part3","sheet":"p220","ref":"A32","verdict":"presentation","expected":"라트비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"A33","verdict":"presentation","expected":"핀란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"A34","verdict":"presentation","expected":"미국","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p220","ref":"O34","expected":81,"got":"81.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p220","ref":"A35","verdict":"presentation","expected":"스페인","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"A36","verdict":"presentation","expected":"OECD","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"A37","verdict":"presentation","expected":"그리스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"A38","verdict":"presentation","expected":"한국","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p220","ref":"O38","expected":80,"got":"80.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p220","ref":"A39","verdict":"presentation","expected":"칠레","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"A40","verdict":"presentation","expected":"이탈리아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"A41","verdict":"presentation","expected":"콜롬비아","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4343,12 +4308,10 @@
 {"part":"part3","sheet":"p221","ref":"A10","verdict":"presentation","expected":"뉴질랜드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p221","ref":"A11","verdict":"presentation","expected":"에스토니아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p221","ref":"I11","verdict":"unsupported","expected":38,"got":null,"reason":"못 다루는 함수: SUMPRODUCT"}
-{"part":"part3","sheet":"p221","ref":"O11","expected":77,"got":"77.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p221","ref":"A12","verdict":"presentation","expected":"네덜란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p221","ref":"A13","verdict":"presentation","expected":"스위스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p221","ref":"A14","verdict":"presentation","expected":"독일","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p221","ref":"A15","verdict":"presentation","expected":"덴마크","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p221","ref":"O15","expected":75,"got":"75.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p221","ref":"A16","verdict":"presentation","expected":"라트비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p221","ref":"A17","verdict":"presentation","expected":"노르웨이","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p221","ref":"A18","verdict":"presentation","expected":"핀란드","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4475,7 +4438,6 @@
 {"part":"part3","sheet":"p222","ref":"A8","verdict":"presentation","expected":"콜롬비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p222","ref":"I8","verdict":"unsupported","expected":36,"got":null,"reason":"외부 범위 참조가 아니다"}
 {"part":"part3","sheet":"p222","ref":"A9","verdict":"presentation","expected":"스웨덴","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p222","ref":"O9","expected":9,"got":"9.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p222","ref":"A10","verdict":"presentation","expected":"그리스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p222","ref":"A11","verdict":"presentation","expected":"칠레","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p222","ref":"I11","verdict":"unsupported","expected":38,"got":null,"reason":"못 다루는 함수: SUMPRODUCT"}
@@ -4485,7 +4447,6 @@
 {"part":"part3","sheet":"p222","ref":"A15","verdict":"presentation","expected":"라트비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p222","ref":"A16","verdict":"presentation","expected":"리투아니아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p222","ref":"A17","verdict":"presentation","expected":"캐나다","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p222","ref":"O17","expected":7,"got":"7.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p222","ref":"A18","verdict":"presentation","expected":"코스타리카","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p222","ref":"A19","verdict":"presentation","expected":"룩셈부르크","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p222","ref":"A20","verdict":"presentation","expected":"덴마크","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4497,7 +4458,6 @@
 {"part":"part3","sheet":"p222","ref":"A26","verdict":"presentation","expected":"슬로바키아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p222","ref":"A27","verdict":"presentation","expected":"OECD","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p222","ref":"A28","verdict":"presentation","expected":"스위스","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p222","ref":"O28","expected":5,"got":"5.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p222","ref":"A29","verdict":"presentation","expected":"노르웨이","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p222","ref":"A30","verdict":"presentation","expected":"영국","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p222","ref":"A31","verdict":"presentation","expected":"헝가리","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4614,11 +4574,9 @@
 {"part":"part3","sheet":"p223","ref":"A10","verdict":"presentation","expected":"오스트리아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p223","ref":"A11","verdict":"presentation","expected":"영국","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p223","ref":"I11","verdict":"unsupported","expected":38,"got":null,"reason":"못 다루는 함수: SUMPRODUCT"}
-{"part":"part3","sheet":"p223","ref":"O11","expected":42,"got":"42.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p223","ref":"A12","verdict":"presentation","expected":"아일랜드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p223","ref":"A13","verdict":"presentation","expected":"노르웨이","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p223","ref":"A14","verdict":"presentation","expected":"벨기에","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p223","ref":"O14","expected":39,"got":"39.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p223","ref":"A15","verdict":"presentation","expected":"뉴질랜드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p223","ref":"A16","verdict":"presentation","expected":"덴마크","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p223","ref":"A17","verdict":"presentation","expected":"캐나다","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4636,11 +4594,9 @@
 {"part":"part3","sheet":"p223","ref":"A29","verdict":"presentation","expected":"스웨덴","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p223","ref":"A30","verdict":"presentation","expected":"에스토니아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p223","ref":"A31","verdict":"presentation","expected":"튀르키예","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p223","ref":"O31","expected":21.1,"got":"21.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p223","ref":"A32","verdict":"presentation","expected":"코스타리카","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p223","ref":"A33","verdict":"presentation","expected":"콜롬비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p223","ref":"A34","verdict":"presentation","expected":"한국","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p223","ref":"O34","expected":17,"got":"17.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p223","ref":"A35","verdict":"presentation","expected":"체코","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p223","ref":"A36","verdict":"presentation","expected":"그리스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p223","ref":"A37","verdict":"presentation","expected":"슬로베니아","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4651,7 +4607,6 @@
 {"part":"part3","sheet":"p223","ref":"A42","verdict":"presentation","expected":"헝가리","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p223","ref":"A43","verdict":"presentation","expected":"리투아니아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p223","ref":"A44","verdict":"presentation","expected":"슬로바키아","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p223","ref":"O44","expected":8,"got":"8.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p223","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$49:$A$61\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$48\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
 {"part":"part3","sheet":"p223","ref":"A49","verdict":"presentation","expected":"독일","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p223","ref":"B49","verdict":"presentation","expected":44.989000000000004,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4746,7 +4701,6 @@
 {"part":"part3","sheet":"p223","ref":"G61","verdict":"presentation","expected":10.274000000000001,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p224","ref":"A6","verdict":"presentation","expected":"콜롬비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p224","ref":"A7","verdict":"presentation","expected":"멕시코","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p224","ref":"O7","expected":31,"got":"31.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p224","ref":"A8","verdict":"presentation","expected":"튀르키예","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p224","ref":"I8","verdict":"unsupported","expected":6,"got":null,"reason":"외부 범위 참조가 아니다"}
 {"part":"part3","sheet":"p224","ref":"A9","verdict":"presentation","expected":"그리스","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4755,11 +4709,9 @@
 {"part":"part3","sheet":"p224","ref":"I11","verdict":"unsupported","expected":36,"got":null,"reason":"못 다루는 함수: SUMPRODUCT"}
 {"part":"part3","sheet":"p224","ref":"A12","verdict":"presentation","expected":"이탈리아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p224","ref":"A13","verdict":"presentation","expected":"폴란드","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p224","ref":"O13","expected":19,"got":"19.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p224","ref":"A14","verdict":"presentation","expected":"뉴질랜드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p224","ref":"A15","verdict":"presentation","expected":"스위스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p224","ref":"A16","verdict":"presentation","expected":"네덜란드","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p224","ref":"O16","expected":16,"got":"16.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p224","ref":"A17","verdict":"presentation","expected":"체코","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p224","ref":"A18","verdict":"presentation","expected":"슬로바키아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p224","ref":"A19","verdict":"presentation","expected":"포르투갈","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4778,7 +4730,6 @@
 {"part":"part3","sheet":"p224","ref":"A32","verdict":"presentation","expected":"룩셈부르크","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p224","ref":"A33","verdict":"presentation","expected":"스웨덴","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p224","ref":"A34","verdict":"presentation","expected":"일본","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p224","ref":"O34","expected":9,"got":"9.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p224","ref":"A35","verdict":"presentation","expected":"독일","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p224","ref":"A36","verdict":"presentation","expected":"호주","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p224","ref":"A37","verdict":"presentation","expected":"덴마크","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4885,7 +4836,6 @@
 {"part":"part3","sheet":"p225","ref":"A8","verdict":"presentation","expected":"칠레","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p225","ref":"I8","verdict":"unsupported","expected":34,"got":null,"reason":"외부 범위 참조가 아니다"}
 {"part":"part3","sheet":"p225","ref":"A9","verdict":"presentation","expected":"콜롬비아","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p225","ref":"O9","expected":23,"got":"23.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p225","ref":"A10","verdict":"presentation","expected":"폴란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p225","ref":"A11","verdict":"presentation","expected":"프랑스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p225","ref":"I11","verdict":"unsupported","expected":34,"got":null,"reason":"못 다루는 함수: SUMPRODUCT"}
@@ -4899,7 +4849,6 @@
 {"part":"part3","sheet":"p225","ref":"A19","verdict":"presentation","expected":"덴마크","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p225","ref":"A20","verdict":"presentation","expected":"튀르키예","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p225","ref":"A21","verdict":"presentation","expected":"아이슬란드","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p225","ref":"O21","expected":12,"got":"12.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p225","ref":"A22","verdict":"presentation","expected":"캐나다","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p225","ref":"A23","verdict":"presentation","expected":"독일","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p225","ref":"A24","verdict":"presentation","expected":"벨기에","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -5260,7 +5209,6 @@
 {"part":"part3","sheet":"p228","ref":"A18","verdict":"presentation","expected":"독일","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p228","ref":"A19","verdict":"presentation","expected":"슬로바키아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p228","ref":"A20","verdict":"presentation","expected":"캐나다","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p228","ref":"O20","expected":43,"got":"43.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p228","ref":"A21","verdict":"presentation","expected":"벨기에","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p228","ref":"A22","verdict":"presentation","expected":"포르투갈","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p228","ref":"A23","verdict":"presentation","expected":"리투아니아","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -5374,7 +5322,6 @@
 {"part":"part3","sheet":"p229","ref":"A8","verdict":"presentation","expected":"멕시코","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p229","ref":"I8","verdict":"unsupported","expected":7,"got":null,"reason":"외부 범위 참조가 아니다"}
 {"part":"part3","sheet":"p229","ref":"A9","verdict":"presentation","expected":"뉴질랜드","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p229","ref":"O9","expected":64,"got":"64.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p229","ref":"A10","verdict":"presentation","expected":"프랑스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p229","ref":"A11","verdict":"presentation","expected":"영국","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p229","ref":"I11","verdict":"unsupported","expected":29,"got":null,"reason":"못 다루는 함수: SUMPRODUCT"}
@@ -5743,13 +5690,11 @@
 {"part":"part3","sheet":"p232","ref":"A12","verdict":"presentation","expected":"프랑스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p232","ref":"A13","verdict":"presentation","expected":"룩셈부르크","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p232","ref":"A14","verdict":"presentation","expected":"독일","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p232","ref":"O14","expected":10,"got":"10.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p232","ref":"A15","verdict":"presentation","expected":"폴란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p232","ref":"A16","verdict":"presentation","expected":"오스트리아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p232","ref":"A17","verdict":"presentation","expected":"스페인","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p232","ref":"A18","verdict":"presentation","expected":"라트비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p232","ref":"A19","verdict":"presentation","expected":"헝가리","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p232","ref":"O19","expected":9,"got":"9.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p232","ref":"A20","verdict":"presentation","expected":"리투아니아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p232","ref":"A21","verdict":"presentation","expected":"스웨덴","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p232","ref":"A22","verdict":"presentation","expected":"에스토니아","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -5824,7 +5769,6 @@
 {"part":"part3","sheet":"p232","ref":"F53","verdict":"presentation","expected":5.638,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p232","ref":"G53","verdict":"presentation","expected":5.747,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p233","ref":"A7","verdict":"presentation","expected":"칠레","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p233","ref":"O7","expected":69,"got":"69.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p233","ref":"A8","verdict":"presentation","expected":"아이슬란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p233","ref":"I8","verdict":"unsupported","expected":5,"got":null,"reason":"외부 범위 참조가 아니다"}
 {"part":"part3","sheet":"p233","ref":"A9","verdict":"presentation","expected":"멕시코","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -5842,16 +5786,13 @@
 {"part":"part3","sheet":"p233","ref":"A20","verdict":"presentation","expected":"캐나다","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p233","ref":"A21","verdict":"presentation","expected":"스웨덴","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p233","ref":"A22","verdict":"presentation","expected":"네덜란드","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p233","ref":"O22","expected":65,"got":"65.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p233","ref":"A23","verdict":"presentation","expected":"호주","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p233","ref":"A24","verdict":"presentation","expected":"코스타리카","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p233","ref":"A25","verdict":"presentation","expected":"독일","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p233","ref":"A26","verdict":"presentation","expected":"스위스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p233","ref":"A27","verdict":"presentation","expected":"체코","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p233","ref":"A28","verdict":"presentation","expected":"노르웨이","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p233","ref":"O28","expected":64,"got":"64.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p233","ref":"A29","verdict":"presentation","expected":"이탈리아","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p233","ref":"O29","expected":64,"got":"64.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p233","ref":"A30","verdict":"presentation","expected":"영국","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p233","ref":"A31","verdict":"presentation","expected":"그리스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p233","ref":"A32","verdict":"presentation","expected":"폴란드","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -5968,12 +5909,10 @@
 {"part":"part3","sheet":"p234","ref":"I11","verdict":"unsupported","expected":38,"got":null,"reason":"못 다루는 함수: SUMPRODUCT"}
 {"part":"part3","sheet":"p234","ref":"A12","verdict":"presentation","expected":"칠레","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p234","ref":"A13","verdict":"presentation","expected":"아일랜드","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p234","ref":"O13","expected":66,"got":"66.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p234","ref":"A14","verdict":"presentation","expected":"아이슬란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p234","ref":"A15","verdict":"presentation","expected":"멕시코","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p234","ref":"A16","verdict":"presentation","expected":"이스라엘","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p234","ref":"A17","verdict":"presentation","expected":"스웨덴","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p234","ref":"O17","expected":65,"got":"65.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p234","ref":"A18","verdict":"presentation","expected":"네덜란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p234","ref":"A19","verdict":"presentation","expected":"스위스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p234","ref":"A20","verdict":"presentation","expected":"포르투갈","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -5986,14 +5925,11 @@
 {"part":"part3","sheet":"p234","ref":"A27","verdict":"presentation","expected":"캐나다","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p234","ref":"A28","verdict":"presentation","expected":"영국","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p234","ref":"A29","verdict":"presentation","expected":"스페인","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p234","ref":"O29","expected":63,"got":"63.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p234","ref":"A30","verdict":"presentation","expected":"체코","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p234","ref":"O30","expected":63,"got":"63.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p234","ref":"A31","verdict":"presentation","expected":"핀란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p234","ref":"A32","verdict":"presentation","expected":"이탈리아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p234","ref":"A33","verdict":"presentation","expected":"프랑스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p234","ref":"A34","verdict":"presentation","expected":"헝가리","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p234","ref":"O34","expected":62,"got":"62.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p234","ref":"A35","verdict":"presentation","expected":"그리스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p234","ref":"A36","verdict":"presentation","expected":"폴란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p234","ref":"A37","verdict":"presentation","expected":"슬로바키아","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -6103,20 +6039,16 @@
 {"part":"part3","sheet":"p235","ref":"I8","verdict":"unsupported","expected":9,"got":null,"reason":"외부 범위 참조가 아니다"}
 {"part":"part3","sheet":"p235","ref":"A9","verdict":"presentation","expected":"리투아니아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p235","ref":"A10","verdict":"presentation","expected":"호주","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p235","ref":"O10","expected":19,"got":"19.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p235","ref":"A11","verdict":"presentation","expected":"캐나다","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p235","ref":"I11","verdict":"unsupported","expected":31,"got":null,"reason":"못 다루는 함수: SUMPRODUCT"}
-{"part":"part3","sheet":"p235","ref":"O11","expected":18,"got":"18.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p235","ref":"A12","verdict":"presentation","expected":"체코","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p235","ref":"A13","verdict":"presentation","expected":"한국","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p235","ref":"A14","verdict":"presentation","expected":"슬로바키아","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p235","ref":"O14","expected":16,"got":"16.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p235","ref":"A15","verdict":"presentation","expected":"독일","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p235","ref":"A16","verdict":"presentation","expected":"멕시코","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p235","ref":"A17","verdict":"presentation","expected":"오스트리아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p235","ref":"A18","verdict":"presentation","expected":"아일랜드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p235","ref":"A19","verdict":"presentation","expected":"네덜란드","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p235","ref":"O19","expected":13,"got":"13.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p235","ref":"A20","verdict":"presentation","expected":"스위스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p235","ref":"A21","verdict":"presentation","expected":"칠레","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p235","ref":"A22","verdict":"presentation","expected":"콜롬비아","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -6226,9 +6158,7 @@
 {"part":"part3","sheet":"p236","ref":"A17","verdict":"presentation","expected":"포르투갈","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p236","ref":"A18","verdict":"presentation","expected":"에스토니아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p236","ref":"A19","verdict":"presentation","expected":"캐나다","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p236","ref":"O19","expected":5,"got":"5.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p236","ref":"A20","verdict":"presentation","expected":"독일","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p236","ref":"O20","expected":5,"got":"5.0","verdict":"mismatch"}
 {"part":"part3","sheet":"p236","ref":"A21","verdict":"presentation","expected":"스위스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p236","ref":"A22","verdict":"presentation","expected":"네덜란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p236","ref":"A23","verdict":"presentation","expected":"프랑스","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -6334,7 +6264,6 @@
 {"part":"part3","sheet":"p237","ref":"A14","verdict":"presentation","expected":"헝가리","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p237","ref":"A15","verdict":"presentation","expected":"룩셈부르크","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p237","ref":"A16","verdict":"presentation","expected":"한국","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p237","ref":"O16","expected":3.6,"got":"3.60","verdict":"mismatch"}
 {"part":"part3","sheet":"p237","ref":"A17","verdict":"presentation","expected":"폴란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p237","ref":"A18","verdict":"presentation","expected":"호주","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p237","ref":"A19","verdict":"presentation","expected":"아일랜드","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -6358,11 +6287,9 @@
 {"part":"part3","sheet":"p237","ref":"A37","verdict":"presentation","expected":"네덜란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p237","ref":"A38","verdict":"presentation","expected":"핀란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p237","ref":"A39","verdict":"presentation","expected":"포르투갈","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p237","ref":"O39","expected":2.4,"got":"2.40","verdict":"mismatch"}
 {"part":"part3","sheet":"p237","ref":"A40","verdict":"presentation","expected":"이탈리아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p237","ref":"A41","verdict":"presentation","expected":"스페인","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p237","ref":"A42","verdict":"presentation","expected":"노르웨이","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p237","ref":"O42","expected":2.3,"got":"2.30","verdict":"mismatch"}
 {"part":"part3","sheet":"p237","ref":"A43","verdict":"presentation","expected":"스웨덴","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p237","ref":"A44","verdict":"presentation","expected":"아이슬란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p237","ref":"A45","verdict":"presentation","expected":"이스라엘","got":null,"reason":"못 다루는 함수: INDEX"}
@@ -6471,9 +6398,7 @@
 {"part":"part3","sheet":"p238","ref":"A20","verdict":"presentation","expected":"독일","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p238","ref":"A21","verdict":"presentation","expected":"캐나다","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p238","ref":"A22","verdict":"presentation","expected":"프랑스","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p238","ref":"O22","expected":0.3,"got":"0.30","verdict":"mismatch"}
 {"part":"part3","sheet":"p238","ref":"A23","verdict":"presentation","expected":"룩셈부르크","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p238","ref":"O23","expected":0.3,"got":"0.30","verdict":"mismatch"}
 {"part":"part3","sheet":"p238","ref":"A24","verdict":"presentation","expected":"스웨덴","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p238","ref":"A25","verdict":"presentation","expected":"오스트리아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p238","ref":"A26","verdict":"presentation","expected":"헝가리","got":null,"reason":"못 다루는 함수: INDEX"}

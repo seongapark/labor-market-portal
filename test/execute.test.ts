@@ -277,6 +277,83 @@ test('회귀: IF(X=0,"-",X) 는 일반 if 가 아니라 여전히 zeroDash 로 �
   assert.equal(e.op, 'zeroDash');
 });
 
+// --- Task 9 단위 4 ---
+
+// CHANGE 2: NUMBERVALUE — 실측(part1_5!p82!C7 등, "69.3%"*100 → 69.3). 예전에는 껍데기만
+// 벗겨 문자열이 num() 을 거쳐 0 이 됐다. 이제 진짜로 파싱한다: '%' 는 ÷100.
+test('CHANGE 2: NUMBERVALUE(x)*100 — 퍼센트 문자열을 숫자로 읽는다', () => {
+  const db = fixture();
+  const headers: Headers = { kosis: {}, oecd: {}, etc: {}, panel: {} };
+  const ctx = { extmap: {}, headers };
+  const e = parseFormula('=_xlfn.NUMBERVALUE(B7)*100', ctx);
+  const grids: Record<string, Grid> = { p1: { B7: '69.3%' } };
+  assert.equal(execute(e, { db, grids, sheet: 'p1', year: '2025' }), 69.3);
+});
+
+test('CHANGE 2: NUMBERVALUE — 천단위 구분자를 지운다', () => {
+  const db = fixture();
+  const headers: Headers = { kosis: {}, oecd: {}, etc: {}, panel: {} };
+  const ctx = { extmap: {}, headers };
+  const e = parseFormula('=NUMBERVALUE(B7)', ctx);
+  const grids: Record<string, Grid> = { p1: { B7: '1,234' } };
+  assert.equal(execute(e, { db, grids, sheet: 'p1', year: '2025' }), 1234);
+});
+
+test('CHANGE 2: NUMBERVALUE — 못 읽는 문자열은 0 이 아니라 오류(null)다', () => {
+  const db = fixture();
+  const headers: Headers = { kosis: {}, oecd: {}, etc: {}, panel: {} };
+  const ctx = { extmap: {}, headers };
+  const e = parseFormula('=NUMBERVALUE(B7)', ctx);
+  const grids: Record<string, Grid> = { p1: { B7: '해당없음' } };
+  assert.equal(execute(e, { db, grids, sheet: 'p1', year: '2025' }), null);
+});
+
+// CHANGE 3: 산술은 텍스트 피연산자를 0 으로 조용히 바꾸지 않고 오류(null)를 내고,
+// IFERROR 가 그걸 잡는다. 실측(part1_6!p87!B11): A10="실질임금"(라벨)이면 -100 이 아니라 "-".
+test('CHANGE 3: IFERROR(B10*100/A10-100,"-") — A10 이 텍스트면 -100 이 아니라 "-"', () => {
+  const db = fixture();
+  const headers: Headers = { kosis: {}, oecd: {}, etc: {}, panel: {} };
+  const ctx = { extmap: {}, headers };
+  const e = parseFormula('=IFERROR(B10*100/A10-100,"-")', ctx);
+  const grids: Record<string, Grid> = { p1: { B10: 62734, A10: '실질임금' } };
+  assert.equal(execute(e, { db, grids, sheet: 'p1', year: '2025' }), '-');
+});
+
+// CHANGE 3 이 없으면 이 테스트가 -100 을 낸다 — num('실질임금') → 0 → div 가 #DIV/0!
+// 대신 조용히 0 이 되고 그 뒤 -100 으로 굳어버린다. 일반화된 고침(numOrErr)이 add/sub/
+// mul/div/pct 전부에서 텍스트 피연산자를 오류로 propagate 하는지 IFERROR 없이 직접 확인한다.
+test('CHANGE 3: 산술 전반 — 텍스트 피연산자는 add/sub/mul/div 어디서든 오류(null)로 번진다', () => {
+  const db = fixture();
+  const grids: Record<string, Grid> = { p1: { A10: '실질임금' } };
+  const ctx = { db, grids, sheet: 'p1', year: '2025' };
+  const cell: Expr = { op: 'cell', ref: 'A10' };
+  assert.equal(execute({ op: 'mul', a: cell, b: { op: 'const', v: 100 } }, ctx), null);
+  assert.equal(execute({ op: 'div', a: { op: 'const', v: 100 }, b: cell }, ctx), null);
+  assert.equal(execute({ op: 'sub', a: cell, b: { op: 'const', v: 1 } }, ctx), null);
+  assert.equal(execute({ op: 'add', args: [cell, { op: 'const', v: 1 }] }, ctx), null);
+  assert.equal(execute({ op: 'pct', inner: cell }, ctx), null);
+});
+
+// zeroDash 는 numOrErr 이 아니라 그대로 num() 을 쓴다 — SUM 이 정당하게 0 을 내는
+// 5,754건이 여전히 '-' 로 나와야지 CHANGE 3 로 인해 오류로 새면 안 된다(회귀 확인).
+test('회귀: CHANGE 3 이후에도 zeroDash 는 SUM=0 을 그대로 "-" 로 낸다', () => {
+  const db = fixture();
+  const e: Expr = { op: 'zeroDash', inner: { op: 'sumifs',
+    q: { src: 'kosis', table: 'T', value: 'DT',
+         where: { ITM_NM: { kind: 'lit', value: '없는항목' } } } } };
+  assert.equal(execute(e, { db, grids: { p1: grid }, sheet: 'p1', year: '2025' }), '-');
+});
+
+// CHANGE 4: TEXT 는 엑셀처럼 유효자릿수 15 로 먼저 줄이고 나서 반올림한다. 실측
+// (part3!p223!O31): 21.049999999999997 은 한 번에 반올림하면 21.0(틀림) — 15 유효자릿수로
+// 줄이면 정확히 21.05 가 되고, 그제서야 사사오입해 21.1(오라클과 일치)이 나온다.
+// 단일 단계 반올림 구현이면 이 테스트는 실패한다(그 구현은 '21.0' 을 낸다).
+test('CHANGE 4: TEXT(x,"0.0") — 15 유효자릿수로 줄인 뒤 반올림한다', () => {
+  const e: Expr = { op: 'text', inner: { op: 'const', v: 21.049999999999997 }, decimals: 1 };
+  const db = fixture();
+  assert.equal(execute(e, { db, grids: { p1: grid }, sheet: 'p1', year: '2025' }), '21.1');
+});
+
 test('sumifs: etc 소스는 long 테이블이 없어 src 를 담아 던진다', () => {
   const db = fixture();
   const e: Expr = { op: 'sumifs', q: { src: 'etc', table: 'S1', value: 'V',

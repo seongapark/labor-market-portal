@@ -14,6 +14,29 @@ test('sameValue: 상대오차 1e-9 까지 같다고 본다', () => {
   assert.equal(sameValue(null, 5), false);
 });
 
+// Task 9 단위 4 (CHANGE 1): 양쪽이 모두 숫자로 읽히면 숫자로 비교한다 — 냉동
+// 오라클의 차트 데이터레이블 열이 "84.0"(TEXT 결과 문자열)이 아니라 84(Excel COM 이
+// 강제 변환한 숫자)로 얼어 있는 65건이 이 원인이었다. 브리프가 못박은 가드 케이스 전부.
+test('sameValue: CHANGE 1 — 양쪽이 숫자로 읽히면 문자열/숫자 표현 차이를 같다고 본다', () => {
+  assert.equal(sameValue('-', 0), false);
+  assert.equal(sameValue('…', 0), false);
+  assert.equal(sameValue(null, 5), false);
+  assert.equal(sameValue('계', 0), false);
+  assert.equal(sameValue('-', '-'), true);
+  assert.equal(sameValue(84, '84.0'), true);
+  assert.equal(sameValue(8.5, '8.5'), true);
+  assert.equal(sameValue(1000, 1000.01), false);
+  assert.equal(sameValue(0, 1e-12), true);
+  assert.equal(sameValue('…', '…'), true);
+});
+
+// 빈 문자열·공백만 있는 문자열은 숫자로 치지 않는다 — Number('') 가 0 이 되어
+// sameValue('', 0) 을 참으로 오판하는 것을 막는다.
+test('sameValue: 빈/공백 문자열은 숫자가 아니다', () => {
+  assert.equal(sameValue('', 0), false);
+  assert.equal(sameValue('   ', 0), false);
+});
+
 test('verifyPart: 맞는 셀은 match, 틀린 셀은 mismatch', () => {
   const db = openDb(':memory:');
   loadJsonl(db, 'kosis', 'T', [

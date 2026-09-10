@@ -299,8 +299,10 @@ function parseAtom(p: P): Expr {
       return { op: 'text', inner: parseTokens(args[0], p.ctx), decimals };
     }
     if (t.v === 'NUMBERVALUE') {
+      // Task 9 단위 4 (CHANGE 2): 예전에는 껍데기만 벗기고 문자열을 그대로 산술로
+      // 흘려보냈다 — "69.3%" 가 num() 에서 0 이 됐다. 이제 실제로 파싱하는 연산으로 남긴다.
       const args = argTokens(p);
-      return parseTokens(args[0], p.ctx);   // 껍데기만 벗긴다
+      return { op: 'numbervalue', inner: parseTokens(args[0], p.ctx) };
     }
     if (t.v === 'IFERROR') {
       // Task 9 단위 3: 예전에는 껍데기만 벗기고 fallback 을 버렸다 — 잘못됐다.
