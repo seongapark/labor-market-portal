@@ -19,13 +19,17 @@ const checks: [string, () => boolean, string][] = [
   ['KOSIS 시트 수 107 (0_수집현황 제외)',
     () => {
       const h = JSON.parse(readFileSync(join(RAW, 'headers.json'), 'utf8'));
-      return Object.keys(h.kosis).filter((k) => !k.startsWith('0_')).length === 107;
+      // _header_row · _skipped 는 시트가 아니라 dump_raw.py 가 붙이는 부가 정보다 — 제외한다.
+      return Object.keys(h.kosis)
+        .filter((k) => !k.startsWith('0_') && !k.startsWith('_')).length === 107;
     },
     '표가 빠지면 지면이 통째로 0 이 된다'],
   ['헤더에 C4_NM 을 쓰는 시트가 1개 있다',
     () => {
       const h = JSON.parse(readFileSync(join(RAW, 'headers.json'), 'utf8'));
-      return Object.values(h.kosis as Record<string, string[]>)
+      return Object.entries(h.kosis as Record<string, unknown>)
+        .filter(([k]) => !k.startsWith('_'))
+        .map(([, cols]) => cols as string[])
         .filter((cols) => cols.includes('C4_NM')).length === 1;
     },
     '스키마가 c4 까지 필요한 근거'],

@@ -1,6 +1,7 @@
 """원천 4종 → data/raw/<src>/<sheet>.jsonl + data/raw/headers.json.
    헤더 이름으로 열을 해석한다. 열 문자를 위치로 고정하면 표마다 어긋난다."""
 import argparse
+import itertools
 import json
 import os
 import sys
@@ -15,26 +16,60 @@ if hasattr(sys.stdout, 'reconfigure'):
 # PRD_DE 는 반드시 문자열로 남긴다 (반기 6자리 · 연간인데 6자리인 표가 있다)
 FORCE_TEXT = {'PRD_DE', 'ITM_ID', 'C1', 'C2', 'C3', 'C4'}
 
+MAX_HEADER_SCAN = 10  # 헤더 행을 찾기 위해 훑는 최대 행 수
+
+
+def _non_empty(cell) -> bool:
+    if cell is None:
+        return False
+    if isinstance(cell, str):
+        return cell.strip() != ''
+    return True
+
+
+def find_header(rows):
+    """처음 MAX_HEADER_SCAN 행 중, 비어있지 않은 셀이 2개 이상인 첫 행을 헤더로 본다.
+       (셀이 1개뿐인 행은 제목행이지 헤더가 아니다 — 그래서 걸러진다.)
+       반환: (header 목록|None, 1-based 헤더 행 번호|None, 헤더 다음부터 이어지는 이터레이터)."""
+    buffered = []
+    header_idx = None
+    for i in range(MAX_HEADER_SCAN):
+        try:
+            row = next(rows)
+        except StopIteration:
+            break
+        buffered.append(row)
+        if sum(1 for c in row if _non_empty(c)) >= 2:
+            header_idx = i
+            break
+    if header_idx is None:
+        return None, None, itertools.chain(buffered, rows)
+    raw = buffered[header_idx]
+    header = [(str(c).strip() if c is not None else '') for c in raw]
+    while header and header[-1] == '':
+        header.pop()
+    rest = itertools.chain(buffered[header_idx + 1:], rows)
+    return header, header_idx + 1, rest
+
 
 def dump_source(src: str, path: str, out_root: str) -> dict:
     wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
     heads = {}
+    header_rows = {}
+    skipped = []
     outdir = os.path.join(out_root, 'raw', src)
     os.makedirs(outdir, exist_ok=True)
     for ws in wb.worksheets:
         rows = ws.iter_rows(values_only=True)
-        try:
-            first = next(rows)
-        except StopIteration:
-            continue
-        header = [(str(c).strip() if c is not None else '') for c in first]
-        while header and header[-1] == '':
-            header.pop()
-        if not header:
+        header, header_no, data_rows = find_header(rows)
+        if header is None:
+            skipped.append(ws.title)
+            print('SKIP %s/%s — 헤더 행 없음' % (src, ws.title), flush=True)
             continue
         heads[ws.title] = header
+        header_rows[ws.title] = header_no
         with open(os.path.join(outdir, ws.title + '.jsonl'), 'w', encoding='utf-8') as fh:
-            for row in rows:
+            for row in data_rows:
                 if row is None or all(c is None for c in row):
                     continue
                 rec = {}
@@ -46,8 +81,10 @@ def dump_source(src: str, path: str, out_root: str) -> dict:
                         v = str(v)
                     rec[name] = v
                 fh.write(json.dumps(rec, ensure_ascii=False) + '\n')
-        print('  %-8s %-28s %d열' % (src, ws.title, len(header)), flush=True)
+        print('  %-8s %-28s %d열 (헤더 %d행)' % (src, ws.title, len(header), header_no), flush=True)
     wb.close()
+    heads['_header_row'] = header_rows
+    heads['_skipped'] = skipped
     return heads
 
 
