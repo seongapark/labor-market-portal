@@ -2,7 +2,9 @@
   "name": "labor-market-portal",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=24.0.0" },
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "scripts": {
     "test": "node --test",
     "typecheck": "tsc --noEmit",
@@ -12,5 +14,8 @@
     "smoke:raw": "node scripts/smoke-raw.ts",
     "verify": "node scripts/verify-all.ts"
   },
-  "devDependencies": { "typescript": "^5.6.0" }
+  "devDependencies": {
+    "@types/node": "^22.20.2",
+    "typescript": "^5.6.0"
+  }
 }
