@@ -185,6 +185,98 @@ test('sumifs: KOSIS 형 한글 기준은 COLLATE NOCASE 를 붙여도 그대로 
   assert.equal(execute(e, { db, grids: { p1: grid }, sheet: 'p1', year: '2025' }), 120);
 });
 
+// --- Task 9 단위 3: IF 형태 세 갈래 (parse.test.ts 와 같은 실측 수식) ---
+
+import { parseFormula } from '../src/cellmap/parse.ts';
+import type { Headers } from '../src/types.ts';
+
+const if3Headers: Headers = { kosis: {}, oecd: {}, etc: {}, panel: {} };
+const if3Ctx = { extmap: {}, headers: if3Headers };
+
+test('FAMILY 1: IF(ISNUMBER(G8),TEXT(G8,"0.0"),"-") — 셀이 숫자면 반올림한 문자열을 낸다', () => {
+  const db = fixture();
+  const e = parseFormula('=IF(ISNUMBER(G8),TEXT(G8,"0.0"),"-")', if3Ctx);
+  const grids: Record<string, Grid> = { p1: { G8: 8.46 } };
+  assert.equal(execute(e, { db, grids, sheet: 'p1', year: '2025' }), '8.5');
+});
+
+test('FAMILY 1: G8 이 문자열이면 ISNUMBER 가 거짓이라 "-" 를 낸다', () => {
+  const db = fixture();
+  const e = parseFormula('=IF(ISNUMBER(G8),TEXT(G8,"0.0"),"-")', if3Ctx);
+  const grids: Record<string, Grid> = { p1: { G8: '해당없음' } };
+  assert.equal(execute(e, { db, grids, sheet: 'p1', year: '2025' }), '-');
+});
+
+test('FAMILY 1: G8 셀이 아예 없으면(null) "-" 를 낸다', () => {
+  const db = fixture();
+  const e = parseFormula('=IF(ISNUMBER(G8),TEXT(G8,"0.0"),"-")', if3Ctx);
+  const grids: Record<string, Grid> = { p1: {} };
+  assert.equal(execute(e, { db, grids, sheet: 'p1', year: '2025' }), '-');
+});
+
+test('FAMILY 2: $A6="OECD" 이면 평균(÷COUNTIFS) 갈래, 나라 행이면 ÷1000 갈래를 탄다 — 한 fixture 로 양쪽 다 확인', () => {
+  // part3.json 시트 p239 셀 B6 의 실측 수식 그대로. obs 테이블은 kosis 전용이라(RULING 7)
+  // src 를 kosis 로 두되 표 이름은 실측대로 p239_240 을 쓴다.
+  // 열 이름은 dbCol(execute.ts) 이 아는 KOSIS 체계를 써야 실행이 된다 — 나라는 C1_NM 이다.
+  const db = openDb(':memory:');
+  loadJsonl(db, 'kosis', 'p239_240', [
+    JSON.stringify({ PRD_DE: '2023', C1_NM: '한국', DT: 40 }),
+    JSON.stringify({ PRD_DE: '2023', C1_NM: '일본', DT: 60 }),
+  ]);
+  const headers: Headers = { kosis: { p239_240: ['PRD_DE', 'C1_NM', 'DT'] }, oecd: {}, etc: {}, panel: {} };
+  const ctx = { extmap: { '1': 'KOSIS_원데이터.xlsx' }, headers };
+  const formula = '=IF($A6="OECD",SUMIFS([1]p239_240!$C:$C,[1]p239_240!$A:$A,B$5)/COUNTIFS([1]p239_240!$A:$A,B$5,[1]p239_240!$C:$C,">0")/1000,' +
+    'IF(SUMIFS([1]p239_240!$C:$C,[1]p239_240!$A:$A,B$5,[1]p239_240!$B:$B,$A6)=0,"-",SUMIFS([1]p239_240!$C:$C,[1]p239_240!$A:$A,B$5,[1]p239_240!$B:$B,$A6)/1000))';
+  const e = parseFormula(formula, ctx);
+  assert.equal(e.op, 'if');
+
+  const oecdRow: Grid = { A6: 'OECD', B5: '2023' };
+  const oecdResult = execute(e, { db, grids: { p1: oecdRow }, sheet: 'p1', year: '2025' });
+  // OECD 행: 평균 = (40+60)/2 = 50, ÷1000 = 0.05
+  assert.equal(oecdResult, 0.05);
+
+  const countryRow: Grid = { A6: '한국', B5: '2023' };
+  const countryResult = execute(e, { db, grids: { p1: countryRow }, sheet: 'p1', year: '2025' });
+  // 나라 행: 40 ÷ 1000 = 0.04 — OECD 행과 다른 값이어야 두 갈래가 실제로 갈린 것이 증명된다
+  assert.equal(countryResult, 0.04);
+  assert.notEqual(oecdResult, countryResult);
+});
+
+test('FAMILY 3: B21=2019·C21=2020 이면 2020 개편 경계라 "…" 를 낸다', () => {
+  const db = fixture();
+  const e = parseFormula('=IF(AND(B$21<2020,C$21>=2020),"…",IFERROR((C23-B23)/B23%,"-"))', if3Ctx);
+  const grid: Grid = { B21: 2019, C21: 2020, B23: 62734, C23: 59024 };
+  assert.equal(execute(e, { db, grids: { p1: grid }, sheet: 'p1', year: '2025' }), '…');
+});
+
+test('FAMILY 3: B21=2020·C21=2021 이면 경계를 지나 실제 증감률을 계산한다 — 기준연도가 넘어가면 규칙이 스스로 풀린다', () => {
+  const db = fixture();
+  const e = parseFormula('=IF(AND(B$21<2020,C$21>=2020),"…",IFERROR((C23-B23)/B23%,"-"))', if3Ctx);
+  const grid: Grid = { B21: 2020, C21: 2021, B23: 100, C23: 110 };
+  // (110-100)/100% = 10/(100/100) = 10
+  assert.equal(execute(e, { db, grids: { p1: grid }, sheet: 'p1', year: '2025' }), 10);
+});
+
+test('FAMILY 3: IFERROR — B23=0 이면 분모 0 이라 "-" 로 떨어진다', () => {
+  const db = fixture();
+  const e = parseFormula('=IF(AND(B$21<2020,C$21>=2020),"…",IFERROR((C23-B23)/B23%,"-"))', if3Ctx);
+  const grid: Grid = { B21: 2020, C21: 2021, B23: 0, C23: 10 };
+  assert.equal(execute(e, { db, grids: { p1: grid }, sheet: 'p1', year: '2025' }), '-');
+});
+
+// 회귀: zeroDash(IF(X=0,"-",X)) 는 일반 if 경로를 새로 얹어도 여전히 zeroDash 로
+// 파싱되고 같은 값을 낸다 — 위의 두 'zeroDash: ...' 테스트가 이미 이 경로를 검사하고
+// 있으므로, 여기서는 파서가 여전히 zeroDash 를 골라내는지만 한 번 더 확인한다.
+test('회귀: IF(X=0,"-",X) 는 일반 if 가 아니라 여전히 zeroDash 로 파싱된다', () => {
+  const e = parseFormula(
+    '=IF(SUMIFS([1]DT_1DA7012S!$C:$C,[1]DT_1DA7012S!$G:$G,"취업자")=0,"-",' +
+    'SUMIFS([1]DT_1DA7012S!$C:$C,[1]DT_1DA7012S!$G:$G,"취업자"))',
+    { extmap: { '1': 'KOSIS_원데이터.xlsx' },
+      headers: { kosis: { DT_1DA7012S:
+        ['C1_OBJ_NM', 'C2_NM', 'DT', 'C2', 'C1', 'ITM_ID', 'ITM_NM'] }, oecd: {}, etc: {}, panel: {} } });
+  assert.equal(e.op, 'zeroDash');
+});
+
 test('sumifs: etc 소스는 long 테이블이 없어 src 를 담아 던진다', () => {
   const db = fixture();
   const e: Expr = { op: 'sumifs', q: { src: 'etc', table: 'S1', value: 'V',

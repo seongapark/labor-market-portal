@@ -12,7 +12,7 @@ const headers: Headers = {
   panel: {},
 };
 
-const ctx = { extmap: { '1': 'KOSIS_원데이터.xlsx' }, headers };
+const ctx = { extmap: { '1': 'KOSIS_원데이터.xlsx', '2': '별도데이터.xlsx' }, headers };
 
 test('srcOf: 파일명을 원천 키로 옮긴다', () => {
   assert.equal(srcOf('KOSIS_원데이터.xlsx'), 'kosis');
@@ -137,4 +137,74 @@ test('RULING 8: 보조시트 참조도 sheet 를 지닌다 — part1_1!p8 H29 �
   // data/formulas/part1_1.json 의 시트 p8, 셀 H29 = "=_시계열!B1"
   const e = parseFormula('=_시계열!B1', ctx);
   assert.deepEqual(e, { op: 'cell', sheet: '_시계열', ref: 'B1' });
+});
+
+// Task 9 단위 3 — IF 형태 세 갈래. 세 예시 모두 실측 수식이다(지어낸 게 아니다).
+
+// FAMILY 1 (1,076건, 59%): 서식 셀 — part3!p214!O6 실측 수식과 같은 모양
+test('FAMILY 1: IF(ISNUMBER(G8),TEXT(G8,"0.0"),"-") 는 if/isnumber/text 트리가 된다', () => {
+  const e = parseFormula('=IF(ISNUMBER(G8),TEXT(G8,"0.0"),"-")', ctx);
+  assert.deepEqual(e, {
+    op: 'if',
+    cond: { op: 'isnumber', inner: { op: 'cell', ref: 'G8' } },
+    then: { op: 'text', inner: { op: 'cell', ref: 'G8' }, decimals: 1 },
+    else: { op: 'str', v: '-' },
+  });
+});
+
+// FAMILY 1 실측: part3!p214!O6 은 "#,##0" 형식을 쓴다 — 소수 0 자리
+test('FAMILY 1 실측: part3!p214!O6 — TEXT(G6,"#,##0") 은 소수 0 자리다', () => {
+  const e = parseFormula('=IF(ISNUMBER(G6),TEXT(G6,"#,##0"),"-")', ctx);
+  assert.equal(e.op, 'if');
+  const thenE = (e as { then: any }).then;
+  assert.deepEqual(thenE, { op: 'text', inner: { op: 'cell', ref: 'G6' }, decimals: 0 });
+});
+
+test('FAMILY 1: 못 알아보는 TEXT 형식은 형식 문자열을 이유로 남기고 unsupported 다', () => {
+  const e = parseFormula('=IF(ISNUMBER(G8),TEXT(G8,"0.0%"),"-")', ctx);
+  assert.equal(e.op, 'unsupported');
+  assert.match((e as { reason: string }).reason, /0\.0%/);
+});
+
+// FAMILY 2 (약 468건): p239 노동생산성 실측 수식 — OECD 행은 평균, 나라 행은 ÷1000.
+// 안쪽 IF(SUMIFS(...)=0,"-",SUMIFS(...)/1000) 은 기존 zeroDash 경로를 그대로 탄다.
+test('FAMILY 2: $A6="OECD" 조건의 두 갈래 — part3!p239!B6 실측 수식', () => {
+  // part3.json 시트 p239 셀 B6 의 실측 수식 그대로 (지어낸 게 아니다)
+  const e = parseFormula(
+    '=IF($A6="OECD",SUMIFS([2]p239_240!$C:$C,[2]p239_240!$A:$A,B$5)/COUNTIFS([2]p239_240!$A:$A,B$5,[2]p239_240!$C:$C,">0")/1000,' +
+    'IF(SUMIFS([2]p239_240!$C:$C,[2]p239_240!$A:$A,B$5,[2]p239_240!$B:$B,$A6)=0,"-",SUMIFS([2]p239_240!$C:$C,[2]p239_240!$A:$A,B$5,[2]p239_240!$B:$B,$A6)/1000))',
+    ctx);
+  assert.equal(e.op, 'if');
+  const cond = (e as { cond: any }).cond;
+  assert.deepEqual(cond, { op: 'cmp', rel: 'eq', a: { op: 'cell', ref: 'A6' }, b: { op: 'str', v: 'OECD' } });
+  // 참(OECD) 갈래는 평균(÷ COUNTIFS)을 ÷1000 한다
+  const thenE = (e as { then: any }).then;
+  assert.equal(thenE.op, 'div');
+  assert.equal(thenE.a.op, 'div');
+  assert.equal(thenE.a.a.op, 'sumifs');
+  assert.equal(thenE.a.b.op, 'countifs');
+  // 거짓(나라) 갈래는 기존 zeroDash 경로다
+  const elseE = (e as { else: any }).else;
+  assert.equal(elseE.op, 'zeroDash');
+  assert.equal(elseE.inner.op, 'div');
+  assert.equal(elseE.inner.a.op, 'sumifs');
+});
+
+// FAMILY 3 (54건): 2020 산업분류 개편 경계 규칙 — part1_6!p101!D23 실측 수식 그대로.
+test('FAMILY 3: AND(B$21<2020,C$21>=2020) 경계 규칙과 IFERROR 가 실제 트리가 된다', () => {
+  const e = parseFormula('=IF(AND(B$21<2020,C$21>=2020),"…",IFERROR((C23-B23)/B23%,"-"))', ctx);
+  assert.equal(e.op, 'if');
+  const cond = (e as { cond: any }).cond;
+  assert.deepEqual(cond, {
+    op: 'and',
+    args: [
+      { op: 'cmp', rel: 'lt', a: { op: 'cell', ref: 'B21' }, b: { op: 'const', v: 2020 } },
+      { op: 'cmp', rel: 'gte', a: { op: 'cell', ref: 'C21' }, b: { op: 'const', v: 2020 } },
+    ],
+  });
+  assert.deepEqual((e as { then: any }).then, { op: 'str', v: '…' });
+  const elseE = (e as { else: any }).else;
+  assert.equal(elseE.op, 'iferror');
+  assert.deepEqual(elseE.fallback, { op: 'str', v: '-' });
+  assert.equal(elseE.inner.op, 'div');
 });

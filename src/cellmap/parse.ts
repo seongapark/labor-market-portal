@@ -154,6 +154,34 @@ function ifsQuery(name: 'SUMIFS' | 'COUNTIFS', args: Token[][], ctx: ParseCtx): 
   return { src, table: sheet!, value, where };
 }
 
+const CMP_REL: Record<string, 'eq' | 'ne' | 'lt' | 'lte' | 'gt' | 'gte'> = {
+  '=': 'eq', '<>': 'ne', '<': 'lt', '<=': 'lte', '>': 'gt', '>=': 'gte',
+};
+
+/** 비교는 산술보다 우선순위가 낮다 — 산술식을 좌우로 한 번씩만 허용한다
+    (엑셀 자체가 연쇄비교 a<b<c 를 모르므로 반복시키지 않는다) */
+function parseCompare(p: P): Expr {
+  const left = parseExpr(p);
+  const t = peek(p);
+  if (t?.t === 'op' && t.v in CMP_REL) {
+    p.i++;
+    const right = parseExpr(p);
+    return { op: 'cmp', rel: CMP_REL[t.v], a: left, b: right };
+  }
+  return left;
+}
+
+/** Task 9 단위 3: TEXT(x,"0.0") 의 형식 문자열 → 소수 자릿수.
+    실측(FAMILY 1)에 나온 형식은 "#,##0" · "0.0" · "0.00" 세 가지뿐이었다 — 콤마(천단위
+    구분자)는 세지 않는다: 이 대조 대상 오라클 자체가 콤마 없는 숫자 문자열이기 때문이다
+    (예: part3!p214!O6, TEXT(211983,"#,##0") 의 오라클이 211983 이지 "211,983" 이 아니다).
+    일반형 "[#,]*0(.0+)?" 을 벗어나면 추측하지 않고 형식 문자열을 이유에 남겨 unsupported 로 던진다. */
+function textFormatDecimals(fmt: string): number {
+  const m = /^[#,]*0(?:\.(0+))?$/.exec(fmt);
+  if (!m) throw new Error(`TEXT 형식을 모른다: ${fmt}`);
+  return m[1] ? m[1].length : 0;
+}
+
 /** 단항/이항 산술을 왼쪽부터. 엑셀 우선순위는 * / 가 + - 보다 높다 */
 function parseExpr(p: P): Expr {
   let left = parseTerm(p);
@@ -204,8 +232,11 @@ function parseAtom(p: P): Expr {
   if (!t) throw new Error('식이 갑자기 끝났다');
 
   if (t.t === 'num') return { op: 'const', v: t.v };
+  if (t.t === 'str') return { op: 'str', v: t.v };
   if (t.t === 'lp') {
-    const e = parseExpr(p);
+    // parseCompare(비교 포함) — 괄호 안에 조건식이 올 수 있다(AND 인자 등). 비교 연산자가
+    // 없으면 이제껏처럼 산술식 결과를 그대로 돌려준다.
+    const e = parseCompare(p);
     expect(p, 'rp');
     return e;
   }
@@ -231,18 +262,53 @@ function parseAtom(p: P): Expr {
     }
     if (t.v === 'IF') {
       const args = argTokens(p);
-      // IF(X=0,"-",X) 만 다룬다
+      // IF(X=0,"-",X) 는 지금까지처럼 zeroDash 로 남긴다 — 5,754건이 이미 맞고 있는
+      // 경로라 건드리지 않는다. 일반형 IF 는 zeroDash 모양이 아닐 때만 손댄다.
       const isZeroTest = args[0].some((x) => x.t === 'op' && x.v === '=')
         && args[0].some((x) => x.t === 'num' && x.v === 0);
       const dash = args[1].length === 1 && args[1][0].t === 'str';
       if (isZeroTest && dash && args[2]) {
         return { op: 'zeroDash', inner: parseTokens(args[2], p.ctx) };
       }
+      // Task 9 단위 3: 나머지 3-인자 IF 는 조건·참·거짓 세 갈래를 각각 독립적으로 파싱한다.
+      // 조건도 parseTokens(=parseCompare 진입)로 파싱하므로 비교($A6="OECD")·AND(...)·
+      // ISNUMBER(...) ·bare cmp 모두 여기서 그대로 Expr 이 된다.
+      if (args.length === 3) {
+        const cond = parseTokens(args[0], p.ctx);
+        const thenE = parseTokens(args[1], p.ctx);
+        const elseE = parseTokens(args[2], p.ctx);
+        return { op: 'if', cond, then: thenE, else: elseE };
+      }
       throw new Error('IF 형태를 못 다룬다');
     }
-    if (t.v === 'NUMBERVALUE' || t.v === 'IFERROR') {
+    if (t.v === 'AND') {
+      const args = argTokens(p);
+      return { op: 'and', args: args.map((a) => parseTokens(a, p.ctx)) };
+    }
+    if (t.v === 'ISNUMBER') {
+      const args = argTokens(p);
+      return { op: 'isnumber', inner: parseTokens(args[0], p.ctx) };
+    }
+    if (t.v === 'TEXT') {
+      const args = argTokens(p);
+      const fmtToks = args[1];
+      if (!fmtToks || fmtToks.length !== 1 || fmtToks[0].t !== 'str') {
+        throw new Error('TEXT 형식 인자를 못 읽었다: ' + JSON.stringify(fmtToks));
+      }
+      const decimals = textFormatDecimals(fmtToks[0].v);
+      return { op: 'text', inner: parseTokens(args[0], p.ctx), decimals };
+    }
+    if (t.v === 'NUMBERVALUE') {
       const args = argTokens(p);
       return parseTokens(args[0], p.ctx);   // 껍데기만 벗긴다
+    }
+    if (t.v === 'IFERROR') {
+      // Task 9 단위 3: 예전에는 껍데기만 벗기고 fallback 을 버렸다 — 잘못됐다.
+      // IFERROR((C23-B23)/B23%,"-") 는 B23=0 이면 "-" 를 내야 한다. div 는 이미
+      // 0 으로 나눌 때 null 을 낸다 — inner 의 실행 결과가 null 이면 오류로 본다.
+      const args = argTokens(p);
+      if (!args[1]) throw new Error('IFERROR 에 fallback 인자가 없다');
+      return { op: 'iferror', inner: parseTokens(args[0], p.ctx), fallback: parseTokens(args[1], p.ctx) };
     }
     throw new Error('못 다루는 함수: ' + t.v);
   }
@@ -251,7 +317,7 @@ function parseAtom(p: P): Expr {
 
 function parseTokens(toks: Token[], ctx: ParseCtx): Expr {
   const p: P = { toks, i: 0, ctx };
-  const e = parseExpr(p);
+  const e = parseCompare(p);
   if (p.i < toks.length) throw new Error('남은 토큰이 있다: ' + JSON.stringify(toks.slice(p.i)));
   return e;
 }

@@ -127,6 +127,43 @@ function num(v: number | string | null): number {
   return Number.isFinite(n) ? n : 0;
 }
 
+/** Task 9 단위 3: if 가 참으로 볼 값 — 0 이 아니고 빈 문자열도 아니면 참이다.
+    null 은 거짓이다(연도 조건 셀이 없어 던지는 경우는 여기 오지 않는다 — 그건 예외다). */
+function truthy(v: number | string | null): boolean {
+  if (v === null) return false;
+  if (typeof v === 'number') return v !== 0;
+  return v !== '';
+}
+
+/** eq/ne 는 문자열 비교('OECD' 등)라 num() 으로 뭉개면 안 된다 — 숫자가 아닌 문자열은
+    둘 다 0 이 되어 항상 같다고 오판한다. lt/lte/gt/gte 는 이 데이터에서 전부 연도
+    비교(B$21<2020)라 숫자로 비교한다. */
+function cmpResult(rel: 'eq' | 'ne' | 'lt' | 'lte' | 'gt' | 'gte',
+                    a: number | string | null, b: number | string | null): boolean {
+  if (rel === 'eq' || rel === 'ne') {
+    const eq = a === null || b === null
+      ? a === b
+      : (typeof a === 'string' || typeof b === 'string') ? String(a) === String(b) : a === b;
+    return rel === 'eq' ? eq : !eq;
+  }
+  const x = num(a), y = num(b);
+  switch (rel) {
+    case 'lt': return x < y;
+    case 'lte': return x <= y;
+    case 'gt': return x > y;
+    case 'gte': return x >= y;
+  }
+}
+
+/** TEXT(x,"0.0") — 반올림은 반올림기준 0.5 를 항상 0에서 먼 쪽으로 보낸다(사사오입).
+    정수로 올려붙인 뒤 다시 나누고 toFixed 로 자릿수를 맞춘다 — 부동소수 오차가
+    반올림 경계에 걸리는 것을 피한다. */
+function textFixed(n: number, decimals: number): string {
+  const factor = 10 ** decimals;
+  const rounded = Math.sign(n) * Math.round(Math.abs(n) * factor);
+  return (rounded / factor).toFixed(decimals);
+}
+
 export function execute(e: Expr, ctx: ExecCtx): number | string | null {
   switch (e.op) {
     case 'sumifs': return runIfs(e.q, ctx, 'SUM');
@@ -145,6 +182,21 @@ export function execute(e: Expr, ctx: ExecCtx): number | string | null {
     case 'zeroDash': {
       const v = num(execute(e.inner, ctx));
       return v === 0 ? '-' : v;
+    }
+    case 'str': return e.v;
+    case 'if': return truthy(execute(e.cond, ctx)) ? execute(e.then, ctx) : execute(e.else, ctx);
+    case 'cmp': return cmpResult(e.rel, execute(e.a, ctx), execute(e.b, ctx)) ? 1 : 0;
+    case 'and': return e.args.every((a) => truthy(execute(a, ctx))) ? 1 : 0;
+    case 'isnumber': {
+      const v = execute(e.inner, ctx);
+      return typeof v === 'number' && Number.isFinite(v) ? 1 : 0;
+    }
+    case 'text': return textFixed(num(execute(e.inner, ctx)), e.decimals);
+    case 'iferror': {
+      // Task 9 단위 3: inner 의 실행 결과가 null 이면 오류로 본다(div 는 0 나눗셈을
+      // null 로 낸다) — fallback 을 실행한다. null 이 아니면 inner 값을 그대로 낸다.
+      const v = execute(e.inner, ctx);
+      return v === null ? execute(e.fallback, ctx) : v;
     }
     case 'unsupported': return null;
   }
