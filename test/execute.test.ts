@@ -161,6 +161,30 @@ test('RULING 10: 연도 조건 셀이 격자에 없으면 대체하지 않고 �
   );
 });
 
+// FIX(대조 9-1): 엑셀 SUMIFS 텍스트 기준 비교는 대소문자를 구별하지 않는다.
+// p214!C3 헬퍼셀은 'pop' 소문자인데 OECD API 는 'POP' 대문자로 돌려준다 — 엑셀은
+// 같다고 보고 합산하지만 대소문자 구별 SQL '=' 는 0 을 낸다(→ '-'). COLLATE NOCASE 로 고쳤다.
+test('sumifs: OECD 텍스트 기준은 대소문자를 구별하지 않는다 (소문자 기준이 대문자 저장값과 합산된다)', () => {
+  const db = openDb(':memory:');
+  loadOecdJsonl(db, 'LFS', [
+    JSON.stringify({ REF_AREA: 'KOR', 국가명: '한국', LABOUR_FORCE_STATUS: 'POP', TIME_PERIOD: '2025', value: 205720 }),
+    JSON.stringify({ REF_AREA: 'KOR', 국가명: '한국', LABOUR_FORCE_STATUS: 'LF', TIME_PERIOD: '2025', value: 999 }),
+  ]);
+  const e: Expr = { op: 'sumifs', q: { src: 'oecd', table: 'LFS', value: 'value',
+    where: { LABOUR_FORCE_STATUS: { kind: 'lit', value: 'pop' }, TIME_PERIOD: { kind: 'lit', value: '2025' } } } };
+  assert.equal(execute(e, { db, grids: {}, sheet: 'p1', year: '2025' }), 205720);
+});
+
+// 회귀 확인: COLLATE NOCASE 는 ASCII A~Z 만 접는다 — 한글 기준값에는 영향이 없어야
+// 하고, 애초에 대소문자 구별이 무의미한 한글에서 매칭이 깨지지 않아야 한다.
+test('sumifs: KOSIS 형 한글 기준은 COLLATE NOCASE 를 붙여도 그대로 매칭된다', () => {
+  const db = fixture();
+  const e: Expr = { op: 'sumifs', q: { src: 'kosis', table: 'T', value: 'DT',
+    where: { PRD_DE: { kind: 'lit', value: '2025' }, ITM_NM: { kind: 'lit', value: '취업자' },
+             C1_NM: { kind: 'lit', value: '계' } } } };
+  assert.equal(execute(e, { db, grids: { p1: grid }, sheet: 'p1', year: '2025' }), 120);
+});
+
 test('sumifs: etc 소스는 long 테이블이 없어 src 를 담아 던진다', () => {
   const db = fixture();
   const e: Expr = { op: 'sumifs', q: { src: 'etc', table: 'S1', value: 'V',

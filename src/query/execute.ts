@@ -57,17 +57,22 @@ function critValue(c: Crit, ctx: ExecCtx): string {
   return typeof v === 'number' ? String(Math.round(v) === v ? Math.round(v) : v) : String(v);
 }
 
-/** ">0" · ">=5" · "<>계" 같은 비교 조건을 SQL 조각으로 */
+/** ">0" · ">=5" · "<>계" 같은 비교 조건을 SQL 조각으로
+    FIX(대조 9-1): 엑셀 SUMIFS 의 텍스트 기준 비교는 대소문자를 구별하지 않는다
+    (예: 헬퍼셀 'pop' 이 DB 의 'POP' 과 같다고 본다). 우리 SQL 의 '=' 는 대소문자를
+    구별해 실측에서 2,100건의 불일치(들어오는 값이 전부 '-')를 냈다. 텍스트 기준에만
+    COLLATE NOCASE 를 붙인다 — ASCII A~Z 만 접는 콜레이션이라 코드값(ASCII)에는
+    맞고 한글 기준값에는 영향이 없다. 숫자 비교(CAST ... AS REAL)는 건드리지 않는다. */
 function critSql(col: string, raw: string): { sql: string; args: (string | number)[] } {
   const m = /^(<=|>=|<>|<|>)\s*(.+)$/.exec(raw);
-  if (!m) return { sql: `${col} = ?`, args: [raw] };
+  if (!m) return { sql: `${col} = ? COLLATE NOCASE`, args: [raw] };
   const op = m[1] === '<>' ? '!=' : m[1];
   const rhs = m[2];
   const num = Number(rhs);
   if (Number.isFinite(num) && rhs.trim() !== '') {
     return { sql: `CAST(${col} AS REAL) ${op} ?`, args: [num] };
   }
-  return { sql: `${col} ${op} ?`, args: [rhs] };
+  return { sql: `${col} ${op} ? COLLATE NOCASE`, args: [rhs] };
 }
 
 /** RULING 7: 소스마다 열 이름 체계가 달라 테이블이 나뉜다.
