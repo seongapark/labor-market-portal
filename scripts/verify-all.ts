@@ -14,6 +14,26 @@ export type Summary = {
   byPart: Record<string, Record<string, number>>;
 };
 
+// 이유 문자열을 근본원인으로 묶는다. compare.ts/parse.ts/execute.ts 의 에러 메시지는
+// 좌표·JSON 토큰 덤프·파일명 같은 "꼬리"를 이유 안에 그대로 박아 넣기 때문에, 정확히
+// 같은 문자열로만 묶으면 하나의 근본원인이 좌표 수만큼 count-1 행으로 쪼개져 순위표
+// 맨 아래로 흩어진다. 반대로 "못 다루는 함수: INDEX" 처럼 꼬리 자체가 요점(함수명)인
+// 경우는 쪼개져야 옳다 — INDEX 와 VLOOKUP 을 같은 행으로 묶으면 Task 9 가 무엇부터
+// 구현해야 하는지 알 수 없게 된다. 그래서 규칙은:
+//   1. 끝에 붙은 "(...)" 부가정보(예: "(C:C)")는 순서(ordinal)가 이미 문장에 있으므로 지운다.
+//   2. ": <꼬리>" 형태에서 꼬리가 숫자·공백·따옴표·괄호 중 하나라도 품으면(=좌표,
+//      JSON 덤프, "src 'etc' 는 ..." 같은 문장) 노이즈로 보고 지운다. 꼬리가 순수한
+//      짧은 식별자(예: "INDEX", "str")면 그게 메시지의 요점이므로 남긴다.
+//   3. 남은 숫자(열 순번 등)는 # 로 뭉갠다.
+// 일반 분류기를 만들지 않는다 — 위 세 규칙이 전부다.
+export function reasonKey(reason: string): string {
+  let key = reason.replace(/\s*\([^()]*\)\s*$/, '');
+  const m = key.match(/^(.*?):\s(.+)$/s);
+  if (m && /[\d\s"'[\]{}]/.test(m[2])) key = m[1];
+  key = key.replace(/\d+/g, '#');
+  return key.trim();
+}
+
 export function summarize(rows: CellResult[]): Summary {
   const byVerdict: Record<string, number> = {};
   const byPart: Record<string, Record<string, number>> = {};
@@ -60,8 +80,10 @@ function main() {
     const r = verifyPart(part, formulas, oracle, db, headers, YEAR);
     rows.push(...r);
     const s = summarize(r);
-    console.log('  %-20s 대조 %5d · 일치 %5d (%s%%)', part, s.comparable,
-      s.byVerdict.match ?? 0, (s.rate * 100).toFixed(2));
+    const partCol = part.padEnd(20);
+    const compCol = String(s.comparable).padStart(5);
+    const matchCol = String(s.byVerdict.match ?? 0).padStart(5);
+    console.log(`  ${partCol} 대조 ${compCol} · 일치 ${matchCol} (${(s.rate * 100).toFixed(2)}%)`);
   }
 
   const s = summarize(rows);
@@ -96,18 +118,21 @@ function main() {
   writeFileSync(join('reports', 'verify-detail.jsonl'),
     bad.map((r) => JSON.stringify(r)).join('\n') + '\n');
 
-  // 파싱 실패 이유별 집계 — 다음에 무엇을 지원해야 하는지 알려준다
+  // 파싱 실패 이유별 집계 — 다음에 무엇을 지원해야 하는지 알려준다.
+  // 근본원인(reasonKey)으로 묶는다 — 정확한 문자열로만 묶으면 좌표·JSON 덤프가
+  // 박힌 이유 하나가 count-1 행 수백 개로 쪼개져 순위표 아래로 흩어진다.
   const reasons = new Map<string, { n: number; sample: CellResult }>();
   for (const r of rows) {
     if (r.verdict !== 'unsupported' && r.verdict !== 'error') continue;
-    const key = (r.reason ?? '(이유없음)').slice(0, 90);
+    const key = reasonKey(r.reason ?? '(이유없음)');
     const cur = reasons.get(key);
     if (cur) cur.n++;
     else reasons.set(key, { n: 1, sample: r });
   }
-  const rl = ['# 파싱·실행 실패 이유', '', '| 건수 | 이유 | 대표 좌표 |', '|---|---|---|'];
+  const rl = ['# 파싱·실행 실패 이유', '', '근본원인(reasonKey) 기준으로 묶었다 — 좌표·JSON 덤프 등 변동 꼬리는 지우고, 함수명처럼 꼬리 자체가 요점인 경우는 남긴다.', '', '| 건수 | 근본원인 | 대표 이유 | 대표 좌표 |', '|---|---|---|---|'];
   for (const [key, v] of [...reasons].sort((a, b) => b[1].n - a[1].n)) {
-    rl.push(`| ${v.n} | ${key.replace(/\|/g, '\\|')} | ${v.sample.part}!${v.sample.sheet}!${v.sample.ref} |`);
+    const full = (v.sample.reason ?? '(이유없음)').replace(/\|/g, '\\|');
+    rl.push(`| ${v.n} | ${key.replace(/\|/g, '\\|')} | ${full} | ${v.sample.part}!${v.sample.sheet}!${v.sample.ref} |`);
   }
   writeFileSync(join('reports', 'unsupported-reasons.md'), rl.join('\n') + '\n');
 
