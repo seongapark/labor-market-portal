@@ -143,11 +143,22 @@ test('FIX ROUND 1: 연도 조건은 자신이 가리키는 셀에서 읽는다 �
   assert.equal(execute(sumOf('C6'), ctx), 120);   // C6 → 2025 의 취업자 계 (같은 ctx.year 아래에서도 다르다)
 });
 
-test('FIX ROUND 1: 연도 셀이 격자에 없으면 ctx.year 로 대체한다', () => {
+// RULING 10: gridCell 은 "키가 없다"와 "값이 명시적으로 null 이다"를 구별하지 못한다 —
+// 예비값으로 ctx.year 를 돌려주면 빈 칸·병합된 연도머리글이 조용히 기준연도의 답을 받고
+// 대조에서 드러나지 않는다. 이제는 던진다 (이전엔 ctx.year 로 대체했다 — FIX ROUND 1).
+test('RULING 10: 연도 조건 셀이 격자에 없으면 대체하지 않고 던진다', () => {
   const db = fixture();
   const e: Expr = { op: 'sumifs', q: { src: 'kosis', table: 'T', value: 'DT',
     where: { PRD_DE: { kind: 'year', ref: 'Z99' }, ITM_NM: { kind: 'lit', value: '실업자' } } } };
-  assert.equal(execute(e, { db, grids: { p1: grid }, sheet: 'p1', year: '2025' }), 5);
+  assert.throws(
+    () => execute(e, { db, grids: { p1: grid }, sheet: 'p1', year: '2025' }),
+    (err: unknown) => {
+      const msg = (err as Error).message;
+      assert.match(msg, /연도 조건 셀이 격자에 없다/);
+      assert.match(msg, /p1!Z99/);
+      return true;
+    }
+  );
 });
 
 test('sumifs: etc 소스는 long 테이블이 없어 src 를 담아 던진다', () => {

@@ -3,7 +3,10 @@ import type { Crit, Expr, Grid, Query } from '../types.ts';
 
 /** RULING 8: ExecCtx 는 파트 전체의 격자(시트명 → Grid)를 들고, 지금 계산 중인 시트를 함께 표시한다.
     booklet 페이지 간 셀 참조('p68'!$F$5)와 보조시트(_시계열) 참조가 실측으로 8%+6% 나와,
-    단일 grid 로는 풀 수 없다는 것을 Task 5 가 확인했다. */
+    단일 grid 로는 풀 수 없다는 것을 Task 5 가 확인했다.
+    RULING 10: year 필드는 더 이상 연도 조건(critValue 의 'year' 분기)에 쓰이지 않는다 —
+    그 분기는 이제 격자에 셀이 없으면 이 값으로 조용히 대체하지 않고 던진다. Task 8 의
+    verifyPart 호출부 시그니처를 건드리지 않기 위해 필드 자체는 남겨 둔다. */
 export type ExecCtx = { db: DatabaseSync; grids: Record<string, Grid>; sheet: string; year: string };
 
 /** jsonl 키 → obs 열 (parse 가 내는 이름은 대문자 헤더 이름이다) */
@@ -33,10 +36,14 @@ function gridCell(ctx: ExecCtx, sheet: string, ref: string): string | number | n
 function critValue(c: Crit, ctx: ExecCtx): string {
   if (c.kind === 'year') {
     // FIX ROUND 1: TEXT(C$6,"0") 은 "C6 가 가리키는 값을 정수로" 다 — 연도는 c.ref 가
-    // 가리키는 셀 그 자체에서 읽는다. ctx.year 는 그 셀이 없을 때만 쓰는 예비값이다
-    // (Task 7·8 이 이미 ExecCtx.year 를 넘기고 있어 시그니처를 건드리지 않으려 남긴다).
+    // 가리키는 셀 그 자체에서 읽는다.
+    // RULING 10: gridCell 은 "키가 아예 없다"와 "값이 명시적으로 null 이다"를 구별하지
+    // 못한다. 예비값으로 ctx.year 를 돌려주면 202개 지면 어딘가의 빈 칸·병합된 연도
+    // 머리글이 조용히 기준연도의 답을 받고 대조에서 절대 드러나지 않는다 — 던져서
+    // verifyPart(8단계) 가 error 판정으로 잡게 한다. 조용히 틀린 값보다 크래시가 낫다
+    // (RULING 7 과 같은 원칙).
     const v = gridCell(ctx, ctx.sheet, c.ref);
-    if (v === null) return ctx.year;
+    if (v === null) throw new Error(`연도 조건 셀이 격자에 없다: ${ctx.sheet}!${c.ref}`);
     // prd_de·TIME_PERIOD 는 TEXT 열이다 — 숫자를 그대로 두면 "2025.0" 같은 꼴이
     // 되므로 정수 문자열로 맞추고, 이미 문자열이면 값은 손대지 않고 앞뒤 공백만 지운다.
     return typeof v === 'number' ? String(Math.round(v) === v ? Math.round(v) : v) : v.trim();
