@@ -44,10 +44,55 @@ test('수식이 없는 셀(통합문서의 리터럴)은 undefined 다 — 호�
   assert.equal(anchorCell(ac, '없는시트', 'A1'), undefined);
 });
 
-test('못 푸는 셀을 참조하면 그 셀도 undefined 다 — 0 으로 뭉개지 않는다', () => {
+// 리뷰 1차 정정: 이 시험이 묶는 것은 STRICT_GRIDS 가드가 아니라 **산술의 null 전파**다
+// (단위 4 의 numOrErr). 그래서 이름을 사실대로 바꿨다 — 가드를 지운 뮤턴트에서도 이
+// 시험은 통과한다. 가드를 묶는 시험은 바로 아래에 따로 있다.
+test('산술은 못 푸는 셀을 null 로 전파한다 — =B4+5 를 5 로 뭉개지 않는다', () => {
   // B4 는 수식이 없다(리터럴). =B4+5 를 4+5 나 0+5 로 계산해 버리면 안 된다.
   const ac = ctx({ _시계열: { B1: ANCHOR_FORMULA }, p8: { G4: '=B4+5' } });
   assert.equal(anchorCell(ac, 'p8', 'G4'), undefined);
+});
+
+// 리뷰 [지적 1]: 앵커의 유일한 「조용한 오답」 방어선(STRICT_GRIDS)을 묶는다.
+// 산술만 보면 null 전파로 막히는 것처럼 보이지만, IF/ISNUMBER/IFERROR/TEXT 는 null 을
+// **삼킨다** — 가드가 없으면 못 푼 셀이 null(→0/거짓)이 되어 앵커가 「계산됐다」며
+// 엉뚱한 값을 내고, gridCell 이 확정본보다 그것을 먼저 돌려준다.
+// 실측(리뷰): 가드를 {} 로 바꾸면 앵커값이 달라지는 셀 2,807건 · 그 중 확정본과
+// 어긋나는 셀 2,585건. 관문은 오늘 이것을 잡지 못한다(소비자가 전부 presentation 셀).
+test('STRICT_GRIDS: null 을 삼키는 수식도 앵커로 못 풀면 undefined 다 (확정본을 보지 않는다)', () => {
+  // ISNUMBER 가 null 을 삼키는 모양 — 실측 part3!_13개국!C3 과 같은 수식.
+  // B3 는 앵커로 못 푸는 셀(INDEX/MATCH), A3 는 리터럴이다.
+  const ac = ctx({
+    _13개국: {
+      B3: "=INDEX('p214'!$G$6:$G$43,MATCH($A3,'p214'!$A$6:$A$43,0))",
+      C3: '=IF(ISNUMBER(B3),B3,IF($A3="일본",-9.98E+307,-9.99E+307))',
+    },
+  });
+  assert.equal(anchorCell(ac, '_13개국', 'C3'), undefined);   // 가드 없으면 -9.99e+307
+
+  // IFERROR 가 null 을 삼키는 모양 — 실측 part1_6!p87!B11.
+  const ac2 = ctx({ p87: { B11: '=IFERROR(B10*100/A10-100,"-")' } });
+  assert.equal(anchorCell(ac2, 'p87', 'B11'), undefined);     // 가드 없으면 "-"
+
+  // TEXT·ISNUMBER 는 null 을 각각 "0" · 거짓으로 삼킨다
+  const ac3 = ctx({ p1: { A1: '=TEXT(B1,"0")', A2: '=ISNUMBER(B1)' } });
+  assert.equal(anchorCell(ac3, 'p1', 'A1'), undefined);       // 가드 없으면 "0"
+  assert.equal(anchorCell(ac3, 'p1', 'A2'), undefined);       // 가드 없으면 0
+});
+
+test('STRICT_GRIDS: 실데이터 part3!_13개국!C3 은 확정본으로 떨어진다', () => {
+  const dump = JSON.parse(readFileSync(join('data', 'formulas', 'part3.json'), 'utf8')) as FormulaDump;
+  const oracle = JSON.parse(readFileSync(join('data', 'oracle', 'part3.json'), 'utf8')) as OracleDump;
+  const ac = ctx(dump.sheets);
+  assert.equal(anchorCell(ac, '_13개국', 'C3'), undefined);
+  // 그리고 execute 는 확정본 값을 돌려준다 — 가드가 없으면 여기서 -9.99e+307 이 나온다.
+  const db = null as never;
+  assert.equal(
+    execute({ op: 'cell', sheet: '_13개국', ref: 'C3' },
+      { db, grids: oracle as never, sheet: 'p214', year: '2025', anchor: ac }),
+    oracle['_13개국']['C3'],
+  );
+  assert.equal(oracle['_13개국']['C3'], 35250.42);
 });
 
 test('메모이즈: 같은 셀을 두 번 물어도 수식을 다시 읽지 않는다', () => {
