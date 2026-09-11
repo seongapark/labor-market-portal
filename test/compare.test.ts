@@ -153,12 +153,24 @@ test('verifyPart: 보조시트(_) 는 대조하지 않지만 참조 대상으로
 
 // Task 9 단위 8: TEXT(x,"#,##0") 의 결과 "211,983" 과, 그것을 숫자로 강제 변환해 담은
 // 오라클 211983 은 같은 값이다. 구분자 모양이 정확할 때만 벗긴다.
-test('sameValue: 천단위 구분자가 찍힌 숫자 문자열을 숫자로 읽는다', () => {
-  assert.equal(sameValue('211,983', 211983), true);
+test('sameValue: 계산값의 천단위 구분자를 숫자로 읽는다 (오라클, 계산값 순서)', () => {
+  assert.equal(sameValue(211983, '211,983'), true);       // part3!p214!O6 모양, 실측 307건
   assert.equal(sameValue(1234.5, '1,234.5'), true);
-  assert.equal(sameValue('1,2', 12), false);
-  assert.equal(sameValue('12,34', 1234), false);
-  assert.equal(sameValue('4,205천원', 4205), false);
+  assert.equal(sameValue(-1234, '-1,234'), true);
+  assert.equal(sameValue(12, '1,2'), false);              // 세 자리 끊기가 틀렸다
+  assert.equal(sameValue(1234, '12,34'), false);
+  assert.equal(sameValue(4205, '4,205천원'), false);      // 임의 텍스트의 구분자는 안 벗긴다
+});
+
+// 리뷰 1차 [지적 3]: 완화는 한 방향만이다 — 반대 방향(오라클이 구분자 문자열 · 계산값이
+// 맨숫자)을 받으면, 다음 단위가 VLOOKUP 을 구현하는 순간 구분자를 떨어뜨린 계산값이
+// 조용히 통과한다. 실제로 그 모양의 오라클이 18건 있다 (part1_7!p124!D6 = "294,525").
+test('sameValue: 오라클이 구분자 문자열이고 계산값이 맨숫자면 같지 않다', () => {
+  assert.equal(sameValue('294,525', 294525), false);
+  assert.equal(sameValue('211,983', 211983), false);
+  assert.equal(sameValue('1,234.5', 1234.5), false);
+  // 같은 문자열끼리는 여전히 같다
+  assert.equal(sameValue('294,525', '294,525'), true);
 });
 
 // Task 9 단위 8: 연도를 앵커에서 계산한다는 것을 실제로 잡는 테스트.

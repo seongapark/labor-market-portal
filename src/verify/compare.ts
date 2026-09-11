@@ -49,17 +49,16 @@ const GROUPED = /^-?\d{1,3}(?:,\d{3})+(?:\.\d+)?$/;
 
 /** 유한한 숫자로 읽히는가. 공백만 있는 문자열은 숫자로 치지 않는다 — Number('') 가
     0 이 되어 sameValue('', 0) 을 참으로 만드는 것을 막는다.
-    Task 9 단위 8: 천단위 구분자가 찍힌 숫자 문자열도 숫자로 읽는다 — TEXT(G6,"#,##0") 의
-    결과 "211,983" 과, 그 값을 Excel COM 이 숫자로 강제 변환해 담은 오라클 211983 은
-    같은 값의 두 표현이다(단위 4 CHANGE 1 의 "84.0" vs 84 와 같은 사정, 실측 307건).
-    구분자 모양이 정확할 때만 벗긴다 — 같은 문자열끼리는 어차피 같으므로 이 완화가
-    맞던 대조를 틀리게 만들 수는 없다. */
-function asFiniteNumber(v: unknown): number | null {
+    Task 9 단위 8: `grouped` 를 켜면 천단위 구분자가 찍힌 숫자 문자열도 숫자로 읽는다 —
+    TEXT(G6,"#,##0") 의 결과 "211,983" 과, 그 값을 Excel COM 이 숫자로 강제 변환해 담은
+    오라클 211983 은 같은 값의 두 표현이다(단위 4 CHANGE 1 의 "84.0" vs 84 와 같은
+    사정, 실측 307건). 구분자 모양이 정확할 때만 벗긴다. */
+function asFiniteNumber(v: unknown, grouped = false): number | null {
   if (typeof v === 'number') return Number.isFinite(v) ? v : null;
   if (typeof v === 'string') {
     const s = v.trim();
     if (s === '') return null;
-    const n = Number(GROUPED.test(s) ? s.replace(/,/g, '') : s);
+    const n = Number(grouped && GROUPED.test(s) ? s.replace(/,/g, '') : s);
     return Number.isFinite(n) ? n : null;
   }
   return null;
@@ -70,14 +69,23 @@ function asFiniteNumber(v: unknown): number | null {
 // 강제 변환해 84 를 남긴다 — 84 와 "84.0" 은 같은 값의 두 표현일 뿐, 둘 다 틀리지
 // 않았다. 실측 65건이 이 원인이었다. 양쪽이 모두 유한한 숫자로 읽히면 숫자로
 // 비교하고(기존 1e-9 상대오차 그대로), 아니면 지금까지처럼 문자열로 비교한다.
-export function sameValue(a: unknown, b: unknown): boolean {
-  if (a === null || b === null || a === undefined || b === undefined) return a === b;
-  const x = asFiniteNumber(a), y = asFiniteNumber(b);
+// Task 9 단위 8 (리뷰 1차 [지적 3]): 구분자 완화는 **비대칭**이다 — 근거 307건이 전부
+// 「오라클이 숫자 · 계산값이 구분자 문자열」한 방향이기 때문이다. 반대 방향(오라클이
+// "294,525" 같은 구분자 문자열 · 계산값이 맨숫자)은 받지 않는다: 그 모양의 오라클이
+// 전 데이터에 18건 있고(part1_7!p124!D6·F6 등, 지금은 VLOOKUP 미지원으로 대조되지
+// 않는다), 다음 단위가 VLOOKUP 을 구현하면 구분자를 떨어뜨린 계산값이 조용히 통과하게
+// 된다. 인자 이름이 곧 방향이다 — 호출부는 sameValue(오라클, 계산값) 이다.
+export function sameValue(expected: unknown, got: unknown): boolean {
+  if (expected === null || got === null || expected === undefined || got === undefined) {
+    return expected === got;
+  }
+  const x = asFiniteNumber(expected);
+  const y = asFiniteNumber(got, typeof expected === 'number');
   if (x !== null && y !== null) {
     const scale = Math.max(Math.abs(x), Math.abs(y), 1);
     return Math.abs(x - y) <= REL * scale;
   }
-  return String(a) === String(b);
+  return String(expected) === String(got);
 }
 
 export function verifyPart(
