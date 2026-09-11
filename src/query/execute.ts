@@ -49,6 +49,31 @@ function gridCell(ctx: ExecCtx, sheet: string, ref: string): string | number | n
   return v === undefined ? null : v;
 }
 
+/** 전체 리뷰 F2: 엑셀 조건 문자열(`">0"` · `"<>OECD"` · `"<>"` · `"=계"` · `"계"`)의
+    연산자를 **긴 것부터 정확히 끊어** 읽는다. 세 조건 경로(`gridCritSql`·`matchCrit`·
+    `critSql`)가 **이 함수만** 쓴다 — 경로마다 다른 정규식을 두면 같은 조건이 경로마다
+    다른 뜻이 된다(리뷰가 `<>`(빈 우변)와 `=`(접두) 두 지점에서 실제로 그것을 찾아냈다).
+
+    정규식으로 풀지 않는다. 옛 `critSql` 의 `/^(<=|>=|<>|<|>)\s*(.+)$/` 는 우변이 빈
+    `"<>"` 에서 `(.+)` 가 한 글자를 요구해 **백트래킹**이 일어나 연산자 `<` · 우변 `'>'`
+    로 갈렸다. 그 조건이 맞고 있던 유일한 이유는 `oecd_obs.value` 가 REAL 이고 SQLite 가
+    숫자를 문자보다 앞에 정렬해 `value < '>'` 가 우연히 `value IS NOT NULL` 과 같아진
+    것이었다 — TEXT 조건 열(모든 KOSIS 열)에서는 같은 조건이 조용히 0 을 낸다.
+
+    연산자가 없으면 `=` 다(엑셀). 연산자 뒤의 공백은 버린다(`"> 6"`). */
+export type CritOp = '<>' | '>=' | '<=' | '>' | '<' | '=';
+const CRIT_OPS: readonly CritOp[] = ['<>', '>=', '<=', '>', '<', '='];
+
+export function splitCrit(raw: string): { op: CritOp; rhs: string; blank: boolean } {
+  for (const op of CRIT_OPS) {
+    if (raw.startsWith(op)) {
+      const rhs = raw.slice(op.length).replace(/^\s+/, '');
+      return { op, rhs, blank: rhs.trim() === '' };
+    }
+  }
+  return { op: '=', rhs: raw, blank: raw.trim() === '' };
+}
+
 /** Task 9 단위 5: 격자 조건 하나를 SQL 조각으로. `alias` 는 조인 별칭이다.
     엑셀 의미 세 가지를 지킨다:
     - 문자 비교는 대소문자를 구분하지 않는다(RULING 13 — 빼먹으면 조용히 0 이 나온다).
@@ -61,10 +86,8 @@ function gridCritSql(alias: string, raw: string | null): { sql: string; args: (s
   // RULING 18: 빈 조건은 빈 칸에만 맞는다. 격자에는 빈 칸의 행이 아예 없으므로
   // (적재 때 버렸다) 아무것도 맞지 않는다 — 실측 대상에는 이 경우가 없다.
   if (raw === null) return { sql: `${alias}.v_txt = ''`, args: [], negated: false };
-  const m = /^(<=|>=|<>|<|>|=)\s*(.*)$/.exec(raw);
-  const op = m ? m[1] : '=';
-  const rhs = m ? m[2] : raw;
-  const num = rhs.trim() === '' ? NaN : Number(rhs);
+  const { op, rhs, blank } = splitCrit(raw);
+  const num = blank ? NaN : Number(rhs);
   const isNum = Number.isFinite(num);
 
   const eqSql = isNum
@@ -74,6 +97,14 @@ function gridCritSql(alias: string, raw: string | null): { sql: string; args: (s
 
   if (op === '=') return { sql: eqSql, args: eqArgs, negated: false };
   if (op === '<>') {
+    // 전체 리뷰 F2: 우변이 비면(`"<>"`) 엑셀의 뜻은 **「빈 칸이 아닌 것」**이다 —
+    // 「무엇과도 같지 않은 것」이 아니다. 격자에는 빈 칸의 행이 아예 없으므로
+    // (적재 때 버렸다) **값이 있는 행**이 곧 조건이고, 그래서 부정형이 아니다
+    // (LEFT JOIN 으로 빈 칸까지 받으면 엑셀과 반대가 된다).
+    if (blank) {
+      return { sql: `(${alias}.v_num IS NOT NULL OR COALESCE(${alias}.v_txt, '') <> '')`,
+               args: [], negated: false };
+    }
     return { sql: `(${alias}.r IS NULL OR NOT COALESCE(${eqSql}, 0))`, args: eqArgs, negated: true };
   }
   if (isNum) return { sql: `${alias}.v_num ${op} ?`, args: [num], negated: false };
@@ -207,14 +238,17 @@ function cellEquals(v: string | number | null, needle: string | number): boolean
 }
 
 /** 엑셀 조건 문자열(">0" · "<>OECD" · "계")을 셀 값 하나에 적용한다.
-    `<>` 는 **빈 칸에도 맞는다**(엑셀). 그 밖의 조건은 빈 칸에 맞지 않는다. */
+    `"<>값"` 은 **빈 칸에도 맞는다**(엑셀: 빈 칸은 그 값이 아니다). 그 밖의 조건은 빈 칸에
+    맞지 않는다.
+    전체 리뷰 F2: 우변이 빈 `"<>"` 는 예외다 — **「빈 칸이 아닌 것」**이라 빈 칸에 맞지
+    않는다. 짝으로 `"="`(우변이 빈 것)은 「빈 칸인 것」이다. 실측 노출 0건이지만 세
+    경로의 뜻을 하나로 맞춘다. */
 function matchCrit(v: string | number | null, raw: string): boolean {
-  const m = /^(<=|>=|<>|<|>|=)\s*(.*)$/.exec(raw);
-  const op = m ? m[1] : '=';
-  const rhs = m ? m[2] : raw;
-  const num = rhs.trim() === '' ? NaN : Number(rhs);
-  if (op === '=') return cellEquals(v, rhs);
-  if (op === '<>') return !cellEquals(v, rhs);
+  const { op, rhs, blank } = splitCrit(raw);
+  const num = blank ? NaN : Number(rhs);
+  const isBlankCell = v === null || v === '';
+  if (op === '=') return blank ? isBlankCell : cellEquals(v, rhs);
+  if (op === '<>') return blank ? !isBlankCell : !cellEquals(v, rhs);
   if (v === null) return false;                 // 빈 칸은 비교 조건에 맞지 않는다
   // 엑셀은 **같은 종류끼리만** 비교한다: ">10" 은 숫자 칸만 보고(문자 'OECD' 는 세지
   // 않는다), ">가" 는 문자 칸만 본다. 종류를 섞어 문자열로 비교하면 'OECD' > '10' 이
@@ -410,15 +444,26 @@ function critSql(col: string, raw: string | null): { sql: string; args: (string 
   // RULING 18: 빈 조건은 **빈 칸에만** 맞는다(엑셀). long 테이블의 조건 열에는 빈 값이
   // 없으므로 맞는 행이 없고 그 SUMIFS 항이 0 이 된다 — 「모두 맞음」이 아니다.
   if (raw === null) return { sql: `${col} = ''`, args: [] };
-  const m = /^(<=|>=|<>|<|>)\s*(.+)$/.exec(raw);
-  if (!m) return { sql: `${col} = ? COLLATE NOCASE`, args: [raw] };
-  const op = m[1] === '<>' ? '!=' : m[1];
-  const rhs = m[2];
-  const num = Number(rhs);
-  if (Number.isFinite(num) && rhs.trim() !== '') {
-    return { sql: `CAST(${col} AS REAL) ${op} ?`, args: [num] };
+  const { op, rhs, blank } = splitCrit(raw);
+  // 전체 리뷰 F2: `=` 접두를 읽는다(옛 정규식은 `'=계'` 를 리터럴로 찾아 0행을 냈다).
+  // 연산자가 없는 조건도 여기로 온다 — 지금까지와 같은 텍스트 등호다(숫자꼴 조건값도
+  // 열 친화도(affinity)로 맞는다. CAST 로 바꾸면 168개 리터럴의 뜻이 달라져 건드리지 않는다).
+  // 우변이 비면(`"="`) `col = ''` 이 되고, 그것이 엑셀의 「빈 칸」이며 위 RULING 18
+  // 분기와 같은 뜻이다.
+  if (op === '=') return { sql: `${col} = ? COLLATE NOCASE`, args: [rhs] };
+  const sqlOp = op === '<>' ? '!=' : op;
+  // 우변이 비면 숫자 비교로 내려가지 않는다 — `Number('') === 0` 이 `"<>"` 를
+  // 「0 이 아닌 것」으로 바꿔 버린다. 그래서 `"<>"` 는 `col != ''` 이 되는데, SQL 에서
+  // 그것이 정확히 **「빈 칸이 아닌 것」**이다(NULL 은 비교에서 떨어지고 빈 문자열은
+  // 같다고 판정된다) — 엑셀의 `"<>"` 와 같다.
+  if (!blank) {
+    const num = Number(rhs);
+    if (Number.isFinite(num)) return { sql: `CAST(${col} AS REAL) ${sqlOp} ?`, args: [num] };
   }
-  return { sql: `${col} ${op} ? COLLATE NOCASE`, args: [rhs] };
+  // 남은 차이(기록): 엑셀의 `"<>값"` 은 빈 칸도 맞히지만 SQL 의 `!=` 는 NULL 행을
+  // 떨어뜨린다. 이 조건을 쓰는 칸은 `<>OECD` 2건뿐이고 그 열(oecd_obs.REF_AREA)에
+  // NULL 이 없어 노출 0건이다 — 없는 일반성을 만들지 않고 시험(critop)으로 고정해 둔다.
+  return { sql: `${col} ${sqlOp} ? COLLATE NOCASE`, args: [rhs] };
 }
 
 /** Task 9 단위 7: 집계 SQL 조각. AVERAGEIFS 는 **합÷개수가 아니다** — SQL 의 AVG 가
