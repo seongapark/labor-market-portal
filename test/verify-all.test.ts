@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
-import { summarize, runGate } from '../scripts/verify-all.ts';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { summarize, runGate, readGateFloor, floorViolations } from '../scripts/verify-all.ts';
 import type { CellResult } from '../src/verify/compare.ts';
 
 const rows: CellResult[] = [
@@ -40,13 +40,20 @@ test('summarize: 파트별로도 센다', () => {
   assert.equal(s.byPart['p2'].error, 1);
 });
 
-test('summarize: 관문 통과 여부는 mismatch+error+unsupported 가 0 인지다', () => {
+test('summarize: 관문 통과 여부는 mismatch+error+unsupported+no-oracle 이 0 인지다', () => {
   assert.equal(summarize(rows).gatePassed, false);
-  // mismatch 도 error 도 unsupported 도 없으면 통과.
+  // mismatch 도 error 도 unsupported 도 no-oracle 도 없으면 통과.
   assert.equal(
-    summarize(rows.filter((r) =>
-      r.verdict !== 'mismatch' && r.verdict !== 'error' && r.verdict !== 'unsupported')).gatePassed,
+    summarize(rows.filter((r) => r.verdict !== 'mismatch' && r.verdict !== 'error'
+      && r.verdict !== 'unsupported' && r.verdict !== 'no-oracle')).gatePassed,
     true,
+  );
+  // 전체 리뷰 F7: `no-oracle` 하나만 남아도 실패여야 한다. 확정본이 잘리거나 지면이
+  // 빠지면 그 칸들이 no-oracle 로 옮겨가 조용히 분모에서 빠지는데, 옛 조건은 그것을
+  // 통과로 찍었다(리뷰어가 part1_1!p8 을 지워 697칸이 옮겨가는 것을 확인했다).
+  assert.equal(
+    summarize(rows.filter((r) => r.verdict === 'match' || r.verdict === 'no-oracle')).gatePassed,
+    false,
   );
   // mismatch 는 0 인데 error 가 하나 남아 있으면: gatePassed 는 여전히 false 여야
   // 한다. `mm === 0` 만 보고 `&& er === 0` 을 빼먹는 회귀를 이 assertion 이 잡는다.
@@ -93,13 +100,15 @@ test('summarize: mismatch·error 0 에 unsupported 1 이면 gatePassed=false, �
 // 그래서 「그 다음부터 관문은 수식도 헤더도 읽지 않는다」는 서술이 **출하 진입점에
 // 대해서는 거짓**이었다. 이 시험은 그 주장을 주석이 아니라 **읽은 파일 목록**으로 짓는다.
 
+// 관문을 **한 번만** 돌리고 아래 시험들이 같은 결과를 쓴다 (전건 실행이 40초다).
+const opened: string[] = [];
+const run = runGate({
+  readFile: (p) => { opened.push(p); return readFileSync(p, 'utf8'); },
+  readDir: (p) => { opened.push(p); return readdirSync(p); },
+  log: () => {},
+});
+
 test('관문의 기본 경로는 cellmap 이다 — data/formulas 도 headers.json 도 열지 않는다', () => {
-  const opened: string[] = [];
-  const run = runGate({
-    readFile: (p) => { opened.push(p); return readFileSync(p, 'utf8'); },
-    readDir: (p) => { opened.push(p); return readdirSync(p); },
-    log: () => {},
-  });
   // 감시한 자리가 관문이 파일을 읽는 자리 전부다(DB 는 node:sqlite 가 직접 연다).
   assert.deepEqual(opened.filter((p) => /formulas|headers\.json/.test(p)), [],
     '기본 경로가 수식·헤더 파일을 열었다');
@@ -119,6 +128,58 @@ test('관문의 기본 경로는 cellmap 이다 — data/formulas 도 headers.js
   assert.equal(run.skipped.length, 0);
   assert.equal((s.rate * 100).toFixed(3), '99.990');
   assert.equal(s.gatePassed, true);
+  assert.deepEqual(run.violations, []);
+  assert.equal(run.passed, true);
+});
+
+// ── 전체 리뷰 F7 — 관문에 「얼마나 대조했는가」의 하한을 둔다 ───────────────
+
+test('F7: 하한은 gate-snapshot 에서 읽는다 — 파트 13 · 셀 29,561', () => {
+  const floor = readGateFloor();
+  assert.ok(floor);
+  assert.equal(floor.parts, 13);
+  assert.equal(floor.comparable, 29561);
+  assert.equal(run.parts.length, floor.parts);
+  assert.equal(run.summary.comparable, floor.comparable);
+});
+
+test('F7: 확정본 파일이 빠져 part 를 건너뛰면 관문이 실패한다', () => {
+  // 확정본 하나를 **없는 것으로 만든다**(exists 주입). 옛 관문은 그 part 를 통째로
+  // 건너뛰고도 통과를 찍었다 — 방어선이 관문이 아니라 시험 스위트의 하드코딩된
+  // 숫자뿐이었다.
+  // part 둘로 좁혀 돌리고(둘 다 면제가 없는 part 다) 하나의 확정본을 숨긴다.
+  // 면제 목록도 숨긴다 — 그러면 **판정 조건은 전부 만족**(불일치 0 · 오류 0 · 미지원 0 ·
+  // 값없음 0 · 묵은 면제 0)이 되어, 옛 관문이라면 그대로 「통과」를 찍는 상황이 된다.
+  const hidden = 'part1_2.json';
+  const gone = (p: string, name: string) =>
+    p.endsWith(`\\${name}`) || p.endsWith(`/${name}`);
+  const one = runGate({
+    readDir: (p) => readdirSync(p).filter((f) => f === hidden || f === 'part1_3.json'),
+    exists: (p) => (gone(p, 'known-divergences.json')
+      || (gone(p, hidden) && p.includes('oracle')) ? false : existsSync(p)),
+    log: () => {},
+  });
+  assert.deepEqual(one.skipped, ['part1_2']);
+  assert.deepEqual(one.parts, ['part1_3']);
+  // 판정 조건만 보면 통과다 — 이것이 F7 이 지적한 그 구멍이다.
+  assert.equal(one.summary.gatePassed, true);
+  // 규모 하한이 그것을 잡는다.
+  assert.ok(one.violations.some((w) => w.includes('건너뛴 파트')), one.violations.join(' | '));
+  assert.equal(one.passed, false, '건너뛴 part 가 있는데 관문이 통과했다');
+});
+
+test('F7: part 하나 어치의 셀이 빠지면 규모 하한이 그것을 잡는다', () => {
+  // 확정본이 **잘린** 경우(파일은 있고 값이 없다)는 건너뜀으로 잡히지 않는다 —
+  // 그때 남는 방어선이 셀 수 하한이다. 실제 관문 결과에서 part 하나를 덜어 확인한다.
+  const floor = readGateFloor();
+  const short = run.rows.filter((r) => r.part !== 'part1_2');
+  const v = floorViolations(
+    { parts: run.parts.filter((p) => p !== 'part1_2'), skipped: [], summary: summarize(short) },
+    floor);
+  assert.ok(v.some((w) => w.includes('대조한 셀')), v.join(' | '));
+  assert.ok(v.some((w) => w.includes('대조한 파트')), v.join(' | '));
+  // 규모가 그대로면 위반이 없다 (하한이 「항상 실패」가 아니라는 확인)
+  assert.deepEqual(floorViolations(run, floor), []);
 });
 
 test('--from-formulas 경로가 살아 있고 cellmap 경로와 셀 단위로 같다', () => {

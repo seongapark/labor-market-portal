@@ -58,6 +58,11 @@ export function summarize(rows: CellResult[], stale = 0): Summary {
   // 세 칸에 대해 거짓이다 — 면제표가 아무리 잘 보여도 그렇다. 넘치게 말하지 않는 수가
   // 둥근 수보다 낫다. 관문(gatePassed)에서만 빼고 분모에는 남긴다.
   const kd = byVerdict['known-divergence'] ?? 0;
+  // 전체 리뷰 F7: `no-oracle`(확정본에 값이 없는 칸)이 관문 조건에 없었다. 확정본이
+  // 잘리거나 지면이 빠지면 그 칸들이 조용히 분모에서 빠지고 관문은 통과를 찍는다
+  // (리뷰어가 part1_1 의 p8 을 지워 697칸이 no-oracle 로 옮겨가는 것을 확인했다).
+  // 지금 전 관문에서 0건이다 — 수식이 있는 지면 칸에는 인쇄된 값이 반드시 있다.
+  const no = byVerdict['no-oracle'] ?? 0;
   const comparable = m + mm + er + kd;
   return {
     total: rows.length,
@@ -68,9 +73,59 @@ export function summarize(rows: CellResult[], stale = 0): Summary {
     // 없다는 뜻이라 관문을 통과시키지 않는다.
     // 묵은 면제(stale)는 반드시 실패다 — 면제 목록이 낡은 채로 통과하면 그 칸들이
     // 영원히 눈먼 자리가 된다.
-    gatePassed: mm === 0 && er === 0 && un === 0 && stale === 0,
+    gatePassed: mm === 0 && er === 0 && un === 0 && stale === 0 && no === 0,
     byVerdict, byPart,
   };
+}
+
+/** 전체 리뷰 F7: 관문에 **「얼마나 대조했는가」의 하한**이 없었다. `gatePassed` 는
+    「불일치·오류·미지원이 0」만 요구하므로, 확정본 파일 하나가 사라지면 그 part 를
+    통째로 건너뛰고도 통과한다. 지금까지 그것을 막던 것은 `materialize.test.ts` 의
+    하드코딩된 숫자뿐이었다 — 방어선이 관문이 아니라 시험 스위트에 있었다.
+    하한은 `data/gate-snapshot.json` 에서 읽는다: 거기에 관문이 통과한 순간의 대조
+    대상(29,561칸)이 좌표째로 들어 있어, 파트 수와 셀 수를 따로 적어 둘 필요가 없다. */
+export type GateFloor = { parts: number; comparable: number; from: string };
+
+export function readGateFloor(
+  dataDir = 'data',
+  readFile: (p: string) => string = (p) => readFileSync(p, 'utf8'),
+  exists: (p: string) => boolean = (p) => existsSync(p),
+): GateFloor | null {
+  const file = join(dataDir, 'gate-snapshot.json');
+  if (!exists(file)) return null;
+  const snap = JSON.parse(readFile(file)) as
+    { comparable?: number; values?: Record<string, unknown> };
+  const keys = Object.keys(snap.values ?? {});
+  return {
+    parts: new Set(keys.map((k) => k.split('!')[0])).size,
+    comparable: snap.comparable ?? keys.length,
+    // 리포트에 찍히는 문자열이다 — 플랫폼마다 구분자가 달라지면 커밋된 리포트가 흔들린다.
+    from: file.replace(/\\/g, '/'),
+  };
+}
+
+/** 하한을 어긴 사유들. 하나라도 있으면 관문은 통과가 아니다. */
+export function floorViolations(
+  run: { parts: string[]; skipped: string[]; summary: Summary },
+  floor: GateFloor | null,
+): string[] {
+  const v: string[] = [];
+  // 건너뛴 part 는 그 자체로 위반이다 — 대조하지 않은 것을 통과라고 부르지 않는다.
+  if (run.skipped.length) {
+    v.push(`확정본이 없어 건너뛴 파트 ${run.skipped.length}개: ${run.skipped.join(', ')}`);
+  }
+  if (!floor) {
+    v.push('대조 규모의 하한을 읽을 수 없다 — data/gate-snapshot.json 이 없다 '
+      + '(먼저 `npm run build:snapshot` 으로 기준을 만든다)');
+    return v;
+  }
+  if (run.parts.length < floor.parts) {
+    v.push(`대조한 파트가 ${run.parts.length}개다 — 하한 ${floor.parts}개 (${floor.from})`);
+  }
+  if (run.summary.comparable < floor.comparable) {
+    v.push(`대조한 셀이 ${run.summary.comparable}개다 — 하한 ${floor.comparable}개 (${floor.from})`);
+  }
+  return v;
 }
 
 /** 관문이 무엇을 읽고 돌 것인가.
@@ -106,6 +161,11 @@ export type GateRun = {
   known: KnownDivergence[];
   exempt: CellResult[];
   summary: Summary;
+  /** F7: 대조 규모의 하한(gate-snapshot 기준)과 그것을 어긴 사유 */
+  floor: GateFloor | null;
+  violations: string[];
+  /** 관문 통과 = 판정 조건 + 규모 하한 둘 다 */
+  passed: boolean;
 };
 
 export function runGate(opts: GateOpts = {}): GateRun {
@@ -170,8 +230,11 @@ export function runGate(opts: GateOpts = {}): GateRun {
   // 묵은 항목(이제 일치하거나 값이 달라진 것)은 경고로 찍고 관문을 실패시킨다.
   const stale: StaleDivergence[] = applyKnownDivergences(rows, known).stale;
   const exempt = rows.filter((r) => r.verdict === 'known-divergence');
+  const summary = summarize(rows, stale.length);
+  const floor = readGateFloor(dataDir, readFile, exists);
+  const violations = floorViolations({ parts, skipped, summary }, floor);
   return { source, year: YEAR, anchor, parts, skipped, rows, stale, known, exempt,
-           summary: summarize(rows, stale.length) };
+           summary, floor, violations, passed: summary.gatePassed && violations.length === 0 };
 }
 
 function main() {
@@ -190,6 +253,10 @@ function main() {
     for (const x of stale) {
       console.log(`  ${x.entry.part}!${x.entry.sheet}!${x.entry.ref}: ${x.why}`);
     }
+  }
+  if (run.violations.length) {
+    console.log('\n[경고] 대조 규모가 하한에 못 미친다 — 관문을 실패시킨다:');
+    for (const w of run.violations) console.log('  ' + w);
   }
 
   const s = run.summary;
@@ -214,8 +281,15 @@ function main() {
     `- 면제(known-divergence) **${s.byVerdict['known-divergence'] ?? 0}** — 사용자가 「인쇄본이 틀렸다」고 판정한 칸. 확정본은 고치지 않았다(확정본은 계속 「인쇄된 것」을 뜻한다). 대조 분모·관문에서 제외하지만 **차이가 그대로일 때만** 면제된다.`,
     `- 일치율 **${(s.rate * 100).toFixed(3)}%** — 분모는 대조 가능 ${s.comparable} 이고 **면제 ${s.byVerdict['known-divergence'] ?? 0}건도 분모에 든다**(인쇄본을 재현하지 못한 칸이므로). presentation 만 분모에서 뺀다.`,
     '',
-    `## 관문: ${s.gatePassed ? '통과' : '미통과'} (불일치 0 · 오류 0 · 파싱못함 0 · 묵은 면제 0 — presentation 과 면제는 제외)`,
+    `## 관문: ${run.passed ? '통과' : '미통과'} (불일치 0 · 오류 0 · 파싱못함 0 · 확정본에 값 없음 0 · 묵은 면제 0 — presentation 과 면제는 제외)`,
     '',
+    run.floor
+      ? `대조 규모 하한: 파트 ${run.floor.parts} · 셀 ${run.floor.comparable} (${run.floor.from}) — 확정본 파일이 빠져 part 를 건너뛰면 관문이 실패한다.`
+      : '대조 규모 하한: **없다** — data/gate-snapshot.json 이 없다.',
+    '',
+    ...(run.violations.length
+      ? ['### [경고] 규모 하한 위반 — 관문 실패 사유', '',
+         ...run.violations.map((w) => `- ${w}`), ''] : []),
     ...(exempt.length ? ['### 면제 내역', '', '| 좌표 | 확정본(인쇄) | 계산 | 판정자 · 날짜 | 사유 |', '|---|---|---|---|---|',
       ...exempt.map((r) => {
         const e = known.find((k) => k.part === r.part && k.sheet === r.sheet && k.ref === r.ref)!;
@@ -263,9 +337,9 @@ function main() {
   writeFileSync(join('reports', 'unsupported-reasons.md'), rl.join('\n') + '\n');
 
   console.log('\n일치율 %s%% · 관문 %s',
-    (s.rate * 100).toFixed(3), s.gatePassed ? '통과' : '미통과');
+    (s.rate * 100).toFixed(3), run.passed ? '통과' : '미통과');
   console.log('리포트: reports/verify-summary.md · verify-detail.jsonl · unsupported-reasons.md');
-  process.exit(s.gatePassed ? 0 : 1);
+  process.exit(run.passed ? 0 : 1);
 }
 
 // Windows 에서 구분자·대소문자가 어긋날 수 있어 경로 문자열 비교를 쓰지 않는다.
