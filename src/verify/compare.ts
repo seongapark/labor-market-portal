@@ -43,13 +43,22 @@ export type OracleDump = Record<string, Record<string, string | number>>;
 
 const REL = 1e-9;
 
+/** 제대로 세 자리씩 끊은 숫자 문자열만 — "1,234.5" 는 맞고 "1,2" · "12,34" 는 아니다 */
+const GROUPED = /^-?\d{1,3}(?:,\d{3})+(?:\.\d+)?$/;
+
 /** 유한한 숫자로 읽히는가. 공백만 있는 문자열은 숫자로 치지 않는다 — Number('') 가
-    0 이 되어 sameValue('', 0) 을 참으로 만드는 것을 막는다. */
+    0 이 되어 sameValue('', 0) 을 참으로 만드는 것을 막는다.
+    Task 9 단위 8: 천단위 구분자가 찍힌 숫자 문자열도 숫자로 읽는다 — TEXT(G6,"#,##0") 의
+    결과 "211,983" 과, 그 값을 Excel COM 이 숫자로 강제 변환해 담은 오라클 211983 은
+    같은 값의 두 표현이다(단위 4 CHANGE 1 의 "84.0" vs 84 와 같은 사정, 실측 307건).
+    구분자 모양이 정확할 때만 벗긴다 — 같은 문자열끼리는 어차피 같으므로 이 완화가
+    맞던 대조를 틀리게 만들 수는 없다. */
 function asFiniteNumber(v: unknown): number | null {
   if (typeof v === 'number') return Number.isFinite(v) ? v : null;
   if (typeof v === 'string') {
-    if (v.trim() === '') return null;
-    const n = Number(v);
+    const s = v.trim();
+    if (s === '') return null;
+    const n = Number(GROUPED.test(s) ? s.replace(/,/g, '') : s);
     return Number.isFinite(n) ? n : null;
   }
   return null;

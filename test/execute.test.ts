@@ -367,3 +367,28 @@ test('sumifs: etc 소스는 long 테이블이 없어 src 를 담아 던진다', 
     }
   );
 });
+
+// Task 9 단위 8: & 는 엑셀 일반 서식으로 숫자를 문자로 바꾼다 — 2025 는 "2025" 다
+test('concat: 숫자와 문자를 이어붙이면 문자열이다', () => {
+  const db = null as never;
+  const c = { db, grids: { p1: { B5: 2021, C5: 21.049999999999997 } }, sheet: 'p1', year: '2025' };
+  assert.equal(execute({ op: 'concat', args: [{ op: 'cell', ref: 'B5' }, { op: 'str', v: '년' }] }, c), '2021년');
+  assert.equal(execute({ op: 'concat', args: [{ op: 'cell', ref: 'C5' }, { op: 'str', v: '%' }] }, c), '21.05%');
+  // 오류(null)인 하위식은 그대로 오류로 흘러간다
+  assert.equal(execute({ op: 'concat',
+    args: [{ op: 'div', a: { op: 'const', v: 1 }, b: { op: 'const', v: 0 } }, { op: 'str', v: '년' }] }, c), null);
+});
+
+// Task 9 단위 8: "#,##0" 은 천단위 구분자를 찍는다 — & 로 이어붙인 지면 문구가 그것을 쓴다
+test('text: 형식에 콤마가 있으면 천단위 구분자를 찍는다', () => {
+  const db = null as never;
+  const c = { db, grids: { p1: { B11: 4205, C12: 25839, D1: -1234567.44 } }, sheet: 'p1', year: '2025' };
+  assert.equal(execute({ op: 'text', inner: { op: 'cell', ref: 'B11' }, decimals: 0, group: true }, c), '4,205');
+  assert.equal(execute({ op: 'text', inner: { op: 'cell', ref: 'D1' }, decimals: 1, group: true }, c), '-1,234,567.4');
+  // 콤마가 없는 형식은 그대로다
+  assert.equal(execute({ op: 'text', inner: { op: 'cell', ref: 'C12' }, decimals: 0 }, c), '25839');
+  assert.equal(execute({ op: 'concat', args: [
+    { op: 'str', v: '월평균 ' },
+    { op: 'text', inner: { op: 'cell', ref: 'B11' }, decimals: 0, group: true },
+    { op: 'str', v: '천원' }] }, c), '월평균 4,205천원');
+});

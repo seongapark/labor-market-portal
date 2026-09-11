@@ -172,6 +172,16 @@ function numberValue(v: number | string | null): number | null {
   return pct ? n / 100 : n;
 }
 
+/** Task 9 단위 8: & 가 숫자를 문자로 바꿀 때 엑셀은 일반(General) 서식을 쓴다 —
+    2025 는 "2025" 이지 "2025.0" 이 아니다. 부동소수 꼬리는 유효자릿수 15 로 잘라
+    없앤다(엑셀이 표시하는 자릿수와 같다). null 은 오류이므로 그대로 null 이다. */
+function textOf(v: number | string | null): string | null {
+  if (v === null) return null;
+  if (typeof v === 'string') return v;
+  if (!Number.isFinite(v)) return null;
+  return String(Number(v.toPrecision(15)));
+}
+
 /** Task 9 단위 3: if 가 참으로 볼 값 — 0 이 아니고 빈 문자열도 아니면 참이다.
     null 은 거짓이다(연도 조건 셀이 없어 던지는 경우는 여기 오지 않는다 — 그건 예외다). */
 function truthy(v: number | string | null): boolean {
@@ -208,11 +218,17 @@ function cmpResult(rel: 'eq' | 'ne' | 'lt' | 'lte' | 'gt' | 'gte',
     반올림되지만, 15 유효자릿수로 줄이면 정확히 21.05 가 되고 그 다음에야 사사오입해
     21.1 이 된다. 두 단계를 순서대로 밟아야 한다 — 한 번에 반올림하면 21.0 이 나와
     틀린다(part3!p223!O31 실측). */
-function textFixed(n: number, decimals: number): string {
+function textFixed(n: number, decimals: number, group = false): string {
   const n15 = Number(n.toPrecision(15));
   const factor = 10 ** decimals;
   const rounded = Math.sign(n15) * Math.round(Math.abs(n15) * factor);
-  return (rounded / factor).toFixed(decimals);
+  const s = (rounded / factor).toFixed(decimals);
+  if (!group) return s;
+  // Task 9 단위 8: "#,##0" 은 천단위 구분자를 찍는다. 정수부만 세 자리씩 끊는다.
+  const neg = s.startsWith('-');
+  const [int, frac] = (neg ? s.slice(1) : s).split('.');
+  const grouped = int.replace(/\B(?=(\d{3})+$)/g, ',');
+  return (neg ? '-' : '') + grouped + (frac ? '.' + frac : '');
 }
 
 export function execute(e: Expr, ctx: ExecCtx): number | string | null {
@@ -254,6 +270,15 @@ export function execute(e: Expr, ctx: ExecCtx): number | string | null {
       return v === null ? null : v / 100;
     }
     case 'numbervalue': return numberValue(execute(e.inner, ctx));
+    case 'concat': {
+      let s = '';
+      for (const a of e.args) {
+        const t = textOf(execute(a, ctx));
+        if (t === null) return null;         // 오류인 하위식은 그대로 오류로 흘려보낸다
+        s += t;
+      }
+      return s;
+    }
     case 'zeroDash': {
       const v = num(execute(e.inner, ctx));
       return v === 0 ? '-' : v;
@@ -266,7 +291,7 @@ export function execute(e: Expr, ctx: ExecCtx): number | string | null {
       const v = execute(e.inner, ctx);
       return typeof v === 'number' && Number.isFinite(v) ? 1 : 0;
     }
-    case 'text': return textFixed(num(execute(e.inner, ctx)), e.decimals);
+    case 'text': return textFixed(num(execute(e.inner, ctx)), e.decimals, e.group);
     case 'iferror': {
       // Task 9 단위 3: inner 의 실행 결과가 null 이면 오류로 본다(div 는 0 나눗셈을
       // null 로 낸다) — fallback 을 실행한다. null 이 아니면 inner 값을 그대로 낸다.

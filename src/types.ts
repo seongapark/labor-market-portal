@@ -36,12 +36,17 @@ export type Expr =
   | { op: 'cmp'; rel: 'eq' | 'ne' | 'lt' | 'lte' | 'gt' | 'gte'; a: Expr; b: Expr }
   | { op: 'and'; args: Expr[] }
   | { op: 'isnumber'; inner: Expr }
-  | { op: 'text'; inner: Expr; decimals: number }   // TEXT(x,"0.0") 같은 형식 — 결과는 문자열
+  // TEXT(x,"0.0") 같은 형식 — 결과는 문자열. group 은 "#,##0" 처럼 형식에 천단위
+  // 구분자가 있는 경우다(Task 9 단위 8: & 로 이어붙이면 구분자가 지면에 그대로 찍힌다).
+  | { op: 'text'; inner: Expr; decimals: number; group?: boolean }
   | { op: 'iferror'; inner: Expr; fallback: Expr }
   // Task 9 단위 4 (CHANGE 2): NUMBERVALUE(x) — "69.3%" 같은 문자열을 숫자로 읽는다.
   // 껍데기만 벗기던 예전 동작(문자열이 그대로 산술로 새어나가 num() 이 0 으로 뭉갬)을
   // 대체한다. 파싱 못하면 execute 가 오류(null)를 낸다 — 0 으로 조용히 넘기지 않는다.
   | { op: 'numbervalue'; inner: Expr }
+  // Task 9 단위 8: 문자열 이어붙이기 a&b — 지면의 연도 씨앗셀이 이 모양이다
+  // (=(_시계열!$B$1-3)&"년" → "2022년"). 결과는 언제나 문자열이다.
+  | { op: 'concat'; args: Expr[] }
   | { op: 'unsupported'; reason: string; formula: string };
 
 /** 한 시트의 값 격자. 셀 참조를 푸는 데 쓴다. 'A14' → 값 */

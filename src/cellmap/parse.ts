@@ -161,25 +161,48 @@ const CMP_REL: Record<string, 'eq' | 'ne' | 'lt' | 'lte' | 'gt' | 'gte'> = {
 /** 비교는 산술보다 우선순위가 낮다 — 산술식을 좌우로 한 번씩만 허용한다
     (엑셀 자체가 연쇄비교 a<b<c 를 모르므로 반복시키지 않는다) */
 function parseCompare(p: P): Expr {
-  const left = parseExpr(p);
+  const left = parseConcat(p);
   const t = peek(p);
   if (t?.t === 'op' && t.v in CMP_REL) {
     p.i++;
-    const right = parseExpr(p);
+    const right = parseConcat(p);
     return { op: 'cmp', rel: CMP_REL[t.v], a: left, b: right };
   }
   return left;
 }
 
-/** Task 9 단위 3: TEXT(x,"0.0") 의 형식 문자열 → 소수 자릿수.
-    실측(FAMILY 1)에 나온 형식은 "#,##0" · "0.0" · "0.00" 세 가지뿐이었다 — 콤마(천단위
-    구분자)는 세지 않는다: 이 대조 대상 오라클 자체가 콤마 없는 숫자 문자열이기 때문이다
-    (예: part3!p214!O6, TEXT(211983,"#,##0") 의 오라클이 211983 이지 "211,983" 이 아니다).
+/** Task 9 단위 8: 이어붙이기 & — 엑셀 우선순위에서 산술보다 낮고 비교보다 높다.
+    지면의 연도 씨앗셀 147건이 이 모양(=_시계열!B12&"년")이라 '남은 토큰이 있다'로
+    미지원에 쌓여 있었다. 왼쪽부터 평평하게 모은다. */
+function parseConcat(p: P): Expr {
+  let left = parseExpr(p);
+  for (;;) {
+    const t = peek(p);
+    if (t?.t === 'op' && t.v === '&') {
+      p.i++;
+      const right = parseExpr(p);
+      left = left.op === 'concat'
+        ? { op: 'concat', args: [...left.args, right] }
+        : { op: 'concat', args: [left, right] };
+      continue;
+    }
+    break;
+  }
+  return left;
+}
+
+/** Task 9 단위 3: TEXT(x,"0.0") 의 형식 문자열 → 소수 자릿수 + 천단위 구분자 여부.
+    실측(FAMILY 1)에 나온 형식은 "#,##0" · "0.0" · "0.00" 세 가지뿐이었다.
+    Task 9 단위 8 (정정): 예전에는 콤마(천단위 구분자)를 세지 않았다 — 오라클이 콤마 없는
+    숫자였기 때문이다(part3!p214!O6 은 차트 레이블 열이라 Excel COM 이 "211,983" 을
+    211983 으로 강제 변환해 담았다). 그런데 & 로 이어붙인 셀에서는 그 문자열이 그대로
+    지면에 찍힌다 — part1_6!p104!B18 의 확정본이 "월평균 4,205천원" 이다. 엑셀대로
+    구분자를 찍고, 숫자로 강제 변환된 오라클 쪽은 compare 의 sameValue 가 받아준다.
     일반형 "[#,]*0(.0+)?" 을 벗어나면 추측하지 않고 형식 문자열을 이유에 남겨 unsupported 로 던진다. */
-function textFormatDecimals(fmt: string): number {
+function textFormat(fmt: string): { decimals: number; group: boolean } {
   const m = /^[#,]*0(?:\.(0+))?$/.exec(fmt);
   if (!m) throw new Error(`TEXT 형식을 모른다: ${fmt}`);
-  return m[1] ? m[1].length : 0;
+  return { decimals: m[1] ? m[1].length : 0, group: fmt.includes(',') };
 }
 
 /** 단항/이항 산술을 왼쪽부터. 엑셀 우선순위는 * / 가 + - 보다 높다 */
@@ -295,8 +318,8 @@ function parseAtom(p: P): Expr {
       if (!fmtToks || fmtToks.length !== 1 || fmtToks[0].t !== 'str') {
         throw new Error('TEXT 형식 인자를 못 읽었다: ' + JSON.stringify(fmtToks));
       }
-      const decimals = textFormatDecimals(fmtToks[0].v);
-      return { op: 'text', inner: parseTokens(args[0], p.ctx), decimals };
+      const { decimals, group } = textFormat(fmtToks[0].v);
+      return { op: 'text', inner: parseTokens(args[0], p.ctx), decimals, group };
     }
     if (t.v === 'NUMBERVALUE') {
       // Task 9 단위 4 (CHANGE 2): 예전에는 껍데기만 벗기고 문자열을 그대로 산술로

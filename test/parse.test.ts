@@ -147,17 +147,18 @@ test('FAMILY 1: IF(ISNUMBER(G8),TEXT(G8,"0.0"),"-") 는 if/isnumber/text 트리�
   assert.deepEqual(e, {
     op: 'if',
     cond: { op: 'isnumber', inner: { op: 'cell', ref: 'G8' } },
-    then: { op: 'text', inner: { op: 'cell', ref: 'G8' }, decimals: 1 },
+    then: { op: 'text', inner: { op: 'cell', ref: 'G8' }, decimals: 1, group: false },
     else: { op: 'str', v: '-' },
   });
 });
 
-// FAMILY 1 실측: part3!p214!O6 은 "#,##0" 형식을 쓴다 — 소수 0 자리
-test('FAMILY 1 실측: part3!p214!O6 — TEXT(G6,"#,##0") 은 소수 0 자리다', () => {
+// FAMILY 1 실측: part3!p214!O6 은 "#,##0" 형식을 쓴다 — 소수 0 자리에 천단위 구분자
+// (단위 8 에서 정정: 구분자를 세지 않으면 & 로 이어붙인 지면 문구가 "4205천원" 이 된다)
+test('FAMILY 1 실측: part3!p214!O6 — TEXT(G6,"#,##0") 은 소수 0 자리 + 천단위 구분자다', () => {
   const e = parseFormula('=IF(ISNUMBER(G6),TEXT(G6,"#,##0"),"-")', ctx);
   assert.equal(e.op, 'if');
   const thenE = (e as { then: any }).then;
-  assert.deepEqual(thenE, { op: 'text', inner: { op: 'cell', ref: 'G6' }, decimals: 0 });
+  assert.deepEqual(thenE, { op: 'text', inner: { op: 'cell', ref: 'G6' }, decimals: 0, group: true });
 });
 
 test('FAMILY 1: 못 알아보는 TEXT 형식은 형식 문자열을 이유로 남기고 unsupported 다', () => {
@@ -207,4 +208,23 @@ test('FAMILY 3: AND(B$21<2020,C$21>=2020) 경계 규칙과 IFERROR 가 실제 �
   assert.equal(elseE.op, 'iferror');
   assert.deepEqual(elseE.fallback, { op: 'str', v: '-' });
   assert.equal(elseE.inner.op, 'div');
+});
+
+// Task 9 단위 8: 이어붙이기 & — 지면의 연도 씨앗셀 모양
+test('& 는 concat 이 되고 산술보다 늦게, 비교보다 먼저 묶인다', () => {
+  assert.deepEqual(parseFormula('=(_시계열!$B$1-3)&"년"', ctx), {
+    op: 'concat',
+    args: [
+      { op: 'sub', a: { op: 'cell', sheet: '_시계열', ref: 'B1' }, b: { op: 'const', v: 3 } },
+      { op: 'str', v: '년' },
+    ],
+  });
+  // 셋 이상은 평평하게 모인다
+  const e = parseFormula('=A1&"년 "&B1&"개월"', ctx);
+  assert.equal(e.op, 'concat');
+  assert.equal((e as { args: unknown[] }).args.length, 4);
+  // 비교보다 먼저 묶인다: (A1&"년") = "2025년"
+  const c = parseFormula('=A1&"년"="2025년"', ctx);
+  assert.equal(c.op, 'cmp');
+  assert.equal((c as { a: { op: string } }).a.op, 'concat');
 });

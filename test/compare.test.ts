@@ -150,3 +150,13 @@ test('verifyPart: 보조시트(_) 는 대조하지 않지만 참조 대상으로
   assert.equal(res[0].verdict, 'match');
   assert.equal(res[0].got, 2024);
 });
+
+// Task 9 단위 8: TEXT(x,"#,##0") 의 결과 "211,983" 과, 그것을 숫자로 강제 변환해 담은
+// 오라클 211983 은 같은 값이다. 구분자 모양이 정확할 때만 벗긴다.
+test('sameValue: 천단위 구분자가 찍힌 숫자 문자열을 숫자로 읽는다', () => {
+  assert.equal(sameValue('211,983', 211983), true);
+  assert.equal(sameValue(1234.5, '1,234.5'), true);
+  assert.equal(sameValue('1,2', 12), false);
+  assert.equal(sameValue('12,34', 1234), false);
+  assert.equal(sameValue('4,205천원', 4205), false);
+});
