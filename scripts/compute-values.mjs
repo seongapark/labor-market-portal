@@ -43,8 +43,19 @@ for (const [key, v] of Object.entries(constants)) {
 }
 
 const values = {};
-const stats = { computed: 0, failed: 0, nonExpr: 0, passes: 0 };
+const stats = { computed: 0, presentation: 0, failed: 0, nonExpr: 0, passes: 0 };
 const reasons = {};
+
+/** Task 9 단위 13: 이 명세로 계산할 식이 있는가.
+ *
+ *  `kind:'expr'` 이면 그 식이고, `kind:'presentation'` 이면 **함께 실린 계산용 식**이다.
+ *  OECD 부록(p214~p240)은 값 크기로 정렬된 표이고, 그 정렬 수식(시트 수식어 붙은
+ *  INDEX/MATCH · RANK · COUNTIF · ROW)이 presentation 으로 갈려 있다. 정렬 결과를
+ *  상수로 동결하면 원데이터가 바뀌어도 순서가 얼어붙으므로 **계산해야 한다**.
+ *  관문은 같은 명세의 `e` 를 보지 않는다(`kind !== 'expr'` 로 빠진다) — presentation
+ *  3,364칸은 계속 대조 분모 밖이다. 두 경로가 갈리는 지점이 이 한 줄이다. */
+const exprOf = (spec) =>
+  spec.kind === 'expr' ? spec.e : (spec.kind === 'presentation' ? spec.e : undefined);
 
 /* 고정점 반복으로 계산한다.
  *
@@ -64,10 +75,13 @@ for (const [part, m] of Object.entries(maps)) {
     pass++;
     for (const [sheet, cells] of Object.entries(m.sheets)) {
       for (const [ref, spec] of Object.entries(cells)) {
-        if (spec.kind !== 'expr') continue;
+        const e = exprOf(spec);
+        if (!e) continue;
         let v;
         try {
-          v = execute(spec.e, { db, grids, sheet, anchor: anchorCtx });
+          // `ref` 는 `ROW()`(인자 없는 자기 행)의 유일한 출처다 — 부록의 정렬 수식
+          // 1,386건이 `MATCH(ROW()-5, …)` 로 자기 행을 정렬 순번으로 쓴다.
+          v = execute(e, { db, grids, sheet, ref, anchor: anchorCtx });
         } catch (err) {
           fail.set(sheet + '!' + ref, String(err && err.message ? err.message : err).slice(0, 90));
           continue;
@@ -82,9 +96,12 @@ for (const [part, m] of Object.entries(maps)) {
 
   for (const [sheet, cells] of Object.entries(m.sheets)) {
     for (const [ref, spec] of Object.entries(cells)) {
-      if (spec.kind !== 'expr') { stats.nonExpr++; continue; }
+      if (!exprOf(spec)) { stats.nonExpr++; continue; }
       const v = grids[sheet]?.[ref];
-      if (v !== undefined && v !== null) { values[`${part}!${sheet}!${ref}`] = v; stats.computed++; }
+      if (v === undefined || v === null) continue;
+      values[`${part}!${sheet}!${ref}`] = v;
+      stats.computed++;
+      if (spec.kind === 'presentation') stats.presentation++;
     }
   }
   for (const r of fail.values()) { stats.failed++; reasons[r] = (reasons[r] || 0) + 1; }
@@ -125,8 +142,9 @@ const out = {
   values,
 };
 writeFileSync(join(dataDir, 'computed-values.json'), JSON.stringify(out));
-console.log('계산 ' + stats.computed + ' · 실패 ' + stats.failed
-  + ' · 명세 아님(미지원·표현) ' + stats.nonExpr + ' · 최대 반복 ' + stats.passes + '회');
+console.log('계산 ' + stats.computed + '(그 중 정렬·표시 ' + stats.presentation + ')'
+  + ' · 실패 ' + stats.failed
+  + ' · 계산할 식 없음 ' + stats.nonExpr + ' · 최대 반복 ' + stats.passes + '회');
 if (Object.keys(reasons).length) {
   console.log('실패 사유 상위:');
   Object.entries(reasons).sort((a, b) => b[1] - a[1]).slice(0, 6)

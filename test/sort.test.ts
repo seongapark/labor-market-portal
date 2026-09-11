@@ -1,14 +1,14 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { readFileSync, readdirSync } from 'node:fs';
+import { join, basename } from 'node:path';
 import { parseFormula } from '../src/cellmap/parse.ts';
 import { specOf } from '../src/cellmap/build.ts';
 import { execute } from '../src/query/execute.ts';
-import { makeAnchorCtx, ANCHOR_SEAT } from '../src/query/anchor.ts';
+import { makeAnchorCtx, makeAnchorCtxFromMap, ANCHOR_SEAT } from '../src/query/anchor.ts';
 import { sameValue } from '../src/verify/compare.ts';
-import type { Expr, Grid, Headers } from '../src/types.ts';
+import type { CellMap, Expr, Grid, Headers } from '../src/types.ts';
 
 // Task 9 단위 13 — **정렬 수식을 계산 경로에 넣는다.**
 //
@@ -211,4 +211,70 @@ test('13개국 표: part3!_13개국!B3 · D3 (지면 값을 국가명으로 끌�
 
 test('13개국 정렬 결과: part3!p214!A48 = "미국"', () => {
   assertComputes('p214', 'A48', '미국');
+});
+
+// ── 5. 전건: 물화된 cellmap 의 presentation 이 전부 계산되고 인쇄본과 같다 ───
+
+test('물화: presentation 5,132칸 전부가 계산용 e 를 싣고 있다', () => {
+  let presentation = 0, withE = 0;
+  for (const f of readdirSync(join('data', 'cellmap'))) {
+    if (!f.endsWith('.json')) continue;
+    const m = JSON.parse(readFileSync(join('data', 'cellmap', f), 'utf8')) as CellMap;
+    for (const cells of Object.values(m.sheets)) {
+      for (const spec of Object.values(cells)) {
+        if (spec.kind !== 'presentation') continue;
+        presentation++;
+        if (spec.e) withE++;
+      }
+    }
+  }
+  // 하나라도 e 를 잃으면 그 지면의 정렬이 계산 경로에서 빈칸이 된다 — 조용히 「-」가 찍힌다.
+  assert.equal(presentation, 5132);
+  assert.equal(withE, 5132);
+});
+
+test('전건: presentation 의 정렬 결과가 인쇄된 값과 같다 (지면 3,364 · 보조시트 1,768)', () => {
+  // 관문은 이 칸들을 대조하지 않는다(구현하지 않기로 정한 범주다). 그래서 「정렬을
+  // 계산하기로」 한 이 단위는 **따로** 증명해야 한다: 인쇄된 입력을 주면 인쇄된 순서가
+  // 나오는가. (원데이터만으로 같은 값이 나오는가는 `scripts/compare-computed.mjs` 가
+  // 전 파이프라인으로 본다 — 여기서 확정본을 격자로 쓰는 것은 정렬 논리만 떼어 보기
+  // 위해서다.)
+  //
+  // **보조시트를 함께 세는 이유**: 지면 칸은 INDEX/MATCH/ROW 뿐이고, 정렬 순위표
+  // (`_정렬기준!D` 등)를 확정본에서 읽어 온다 — 그래서 지면만 보면 RANK·COUNTIF 가
+  // 한 번도 돌지 않는다(변이 확인에서 「COUNTIF 가 언제나 1」이 지면 시험을 통과했다).
+  // RANK+COUNTIF 관용구는 보조시트에 있고, 거기에 동순위가 몰려 있다(값이 "-" 인 나라가
+  // 전부 -9.99E+307 로 묶인다).
+  const n: Record<string, number> = { 지면: 0, 보조: 0 };
+  const bad: string[] = [];
+  for (const f of readdirSync(join('data', 'cellmap'))) {
+    if (!f.endsWith('.json')) continue;
+    const part = basename(f, '.json');
+    const m = JSON.parse(readFileSync(join('data', 'cellmap', f), 'utf8')) as CellMap;
+    const o = JSON.parse(readFileSync(join('data', 'oracle', f), 'utf8')) as OracleDump;
+    const anchor = makeAnchorCtxFromMap(m, 2025, o[ANCHOR_SEAT.sheet]?.[ANCHOR_SEAT.ref]);
+    for (const [sheet, cells] of Object.entries(m.sheets)) {
+      for (const [ref, spec] of Object.entries(cells)) {
+        if (spec.kind !== 'presentation' || !spec.e) continue;
+        const want = o[sheet]?.[ref];
+        if (want === undefined) continue;              // 확정본에 값 없음 — 관문도 제외한다
+        n[sheet.startsWith('_') ? '보조' : '지면']++;
+        let got: string | number | null = null;
+        try {
+          got = execute(spec.e, { db: realDb, grids: o as Record<string, Grid>, sheet, ref, anchor });
+        } catch (err) {
+          bad.push(`${part}!${sheet}!${ref}: 던졌다 — ${(err as Error).message}`);
+          continue;
+        }
+        if (!sameValue(want, got)) {
+          bad.push(`${part}!${sheet}!${ref}: 확정본 ${JSON.stringify(want)} / 계산 ${JSON.stringify(got)}`);
+        }
+      }
+    }
+  }
+  assert.deepEqual(bad.slice(0, 10), []);
+  // 지면 수는 관문이 세는 presentation 과 같아야 한다 — 범위가 어긋나면 이 시험이
+  // 「무엇을 증명했는가」가 흐려진다.
+  assert.equal(n.지면, 3364);
+  assert.equal(n.보조, 1768);
 });
