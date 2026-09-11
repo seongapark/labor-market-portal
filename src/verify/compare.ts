@@ -1,9 +1,8 @@
 import type { DatabaseSync } from 'node:sqlite';
-import { parseFormula } from '../cellmap/parse.ts';
+import { buildCellMap } from '../cellmap/build.ts';
 import { execute } from '../query/execute.ts';
-import { makeAnchorCtx, ANCHOR_SEAT, type AnchorCtx } from '../query/anchor.ts';
-import { tokenize } from '../cellmap/tokenize.ts';
-import type { Grid, Headers } from '../types.ts';
+import { makeAnchorCtxFromMap, ANCHOR_SEAT, type AnchorCtx } from '../query/anchor.ts';
+import type { CellMap, Grid, Headers } from '../types.ts';
 
 export type Verdict = 'match' | 'mismatch' | 'unsupported' | 'no-oracle' | 'error' | 'presentation'
   // Task 9 단위 9: 사용자가 「인쇄본이 틀렸다」고 판정한 칸. 확정본은 고치지 않는다 —
@@ -55,27 +54,6 @@ export function applyKnownDivergences(
     out[out.indexOf(r)] = { ...r, verdict: 'known-divergence', reason: e.reason };
   }
   return { rows: out, stale };
-}
-
-// booklet 의 OECD 부록 페이지는 같은 시트의 값을 INDEX/MATCH/RANK 로 정렬·표시만
-// 한다 — 원천 통합문서에서 아무 것도 가져오지 않는다. 이 정렬 로직은 SQL 로 재구현하지
-// 않기로 계획 단계에서 결정했다: 이건 데이터가 아니라 표현(presentation)이다.
-// 실측 규칙(추측 아님): 파싱 실패 3,364건 중 외부통합문서 참조(ref.ext !== null)를
-// 하나라도 품은 건 0건이었다 — 전부 같은시트 참조([1]시트!같은 형태 없이)만 쓴다.
-// 그래서 판정 기준은 "같은시트 정렬 함수 이름이 이유에 나오는가" + "외부 참조가
-// 없는가" 의 AND 다. 정규식으로 대괄호([1])를 찾지 않는다 — 문자열 리터럴 안에
-// "[1]" 이 들어 있을 수 있어서다. tokenize 로 실제 토큰을 봐야 한다.
-const PRESENTATION_FN = /\b(INDEX|MATCH|RANK)\b/;
-
-function isPresentation(formula: string, reason: string): boolean {
-  if (!PRESENTATION_FN.test(reason)) return false;
-  let toks;
-  try {
-    toks = tokenize(formula);
-  } catch {
-    return false; // 토큰화조차 안 되면 외부 참조 여부를 확인할 수 없다 — 보수적으로 unsupported
-  }
-  return !toks.some((t) => t.t === 'ref' && t.ext !== null);
 }
 
 export type CellResult = {
@@ -152,47 +130,56 @@ export function verifyPart(
   if (!Number.isInteger(anchor)) {
     throw new Error(`기준연도(앵커)를 정수로 못 읽었다: ${JSON.stringify(year)}`);
   }
+  // Task 9 단위 11 (물화): 수식을 그때그때 파싱하는 것이 아니라, **cellmap 을 만들어
+  // 그것을 실행한다.** 물화 경로와 수식 경로가 같은 코드를 타므로 두 경로의 결과가
+  // 어긋날 수 없다 — 왕복 시험이 뜻을 갖는 이유다.
+  return verifyCellMap(part, buildCellMap(part, formulas, headers), oracle, db, anchor);
+}
+
+/** Task 9 단위 11: **물화된 cellmap 만으로** 한 part 를 대조한다.
+    수식 문자열도 헤더 매핑도 쓰지 않는다 — 필요한 것은 cellmap · 확정본 · DB 뿐이다.
+    이것이 「로컬 참고파일 없이 수치 관리」의 실행 지점이다. */
+export function verifyCellMap(
+  part: string,
+  map: CellMap,
+  oracle: OracleDump,
+  db: DatabaseSync,
+  anchor = 2025,
+): CellResult[] {
+  if (!Number.isInteger(anchor)) {
+    throw new Error(`앵커를 정수로 못 읽었다: ${JSON.stringify(anchor)}`);
+  }
   const out: CellResult[] = [];
-  const ctx = { extmap: formulas.extmap, headers };
 
-  // Task 9 단위 8: 연도는 확정본에서 읽지 않고 앵커('[N]0_수집현황'!$A$1)에서 계산한다.
-  // 작업본 수식을 이미 들고 있으니 그것으로 AnchorCtx 를 만든다. 앵커는 year(기본
-  // BASE_YEAR=2025)에서 온다 — 관문의 전제가 "인쇄된 값의 재현"이므로 2025 아닌 값으로
-  // 관문을 돌리면 주입 part 에서 RULING 17 단정이 던진다. 그게 맞는 실패다.
-  // 이로써 관문은 확정본의 연도를 *믿는* 대신 앵커에서 사슬이 제대로 계산되는지를
-  // *증명한다*. 앵커로 못 구하는 셀(수식이 없는 리터럴 등)만 격자로 떨어진다.
-  // Task 9 단위 10 (RULING 17): 앵커 수식이 없는 part(part1_5·part3)에는 앵커 자리에
-  // 값을 심는다. 확정본의 그 자리 값을 함께 넘겨 「얼어붙은 값 == 앵커」를 단정하게 한다 —
-  // 관문은 확정본을 들고 도는 유일한 호출부라 이 검사를 할 수 있는 유일한 자리다.
-  const anchorCtx: AnchorCtx = makeAnchorCtx(
-    formulas.sheets, anchor, oracle[ANCHOR_SEAT.sheet]?.[ANCHOR_SEAT.ref]);
+  // 단위 8·10: 연도는 확정본에서 읽지 않고 앵커에서 계산한다. 앵커 자리가 빈 통합문서
+  // (part1_5·part3)에는 RULING 17 로 값을 심고, 확정본의 그 자리 값으로 전제를 단정한다.
+  const anchorCtx: AnchorCtx = makeAnchorCtxFromMap(
+    map, anchor, oracle[ANCHOR_SEAT.sheet]?.[ANCHOR_SEAT.ref]);
 
-  // RULING 8: 실행기에는 파트 전체의 격자(시트명 → Grid)를 넘긴다. booklet 페이지 간
-  // 셀 참조('p68'!$F$5, 2,616건)와 보조시트(_시계열, 2,092건) 참조가 실측으로 나와,
-  // 단일 시트의 grid 로는 풀 수 없다. oracle 자체가 이미 { 시트명 → { 셀 → 값 } } 모양이라
-  // 그대로 grids 로 넘긴다 — 보조시트도 참조 대상으로는 남기고, 대조 지면으로만 건너뛴다.
+  // RULING 8: 실행기에는 파트 전체의 격자(시트명 → Grid)를 넘긴다 — 지면 간 참조와
+  // 보조시트 참조가 있어 단일 시트로는 풀 수 없다. 확정본이 이미 그 모양이다.
   const grids: Record<string, Grid> = oracle;
 
-  for (const [sheet, cells] of Object.entries(formulas.sheets)) {
+  for (const [sheet, cells] of Object.entries(map.sheets)) {
     if (sheet.startsWith('_')) continue;        // 보조시트는 지면이 아니다
     const grid: Grid = (oracle[sheet] ?? {}) as Grid;
 
-    for (const [ref, formula] of Object.entries(cells)) {
+    for (const [ref, spec] of Object.entries(cells)) {
       const expected = Object.prototype.hasOwnProperty.call(grid, ref)
         ? (grid[ref] as number | string) : null;
       if (expected === null) {
         out.push({ part, sheet, ref, verdict: 'no-oracle', expected: null, got: null });
         continue;
       }
-      const e = parseFormula(formula, ctx);
-      if (e.op === 'unsupported') {
-        const verdict: Verdict = isPresentation(formula, e.reason) ? 'presentation' : 'unsupported';
-        out.push({ part, sheet, ref, verdict, expected, got: null, reason: e.reason });
+      if (spec.kind !== 'expr') {
+        // 다룰 수 없는 셀. 판정(unsupported/presentation)은 **물화 때 이미 정해져 있다** —
+        // cellmap 에 수식 문자열이 없으므로 여기서 다시 판정할 수 없다.
+        out.push({ part, sheet, ref, verdict: spec.kind, expected, got: null, reason: spec.reason });
         continue;
       }
       let got: number | string | null = null;
       try {
-        got = execute(e, { db, grids, sheet, anchor: anchorCtx });
+        got = execute(spec.e, { db, grids, sheet, anchor: anchorCtx });
       } catch (err) {
         out.push({ part, sheet, ref, verdict: 'error', expected, got: null,
                    reason: (err as Error).message });

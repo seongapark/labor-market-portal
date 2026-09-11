@@ -19,4 +19,15 @@ data/raw/*
 # known-divergences.json(3KB) 은 사용자가 「인쇄본이 틀렸다」고 판정한 칸의 면제
 # 목록이다. 사람의 결정이라 재생성할 수 없고, 관문 판정에 직접 들어간다 — 추적한다.
 !data/known-divergences.json
+# 물화 산출물 3종 (Task 9 단위 11) — 「로컬 참고파일 없이 수치 관리」의 실체다.
+# cellmap(11MB) 은 formulas+headers 에서 재생성 가능하지만 추적한다: 파서 거동이 바뀌면
+#   질의 명세의 변화가 diff 로 보인다. reports/ 를 커밋하는 것과 같은 이유다.
+#   시험이 최신성을 강제하므로 묵을 수 없다.
+# layout(36KB) 은 2단계 화면의 입력이다.
+# gate-snapshot(896KB) 은 **관문 통과 순간의 계산값**이다. 나중에 재생성하면 그 시점의
+#   기록이라는 뜻이 사라진다 — 추적하지 않으면 존재 의미가 없다. 수치가 갈라졌을 때
+#   「번역 회귀」와 「자료 개정」을 구분하는 유일한 수단이다.
+!data/cellmap/
+!data/layout.json
+!data/gate-snapshot.json
 __pycache__/

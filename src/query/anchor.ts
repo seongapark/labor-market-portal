@@ -2,7 +2,7 @@ import type { DatabaseSync } from 'node:sqlite';
 import { parseFormula, isAnchorRef, ANCHOR_REF, type ParseCtx } from '../cellmap/parse.ts';
 import { tokenize } from '../cellmap/tokenize.ts';
 import { execute } from './execute.ts';
-import type { Grid } from '../types.ts';
+import type { CellMap, CellSpec, Expr, Grid } from '../types.ts';
 
 /** Task 9 단위 8: 연도는 확정본 격자에서 읽지 않고 **앵커에서 계산한다**.
     앵커 = 원데이터 통합문서의 '[N]0_수집현황'!$A$1 (기준연도 한 칸). 거기서
@@ -10,7 +10,11 @@ import type { Grid } from '../types.ts';
     관문은 이 변경으로 약해지지 않고 강해진다 — 확정본의 연도를 믿는 대신,
     앵커로부터 사슬이 제대로 계산되는지를 증명하게 된다. */
 export type AnchorCtx = {
-  formulas: Record<string, Record<string, string>>;  // sheet → ref → 수식
+  /** sheet → ref → 수식. 작업본 수식에서 바로 돌릴 때 쓴다. */
+  formulas?: Record<string, Record<string, string>>;
+  /** Task 9 단위 11 (물화): sheet → ref → **명세**. cellmap 으로 돌릴 때 쓴다 —
+      수식 문자열이 없어도 앵커 사슬이 그대로 계산된다. 둘 중 이것이 우선한다. */
+  exprs?: Record<string, Record<string, CellSpec>>;
   anchor: number;                                     // 기준연도. 검증 때는 2025
   /** RULING 17 (Task 9 단위 10): 앵커 수식이 **없는** 통합문서의 앵커 자리.
       여기에 수식이 없으면 `anchor` 값을 직접 심는다 — 가짜 수식을 만들어 넣지 않는다.
@@ -100,18 +104,85 @@ export function makeAnchorCtx(
   frozen?: string | number | null,
 ): AnchorCtx {
   if (hasAnchorFormula(formulas)) return { formulas, anchor };   // 앵커 수식이 이긴다
-  // 앵커 자리에 (앵커가 아닌) 수식이라도 있으면 그 수식이 이긴다 — 심을 자리가 없다.
-  // 단정도 하지 않는다: 주입이 일어나지 않는 곳에서 확정본을 따질 근거가 없다.
-  if (typeof formulas[ANCHOR_SEAT.sheet]?.[ANCHOR_SEAT.ref] === 'string') {
-    return { formulas, anchor };
-  }
-  if (frozen !== undefined && frozen !== null && Number(frozen) !== anchor) {
+  return seedOrNot({ formulas, anchor }, formulas[ANCHOR_SEAT.sheet]?.[ANCHOR_SEAT.ref], frozen);
+}
+
+/** Task 9 단위 11: 물화된 cellmap 으로 같은 판단을 한다. `hasAnchor` 는 빌드 때 적어 둔다. */
+export function makeAnchorCtxFromMap(map: CellMap, anchor: number, frozen?: string | number | null): AnchorCtx {
+  const base: AnchorCtx = { exprs: map.sheets, anchor };
+  if (map.hasAnchor) return base;
+  return seedOrNot(base, map.sheets[ANCHOR_SEAT.sheet]?.[ANCHOR_SEAT.ref], frozen);
+}
+
+/** 앵커 자리가 비어 있을 때만 심는다. 자리에 뭔가 있으면 그것이 이기고 단정도 하지 않는다. */
+function seedOrNot(base: AnchorCtx, seatOccupant: unknown, frozen?: string | number | null): AnchorCtx {
+  if (seatOccupant !== undefined) return base;
+  if (frozen !== undefined && frozen !== null && Number(frozen) !== base.anchor) {
     throw new Error(
       `RULING 17 전제 위반: 확정본 ${ANCHOR_SEAT.sheet}!${ANCHOR_SEAT.ref} 의 얼어붙은 값 ` +
-      `${JSON.stringify(frozen)} 이 앵커 ${anchor} 와 다르다 — 이 통합문서의 앵커 자리를 ` +
+      `${JSON.stringify(frozen)} 이 앵커 ${base.anchor} 와 다르다 — 이 통합문서의 앵커 자리를 ` +
       `앵커로 볼 근거가 없다. 주입하지 않는다.`);
   }
-  return { formulas, anchor, seed: { ...ANCHOR_SEAT } };
+  return { ...base, seed: { ...ANCHOR_SEAT } };
+}
+
+/** Task 9 단위 11: 이 명세가 **DB·격자 자료를 타는가**. 앵커 계산은 자료를 타면 안 된다
+    (규칙 2). 수식 경로에서는 토큰의 외부참조로 걸렀지만, 물화된 명세에는 토큰이 없으므로
+    연산 종류로 판단한다. 모든 op 를 빠짐없이 훑는다 — 자료를 타는 연산이 자식 안에
+    숨어 있으면 NO_DB 에 닿아 TypeError 가 난다. */
+export function touchesData(e: Expr): boolean {
+  switch (e.op) {
+    // 자료를 타는 연산
+    case 'sumifs': case 'countifs': case 'averageifs': case 'gridcell':
+      return true;
+    case 'lookup':
+      // 지면 격자(CellRange)만 보는 조회는 자료를 타지 않는다
+      return ('src' in e.range) || touchesData(e.needle) || touchesData(e.index);
+    case 'unsupported':
+      return true;                       // 계산할 수 없으니 앵커로도 못 푼다
+    // 자료를 타지 않는 잎
+    case 'const': case 'str': case 'cell': case 'anchor':
+      return false;
+    // 자식을 훑는다
+    case 'add': case 'and': case 'concat':
+      return e.args.some(touchesData);
+    case 'sub': case 'mul': case 'div': case 'cmp': case 'quotient': case 'mod':
+      return touchesData(e.a) || touchesData(e.b);
+    case 'pct': case 'zeroDash': case 'isnumber': case 'numbervalue':
+    case 'n': case 'len':
+      return touchesData(e.inner);
+    case 'text': return touchesData(e.inner);
+    case 'round': return touchesData(e.inner) || touchesData(e.digits);
+    case 'if': return touchesData(e.cond) || touchesData(e.then) || touchesData(e.else);
+    case 'iferror': return touchesData(e.inner) || touchesData(e.fallback);
+    case 'left': case 'right': return touchesData(e.inner) || touchesData(e.n);
+    case 'substitute':
+      return touchesData(e.inner) || touchesData(e.find) || touchesData(e.replace);
+    case 'find': return touchesData(e.needle) || touchesData(e.inside);
+    case 'index': return touchesData(e.n);
+    case 'match': return touchesData(e.needle);
+    case 'agg': return e.args.some((a) => 'expr' in a && touchesData(a.expr));
+    case 'rangecount':
+      return e.preds.some((p) => p.kind === 'crit' && touchesData(p.crit));
+    default: {
+      const never: never = e;
+      throw new Error('모르는 연산: ' + JSON.stringify(never));
+    }
+  }
+}
+
+/** 물화된 명세 하나를 앵커로부터 계산한다 (규칙 1~3 을 명세 위에서 그대로 적용한다) */
+function evalSpec(ac: AnchorCtx, sheet: string, spec: CellSpec): string | number | undefined {
+  if (spec.kind !== 'expr') return undefined;          // 다룰 수 없는 셀
+  if (touchesData(spec.e)) return undefined;           // 규칙 2
+  try {
+    // `{op:'anchor'}` 는 execute 가 ctx.anchor 에서 돌려준다 — 사슬의 바닥값(규칙 1)
+    const v = execute(spec.e, { db: NO_DB, grids: STRICT_GRIDS, sheet, anchor: ac });
+    return v === null ? undefined : v;
+  } catch (err) {
+    if (err instanceof Unresolved) return undefined;
+    throw err;
+  }
 }
 
 function evalFormula(ac: AnchorCtx, sheet: string, formula: string): string | number | undefined {
@@ -149,11 +220,13 @@ export function anchorCell(ac: AnchorCtx, sheet: string, ref: string): string | 
   const memo = (ac.memo ??= new Map());
   if (memo.has(key)) return memo.get(key);
 
-  const formula = ac.formulas[sheet]?.[ref];
-  // 수식이 없는 셀은 통합문서의 리터럴이다 — 앵커로는 못 구한다(버그가 아니다).
-  // RULING 17 의 예외는 앵커 자리 한 칸뿐이다: 거기에 수식이 없고 seed 가 있으면
-  // 앵커 값을 심는다. 수식이 있으면 위 조건에 걸리지 않으므로 **수식이 언제나 이긴다**.
-  if (typeof formula !== 'string') {
+  // Task 9 단위 11: 물화된 명세가 있으면 그것을 쓴다(수식 문자열 없이도 사슬이 돈다).
+  const spec = ac.exprs?.[sheet]?.[ref];
+  const formula = ac.exprs ? undefined : ac.formulas?.[sheet]?.[ref];
+  // 명세도 수식도 없는 셀은 통합문서의 리터럴이다 — 앵커로는 못 구한다(버그가 아니다).
+  // RULING 17 의 예외는 앵커 자리 한 칸뿐이다: 거기에 아무것도 없고 seed 가 있으면
+  // 앵커 값을 심는다. 명세·수식이 있으면 위 조건에 걸리지 않으므로 **그쪽이 언제나 이긴다**.
+  if (!spec && typeof formula !== 'string') {
     const seeded = ac.seed && ac.seed.sheet === sheet && ac.seed.ref === ref ? ac.anchor : undefined;
     memo.set(key, seeded);
     return seeded;
@@ -163,7 +236,7 @@ export function anchorCell(ac: AnchorCtx, sheet: string, ref: string): string | 
   if (stack.has(key)) throw new Error(`앵커 수식이 순환한다: ${[...stack, key].join(' → ')}`);
   stack.add(key);
   try {
-    const v = evalFormula(ac, sheet, formula);
+    const v = spec ? evalSpec(ac, sheet, spec) : evalFormula(ac, sheet, formula!);
     memo.set(key, v);
     return v;
   } finally {

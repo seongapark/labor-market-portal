@@ -123,3 +123,22 @@ export type Expr =
 
 /** 한 시트의 값 격자. 셀 참조를 푸는 데 쓴다. 'A14' → 값 */
 export type Grid = Record<string, string | number | null>;
+
+/** Task 9 단위 11 (물화): 셀 하나의 **질의 명세**. 수식 문자열도 열 문자도 담지 않는다 —
+    열 이름이 이미 해석된 `Expr` 이다. 그게 엑셀에서 벗어나는 지점이다.
+    다룰 수 없는 셀도 **사유와 함께** 담는다: 빠뜨리면 다음 회차가 「이 셀은 왜 없나」를
+    다시 조사해야 한다(특히 presentation 3,364건은 분류에 실측이 필요했다). */
+export type CellSpec =
+  | { kind: 'expr'; e: Expr }
+  | { kind: 'unsupported'; reason: string }
+  | { kind: 'presentation'; reason: string };
+
+/** part 하나의 물화된 cellmap. 보조시트(`_`)도 담는다 — 앵커 사슬과 지면 간 참조가
+    거기 있고, 그것까지 담아야 엑셀 없이 연도를 옮길 수 있다. */
+export type CellMap = {
+  part: string;
+  /** 이 통합문서에 앵커 수식이 있는가 (`{op:'anchor'}` 명세가 하나라도 있는가).
+      없으면 RULING 17 의 주입 대상이다 — 관문이 그것을 판단한다. */
+  hasAnchor: boolean;
+  sheets: Record<string, Record<string, CellSpec>>;
+};
