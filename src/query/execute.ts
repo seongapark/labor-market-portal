@@ -599,19 +599,26 @@ function cmpResult(rel: 'eq' | 'ne' | 'lt' | 'lte' | 'gt' | 'gte',
   }
 }
 
-/** TEXT(x,"0.0") — 반올림은 반올림기준 0.5 를 항상 0에서 먼 쪽으로 보낸다(사사오입).
-    정수로 올려붙인 뒤 다시 나누고 toFixed 로 자릿수를 맞춘다 — 부동소수 오차가
-    반올림 경계에 걸리는 것을 피한다.
-    Task 9 단위 4 (CHANGE 4): 엑셀은 부동소수 오차를 그대로 반올림하지 않는다 — 먼저
-    유효자릿수 15 자리로 줄인 값을 쓴다. 21.049999999999997 은 수학적으로는 21.0 으로
-    반올림되지만, 15 유효자릿수로 줄이면 정확히 21.05 가 되고 그 다음에야 사사오입해
-    21.1 이 된다. 두 단계를 순서대로 밟아야 한다 — 한 번에 반올림하면 21.0 이 나와
-    틀린다(part3!p223!O31 실측). */
+/** 엑셀의 반올림 — **TEXT 와 ROUND 가 함께 쓰는 하나의 규칙이다.**
+    0.5 는 항상 0 에서 먼 쪽으로 보낸다(사사오입). 그리고 엑셀은 부동소수 오차를 그대로
+    반올림하지 않는다: **자릿수만큼 스케일한 값**을 유효자릿수 15 로 줄이고 그것을
+    반올림한다. 21.049999999999997 을 한 자리로 줄이면 210.49999999999997 → 15자리로
+    210.500000000000 → 211 → 21.1 이다(part3!p223!O31 실측. 한 번에 반올림하면 21.0).
+
+    전체 리뷰 F5: 예전에는 이 규칙이 **두 곳에 따로** 구현돼 있었고 `toPrecision(15)` 가
+    스케일링의 반대편에 있어 결과가 갈렸다 — `textFixed` 는 「먼저 줄이고 스케일」이라
+    1.005 를 두 자리로 "1.00" 으로 냈고(스케일 후의 부동소수 꼬리
+    `1.005*100 = 100.49999999999999` 를 되살렸다), `case 'round'` 는 1.01 을 냈다.
+    엑셀은 1.01 이므로 `round` 쪽이 옳았다. 한 함수로 합쳤다. */
+function excelRound(n: number, decimals: number): number {
+  const f = 10 ** decimals;
+  const n15 = Number((n * f).toPrecision(15));
+  return Math.sign(n15) * Math.round(Math.abs(n15)) / f;
+}
+
+/** TEXT(x,"0.0") — 위 규칙으로 반올림하고 자릿수를 맞춘다. */
 function textFixed(n: number, decimals: number, group = false): string {
-  const n15 = Number(n.toPrecision(15));
-  const factor = 10 ** decimals;
-  const rounded = Math.sign(n15) * Math.round(Math.abs(n15) * factor);
-  const s = (rounded / factor).toFixed(decimals);
+  const s = excelRound(n, decimals).toFixed(decimals);
   if (!group) return s;
   // Task 9 단위 8: "#,##0" 은 천단위 구분자를 찍는다. 정수부만 세 자리씩 끊는다.
   const neg = s.startsWith('-');
@@ -757,10 +764,7 @@ export function execute(e: Expr, ctx: ExecCtx): number | string | null {
       const v = numOrErr(execute(e.inner, ctx));
       const d = numOrErr(execute(e.digits, ctx));
       if (v === null || d === null) return null;
-      // 사사오입 — TEXT 와 같은 규칙(0.5 는 항상 0 에서 먼 쪽)
-      const f = 10 ** d;
-      const n15 = Number((v * f).toPrecision(15));
-      return Math.sign(n15) * Math.round(Math.abs(n15)) / f;
+      return excelRound(v, d);          // TEXT 와 **같은 함수**다 (F5)
     }
     case 'averageifs': return runIfs(e.q, ctx, 'AVG');
     case 'unsupported': return null;

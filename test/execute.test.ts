@@ -392,3 +392,33 @@ test('text: 형식에 콤마가 있으면 천단위 구분자를 찍는다', () 
     { op: 'text', inner: { op: 'cell', ref: 'B11' }, decimals: 0, group: true },
     { op: 'str', v: '천원' }] }, c), '월평균 4,205천원');
 });
+
+// ── 전체 리뷰 F5 — 반올림 규칙이 한 곳이다 ──────────────────────────────────
+// `textFixed`(TEXT)와 `case 'round'`(ROUND)가 같은 규칙을 주장하면서 `toPrecision(15)`
+// 단계를 스케일링의 **반대편**에 두고 있었다. TEXT 는 「먼저 15자리로 줄이고 스케일」,
+// ROUND 는 「스케일하고 15자리로 줄임」. 엑셀은 후자다(스케일된 십진표현을 반올림한다).
+// 전수 비교로 나온 반례가 1.005@2 — TEXT 경로 "1.00" · ROUND 경로 1.01 · 엑셀 1.01.
+test('F5: TEXT 와 ROUND 가 같은 사사오입을 쓴다 — 엑셀 값으로 고정', () => {
+  const c = { db: null as never, grids: {}, sheet: 'p1' };
+  const text = (v: number, d: number) =>
+    execute({ op: 'text', inner: { op: 'const', v }, decimals: d }, c);
+  const round = (v: number, d: number) =>
+    execute({ op: 'round', inner: { op: 'const', v }, digits: { op: 'const', v: d } }, c);
+  // 엑셀: ROUND(1.005,2)=1.01 · TEXT(1.005,"0.00")="1.01"
+  assert.equal(round(1.005, 2), 1.01);
+  assert.equal(text(1.005, 2), '1.01');
+  assert.equal(round(-1.005, 2), -1.01);
+  assert.equal(text(-1.005, 2), '-1.01');
+  // 엑셀: ROUND(2.675,2)=2.68 (부동소수 그대로면 2.67 이 된다)
+  assert.equal(round(2.675, 2), 2.68);
+  assert.equal(text(2.675, 2), '2.68');
+  // 15자리 축약이 없으면 21.0 이 나오는 실측 값(part3!p223!O31) — 두 경로 모두 21.1
+  assert.equal(round(21.049999999999997, 1), 21.1);
+  assert.equal(text(21.049999999999997, 1), '21.1');
+  // 두 경로가 자릿수 0~3 에서 같은 값을 낸다
+  for (const v of [1.005, 2.675, 0.5, 1.5, -2.5, 21.049999999999997, 1234.5678, -0.0049]) {
+    for (const d of [0, 1, 2, 3]) {
+      assert.equal(text(v, d), (round(v, d) as number).toFixed(d), `${v} @${d}`);
+    }
+  }
+});
