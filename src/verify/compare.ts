@@ -1,7 +1,7 @@
 import type { DatabaseSync } from 'node:sqlite';
 import { parseFormula } from '../cellmap/parse.ts';
 import { execute } from '../query/execute.ts';
-import type { AnchorCtx } from '../query/anchor.ts';
+import { makeAnchorCtx, ANCHOR_SEAT, type AnchorCtx } from '../query/anchor.ts';
 import { tokenize } from '../cellmap/tokenize.ts';
 import type { Grid, Headers } from '../types.ts';
 
@@ -105,7 +105,11 @@ export function verifyPart(
   // 관문의 전제가 "인쇄된 값의 재현"이므로 다른 값으로 관문을 돌리지 않는다.
   // 이로써 관문은 확정본의 연도를 *믿는* 대신 앵커에서 사슬이 제대로 계산되는지를
   // *증명한다*. 앵커로 못 구하는 셀(수식이 없는 리터럴 등)만 격자로 떨어진다.
-  const anchorCtx: AnchorCtx = { formulas: formulas.sheets, anchor };
+  // Task 9 단위 10 (RULING 17): 앵커 수식이 없는 part(part1_5·part3)에는 앵커 자리에
+  // 값을 심는다. 확정본의 그 자리 값을 함께 넘겨 「얼어붙은 값 == 앵커」를 단정하게 한다 —
+  // 관문은 확정본을 들고 도는 유일한 호출부라 이 검사를 할 수 있는 유일한 자리다.
+  const anchorCtx: AnchorCtx = makeAnchorCtx(
+    formulas.sheets, anchor, oracle[ANCHOR_SEAT.sheet]?.[ANCHOR_SEAT.ref]);
 
   // RULING 8: 실행기에는 파트 전체의 격자(시트명 → Grid)를 넘긴다. booklet 페이지 간
   // 셀 참조('p68'!$F$5, 2,616건)와 보조시트(_시계열, 2,092건) 참조가 실측으로 나와,

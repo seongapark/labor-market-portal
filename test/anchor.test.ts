@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, basename } from 'node:path';
-import { anchorCell, type AnchorCtx } from '../src/query/anchor.ts';
+import { anchorCell, makeAnchorCtx, hasAnchorFormula, ANCHOR_SEAT, type AnchorCtx } from '../src/query/anchor.ts';
 import { tokenize } from '../src/cellmap/tokenize.ts';
 import { execute } from '../src/query/execute.ts';
 import type { Expr, Grid } from '../src/types.ts';
@@ -192,7 +192,9 @@ function parts(): { part: string; dump: FormulaDump; oracle: OracleDump }[] {
   }));
 }
 
-test('_시계열 사슬: 앵커=2025 로 평가한 값이 확정본과 전부 같다 (일치 236 · 불일치 0)', () => {
+// 주입(RULING 17) 없이 만든 AnchorCtx — 앵커 수식이 있는 11개 part 만 풀린다.
+// 단위 10 의 주입이 무엇을 채우는지 정확히 드러내기 위해 이 시험은 그대로 둔다.
+test('_시계열 사슬: 주입 없이 앵커=2025 로 평가한 값이 확정본과 전부 같다 (일치 236 · 불일치 0)', () => {
   let match = 0;
   const bad: string[] = [];
   const noAnchor: string[] = [];
@@ -214,23 +216,124 @@ test('_시계열 사슬: 앵커=2025 로 평가한 값이 확정본과 전부 �
   assert.deepEqual(bad, []);
   assert.equal(match, 236);
   // 평가 못 하는 part 2개 — part1_5·part3 은 _시계열!B1 이 수식이 아니라 리터럴이라
-  // (그 통합문서에는 KOSIS 원데이터 연결이 없다) 사슬의 바닥이 없다. 확정본 격자로 떨어진다.
+  // (그 통합문서에는 KOSIS 원데이터 연결이 없다) 사슬의 바닥이 없다.
+  // 단위 10 이 makeAnchorCtx 로 이 구멍을 메운다 — 아래 시험이 그것이다.
   assert.deepEqual(noAnchor, ['part1_5', 'part3']);
 });
 
-test('앵커를 2026 으로 주면 _시계열 사슬이 전부 정확히 1 씩 늘어난다', () => {
+// ── RULING 17 (Task 9 단위 10): 앵커가 닿지 않는 2개 part 주입 ────────────────
+
+/** 확정본의 앵커 자리 값까지 넘겨 만든 AnchorCtx — 관문이 쓰는 것과 같은 경로 */
+function seeded(dump: FormulaDump, oracle: OracleDump, anchor = 2025): AnchorCtx {
+  return makeAnchorCtx(dump.sheets, anchor, oracle[ANCHOR_SEAT.sheet]?.[ANCHOR_SEAT.ref]);
+}
+
+test('브리프 시험 1: 주입하면 part1_5·part3 의 _시계열!B5..Q5 가 확정본과 전부 같다', () => {
+  for (const part of ['part1_5', 'part3']) {
+    const p = parts().find((x) => x.part === part)!;
+    assert.equal(p.dump.sheets['_시계열']['B1'], undefined, `${part} 에 앵커 자리 수식이 생겼다`);
+    const ac = seeded(p.dump, p.oracle);
+    assert.deepEqual(ac.seed, { sheet: '_시계열', ref: 'B1' }, `${part} 에 주입이 안 걸렸다`);
+    let n = 0;
+    for (const ref of Object.keys(p.dump.sheets['_시계열'])) {
+      assert.equal(anchorCell(ac, '_시계열', ref), p.oracle['_시계열'][ref], `${part}!_시계열!${ref}`);
+      n++;
+    }
+    assert.equal(n, 16);
+  }
+});
+
+test('브리프 시험 1: 주입을 켜면 13개 part 전부 268개가 확정본과 같다 (236 + 32)', () => {
+  let match = 0;
+  const bad: string[] = [];
+  for (const { part, dump, oracle } of parts()) {
+    const ac = seeded(dump, oracle);
+    for (const ref of Object.keys(dump.sheets['_시계열'])) {
+      const got = anchorCell(ac, '_시계열', ref);
+      if (got === oracle['_시계열']?.[ref]) match++;
+      else bad.push(`${part}!_시계열!${ref}: 기대 ${JSON.stringify(oracle['_시계열']?.[ref])} 얻음 ${JSON.stringify(got)}`);
+    }
+  }
+  assert.deepEqual(bad, []);
+  assert.equal(match, 268);
+});
+
+test('브리프 시험 2: 앵커를 2026 으로 주면 두 part 의 B5..Q5 도 정확히 1 씩 늘어난다', () => {
   let checked = 0;
-  for (const { part, dump } of parts()) {
-    const a25 = ctx(dump.sheets, 2025);
-    const a26 = ctx(dump.sheets, 2026);
+  for (const { part, dump, oracle } of parts()) {
+    const a25 = seeded(dump, oracle, 2025);
+    // 2026 은 확정본(2025)과 다르므로 frozen 을 넘기지 않는다 — 검사할 근거가 없다.
+    const a26 = makeAnchorCtx(dump.sheets, 2026);
     for (const ref of Object.keys(dump.sheets['_시계열'])) {
       const v25 = anchorCell(a25, '_시계열', ref);
-      if (v25 === undefined) continue;
+      assert.notEqual(v25, undefined, `${part}!_시계열!${ref} 가 안 풀린다`);
       assert.equal(anchorCell(a26, '_시계열', ref), (v25 as number) + 1, `${part}!_시계열!${ref}`);
       checked++;
     }
   }
-  assert.equal(checked, 236);
+  assert.equal(checked, 268);        // 단위 8 에서는 236 이었다 — 그 차이가 이 단위다
+});
+
+test('브리프 시험 3: 앵커 수식이 있는 part 에는 주입이 걸리지 않는다 (수식이 이긴다)', () => {
+  for (const part of ['part1_1', 'part1_7', 'part1_4(1)']) {
+    const p = parts().find((x) => x.part === part)!;
+    const ac = seeded(p.dump, p.oracle);
+    assert.equal(ac.seed, undefined, `${part} 에 주입이 걸렸다`);
+    assert.equal(anchorCell(ac, '_시계열', 'B1'), 2025);   // 수식 평가 결과
+  }
+  // 지면에 앵커가 직접 놓인 셀이 있는 part 도 주입 대상이 아니다 (part1_4(1)!p67!B1).
+  assert.equal(hasAnchorFormula({ p67: { B1: "='[1]0_수집현황'!$A$1" } }), true);
+  assert.equal(hasAnchorFormula({ p67: { B1: "='[1]DT_1DE1S'!$A$1" } }), false);
+});
+
+test('브리프 시험 4: 앵커 자리가 아닌 리터럴 셀에는 주입하지 않는다', () => {
+  const ac = makeAnchorCtx({ _시계열: { Q5: '=B1', P5: '=Q5-1' }, p8: {} }, 2025, 2025);
+  assert.deepEqual(ac.seed, { sheet: '_시계열', ref: 'B1' });
+  assert.equal(anchorCell(ac, '_시계열', 'B1'), 2025);     // 주입된 한 칸
+  assert.equal(anchorCell(ac, '_시계열', 'B2'), undefined); // 옆 칸은 아니다
+  assert.equal(anchorCell(ac, '_시계열', 'A1'), undefined);
+  assert.equal(anchorCell(ac, 'p8', 'B1'), undefined);      // 다른 시트의 B1 도 아니다
+  assert.equal(anchorCell(ac, '_시계열', 'Q5'), 2025);      // 사슬은 그 한 칸에서 이어진다
+  assert.equal(anchorCell(ac, '_시계열', 'P5'), 2024);
+});
+
+test('주의 3: 확정본의 얼어붙은 값이 앵커와 다르면 주입하지 않고 던진다', () => {
+  const formulas = { _시계열: { Q5: '=B1' } };
+  assert.throws(() => makeAnchorCtx(formulas, 2026, 2025), /RULING 17 전제 위반/);
+  assert.throws(() => makeAnchorCtx(formulas, 2025, 2024), /RULING 17 전제 위반/);
+  // 근거가 없으면(확정본을 안 넘기면) 검사하지 않는다 — 2026년치 생산 경로가 그렇다
+  assert.deepEqual(makeAnchorCtx(formulas, 2026).seed, { sheet: '_시계열', ref: 'B1' });
+  // 앵커 수식이 있는 part 는 얼어붙은 값이 달라도 던지지 않는다 — 주입 자체를 안 한다
+  assert.doesNotThrow(() => makeAnchorCtx({ _시계열: { B1: ANCHOR_FORMULA } }, 2026, 2025));
+});
+
+// 주의 4: 관문 수치가 안 움직이는 것으로 끝내지 않는다 — 그 지면 칸들이 실제로 계산
+// 경로를 타는지 센다. 주입 전에는 전부 STRICT_GRIDS 에 닿아 확정본으로 떨어졌다.
+test('주의 4: 주입으로 지면 374칸(part1_5 50 · part3 324)이 확정본에서 계산값으로 옮겨간다', () => {
+  const moved: Record<string, number> = {};
+  const bad: string[] = [];
+  for (const part of ['part1_5', 'part3']) {
+    const p = parts().find((x) => x.part === part)!;
+    const bare: AnchorCtx = { formulas: p.dump.sheets, anchor: 2025 };
+    const ac = seeded(p.dump, p.oracle);
+    let page = 0;
+    for (const [sheet, cells] of Object.entries(p.dump.sheets)) {
+      if (sheet.startsWith('_')) continue;               // 지면만 센다
+      for (const ref of Object.keys(cells)) {
+        if (anchorCell(bare, sheet, ref) !== undefined) continue;   // 주입 전에도 풀렸다
+        const got = anchorCell(ac, sheet, ref);
+        if (got === undefined) continue;                  // 주입과 무관한 칸
+        page++;
+        const want = p.oracle[sheet]?.[ref];
+        if (want !== undefined && String(want) !== String(got)) {
+          bad.push(`${part}!${sheet}!${ref}: 확정본 ${JSON.stringify(want)} / 계산 ${JSON.stringify(got)}`);
+        }
+      }
+    }
+    moved[part] = page;
+  }
+  assert.deepEqual(bad, []);                              // 계산값이 확정본과 어긋나면 실패
+  assert.deepEqual(moved, { part1_5: 50, part3: 324 });
 });
 
 // ── execute 와의 접합 ────────────────────────────────────────────────────────
@@ -260,4 +363,12 @@ test('연도 조건도 앵커에서 계산한다', () => {
     where: { PRD_DE: { kind: 'year', ref: 'C6' } } } };
   // 격자에는 1999 가 들어 있지만 앵커가 이긴다
   assert.equal(execute(e, { db, grids: { p1: grid }, sheet: 'p1', year: '2025', anchor: ac }), 7);
+});
+
+// 앵커 자리에 (앵커가 아닌) 수식이 있으면 심을 자리가 없다 — 단정도 하지 않는다.
+// test/compare.test.ts 의 보조시트 시험(_시계열!B1 = '=C1-1', 확정본 2024)이 이 경우다.
+test('앵커 자리에 다른 수식이 있으면 주입도 단정도 하지 않는다', () => {
+  const ac = makeAnchorCtx({ _시계열: { B1: '=C1-1', C1: '=D1' } }, 2025, 2024);
+  assert.equal(ac.seed, undefined);
+  assert.equal(anchorCell(ac, '_시계열', 'B1'), undefined);   // C1→D1 이 리터럴이라 못 푼다
 });

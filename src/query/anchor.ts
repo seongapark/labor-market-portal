@@ -12,6 +12,10 @@ import type { Grid } from '../types.ts';
 export type AnchorCtx = {
   formulas: Record<string, Record<string, string>>;  // sheet → ref → 수식
   anchor: number;                                     // 기준연도. 검증 때는 2025
+  /** RULING 17 (Task 9 단위 10): 앵커 수식이 **없는** 통합문서의 앵커 자리.
+      여기에 수식이 없으면 `anchor` 값을 직접 심는다 — 가짜 수식을 만들어 넣지 않는다.
+      `makeAnchorCtx` 만 이 필드를 채운다. 비어 있으면 주입은 일어나지 않는다. */
+  seed?: { sheet: string; ref: string };
   /** 아래 둘은 내부용이다 — 호출자는 { formulas, anchor } 만 주면 된다.
       part 하나(=AnchorCtx 하나) 안에서만 메모이즈한다: part 마다 수식이 다르다. */
   memo?: Map<string, string | number | undefined>;
@@ -59,6 +63,57 @@ function isAnchor(toks: ReturnType<typeof tokenize>): boolean {
   return t.t === 'ref' && t.ext !== null && t.sheet === ANCHOR_SHEET && plainRef(t.a1) === ANCHOR_CELL;
 }
 
+/** RULING 17: 앵커 자리 — 13개 part 전부 `_시계열!B1` 이다(실측). 앵커 수식이 있는
+    part 는 전부 거기에 있고, 없는 part(part1_5·part3)의 확정본도 거기에 숫자 2025 를
+    들고 있다. 주입은 이 한 칸에만 한다. */
+export const ANCHOR_SEAT = { sheet: '_시계열', ref: 'B1' } as const;
+
+/** 이 part 안에 앵커 수식이 하나라도 있는가. `_시계열!B1` 만 보지 않는다 —
+    실측으로 `part1_4(1)!p67!B1` 처럼 지면에 앵커가 직접 놓인 셀도 있다.
+    전 데이터에서 `0_수집현황` 을 언급하는 수식은 12건뿐이라, 문자열 검사로 먼저
+    걸러 토큰화 비용을 피한다. */
+export function hasAnchorFormula(formulas: Record<string, Record<string, string>>): boolean {
+  for (const cells of Object.values(formulas)) {
+    for (const formula of Object.values(cells)) {
+      if (!formula.includes(ANCHOR_SHEET)) continue;
+      try {
+        if (isAnchor(tokenize(formula))) return true;
+      } catch { /* 토큰화 실패는 앵커가 아니다 */ }
+    }
+  }
+  return false;
+}
+
+/** RULING 17 (Task 9 단위 10): `AnchorCtx` 를 만든다. 앵커 수식이 없는 통합문서
+    (`part1_5`·`part3` — `KOSIS_원데이터.xlsx` 로의 외부링크가 아예 없어 사람이 2025 를
+    손으로 박았다)에는 앵커 자리에 앵커 값을 **직접 심는다**. 그러지 않으면 원데이터를
+    2026년치로 받아도 그 두 part 의 연도가 2025 에 얼어붙는다(지면 셀 218칸).
+
+    근거 = 「2025 를 타이핑한 사람은 앵커를 옮겨 적고 있었다」. 그 근거를 주석이 아니라
+    **검사되는 불변식**으로 박는다: `frozen`(확정본의 앵커 자리 값)을 주면 그것이 앵커와
+    같아야 하고, 다르면 던진다. 그 전제가 깨지는 순간 조용히 연도가 밀리는 대신 크게
+    깨진다(RULING 7·10 과 같은 태도). 확정본 없이 부르는 쪽(실제 2026년치 생산 경로,
+    앵커를 옮겨 보는 시험)은 `frozen` 을 주지 않는다 — 검사할 근거가 없기 때문이다. */
+export function makeAnchorCtx(
+  formulas: Record<string, Record<string, string>>,
+  anchor: number,
+  frozen?: string | number | null,
+): AnchorCtx {
+  if (hasAnchorFormula(formulas)) return { formulas, anchor };   // 앵커 수식이 이긴다
+  // 앵커 자리에 (앵커가 아닌) 수식이라도 있으면 그 수식이 이긴다 — 심을 자리가 없다.
+  // 단정도 하지 않는다: 주입이 일어나지 않는 곳에서 확정본을 따질 근거가 없다.
+  if (typeof formulas[ANCHOR_SEAT.sheet]?.[ANCHOR_SEAT.ref] === 'string') {
+    return { formulas, anchor };
+  }
+  if (frozen !== undefined && frozen !== null && Number(frozen) !== anchor) {
+    throw new Error(
+      `RULING 17 전제 위반: 확정본 ${ANCHOR_SEAT.sheet}!${ANCHOR_SEAT.ref} 의 얼어붙은 값 ` +
+      `${JSON.stringify(frozen)} 이 앵커 ${anchor} 와 다르다 — 이 통합문서의 앵커 자리를 ` +
+      `앵커로 볼 근거가 없다. 주입하지 않는다.`);
+  }
+  return { formulas, anchor, seed: { ...ANCHOR_SEAT } };
+}
+
 function evalFormula(ac: AnchorCtx, sheet: string, formula: string): string | number | undefined {
   let toks;
   try {
@@ -96,7 +151,13 @@ export function anchorCell(ac: AnchorCtx, sheet: string, ref: string): string | 
 
   const formula = ac.formulas[sheet]?.[ref];
   // 수식이 없는 셀은 통합문서의 리터럴이다 — 앵커로는 못 구한다(버그가 아니다).
-  if (typeof formula !== 'string') { memo.set(key, undefined); return undefined; }
+  // RULING 17 의 예외는 앵커 자리 한 칸뿐이다: 거기에 수식이 없고 seed 가 있으면
+  // 앵커 값을 심는다. 수식이 있으면 위 조건에 걸리지 않으므로 **수식이 언제나 이긴다**.
+  if (typeof formula !== 'string') {
+    const seeded = ac.seed && ac.seed.sheet === sheet && ac.seed.ref === ref ? ac.anchor : undefined;
+    memo.set(key, seeded);
+    return seeded;
+  }
 
   const stack = (ac.stack ??= new Set());
   if (stack.has(key)) throw new Error(`앵커 수식이 순환한다: ${[...stack, key].join(' → ')}`);
