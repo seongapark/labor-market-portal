@@ -1,0 +1,1825 @@
+{
+ "what": "작년(2024년 기준) 발간 완성 PDF 의 목차. Part › 장 › 절 › 지면 3단 구조.",
+ "source": "발간 PDF 목차 — 엑셀 작업본에서 재생성할 수 없다. 회차가 바뀌면 사람이 갱신한다.",
+ "note": "file·sheet 는 집계 작업본의 part 파일과 시트명이다. 지면 데이터와 이것으로 이어붙인다.",
+ "pages": [
+  {
+   "page": "8",
+   "part": "Part 1 전국총괄",
+   "chapter": "1. 인구",
+   "section": "1 인구동향",
+   "title": "연령별 인구추계",
+   "file": "part1_1",
+   "sheet": "p8"
+  },
+  {
+   "page": "9",
+   "part": "Part 1 전국총괄",
+   "chapter": "1. 인구",
+   "section": "1 인구동향",
+   "title": "출생아수 및 합계출산율",
+   "file": "part1_1",
+   "sheet": "p9"
+  },
+  {
+   "page": "10",
+   "part": "Part 1 전국총괄",
+   "chapter": "1. 인구",
+   "section": "1 인구동향",
+   "title": "성별 연령별 인구",
+   "file": "part1_1",
+   "sheet": "p10"
+  },
+  {
+   "page": "11",
+   "part": "Part 1 전국총괄",
+   "chapter": "1. 인구",
+   "section": "1 인구동향",
+   "title": "15세이상 인구",
+   "file": "part1_1",
+   "sheet": "p11"
+  },
+  {
+   "page": "12",
+   "part": "Part 1 전국총괄",
+   "chapter": "1. 인구",
+   "section": "1 인구동향",
+   "title": "성별 15세이상 인구",
+   "file": "part1_1",
+   "sheet": "p12"
+  },
+  {
+   "page": "13",
+   "part": "Part 1 전국총괄",
+   "chapter": "1. 인구",
+   "section": "1 인구동향",
+   "title": "연령별 15세이상 인구",
+   "file": "part1_1",
+   "sheet": "p13"
+  },
+  {
+   "page": "14",
+   "part": "Part 1 전국총괄",
+   "chapter": "1. 인구",
+   "section": "1 인구동향",
+   "title": "장애인 인구 / 등록 외국인 인구",
+   "file": "part1_1",
+   "sheet": "p14"
+  },
+  {
+   "page": "15",
+   "part": "Part 1 전국총괄",
+   "chapter": "1. 인구",
+   "section": "2 지역별 인구동향",
+   "title": "시·도별 인구수 및 증감률",
+   "file": "part1_1",
+   "sheet": "p15"
+  },
+  {
+   "page": "16",
+   "part": "Part 1 전국총괄",
+   "chapter": "1. 인구",
+   "section": "2 지역별 인구동향",
+   "title": "시·도별 성별 인구 / 시·도별 연령별 인구",
+   "file": "part1_1",
+   "sheet": "p16"
+  },
+  {
+   "page": "17",
+   "part": "Part 1 전국총괄",
+   "chapter": "1. 인구",
+   "section": "2 지역별 인구동향",
+   "title": "시·도별 등록외국인수",
+   "file": "part1_1",
+   "sheet": "p17"
+  },
+  {
+   "page": "18",
+   "part": "Part 1 전국총괄",
+   "chapter": "1. 인구",
+   "section": "3 지역 간 인구 이동 및 통근자",
+   "title": "시·도별 인구 순이동",
+   "file": "part1_1",
+   "sheet": "p18"
+  },
+  {
+   "page": "19",
+   "part": "Part 1 전국총괄",
+   "chapter": "1. 인구",
+   "section": "3 지역 간 인구 이동 및 통근자",
+   "title": "시·도 간 연령별 인구 순이동 / 시·도 간 통근자",
+   "file": "part1_1",
+   "sheet": "p19"
+  },
+  {
+   "page": "22",
+   "part": "Part 1 전국총괄",
+   "chapter": "2. 경제",
+   "section": "1 경제동향",
+   "title": "경제성장률 및 1인당 GDP",
+   "file": "part1_2",
+   "sheet": "p22"
+  },
+  {
+   "page": "23",
+   "part": "Part 1 전국총괄",
+   "chapter": "2. 경제",
+   "section": "1 경제동향",
+   "title": "경기종합지수",
+   "file": "part1_2",
+   "sheet": "p23"
+  },
+  {
+   "page": "24",
+   "part": "Part 1 전국총괄",
+   "chapter": "2. 경제",
+   "section": "2 산업동향",
+   "title": "업종별 총생산액 비중(%)",
+   "file": "part1_2",
+   "sheet": "p24"
+  },
+  {
+   "page": "25",
+   "part": "Part 1 전국총괄",
+   "chapter": "2. 경제",
+   "section": "2 산업동향",
+   "title": "제조업 생산지수 및 재고지수 / 제조업 평균가동률",
+   "file": "part1_2",
+   "sheet": "p25"
+  },
+  {
+   "page": "26",
+   "part": "Part 1 전국총괄",
+   "chapter": "2. 경제",
+   "section": "2 산업동향",
+   "title": "건설수주액 및 기성액",
+   "file": "part1_2",
+   "sheet": "p26"
+  },
+  {
+   "page": "27",
+   "part": "Part 1 전국총괄",
+   "chapter": "2. 경제",
+   "section": "2 산업동향",
+   "title": "기계수주액 및 설비투자지수",
+   "file": "part1_2",
+   "sheet": "p27"
+  },
+  {
+   "page": "28",
+   "part": "Part 1 전국총괄",
+   "chapter": "2. 경제",
+   "section": "3 소비 및 물가 동향",
+   "title": "소비 / 물가",
+   "file": "part1_2",
+   "sheet": "p28"
+  },
+  {
+   "page": "29",
+   "part": "Part 1 전국총괄",
+   "chapter": "2. 경제",
+   "section": "4 수출·입 동향",
+   "title": "수출·입 동향",
+   "file": "part1_2",
+   "sheet": "p29"
+  },
+  {
+   "page": "30",
+   "part": "Part 1 전국총괄",
+   "chapter": "2. 경제",
+   "section": "5 사업체 동향",
+   "title": "사업체 수",
+   "file": "part1_2",
+   "sheet": "p30"
+  },
+  {
+   "page": "31",
+   "part": "Part 1 전국총괄",
+   "chapter": "2. 경제",
+   "section": "5 사업체 동향",
+   "title": "산업별 규모별 사업체 수",
+   "file": "part1_2",
+   "sheet": "p31"
+  },
+  {
+   "page": "32",
+   "part": "Part 1 전국총괄",
+   "chapter": "2. 경제",
+   "section": "5 사업체 동향",
+   "title": "사업체 노동실태현황",
+   "file": "part1_2",
+   "sheet": "p32"
+  },
+  {
+   "page": "33",
+   "part": "Part 1 전국총괄",
+   "chapter": "2. 경제",
+   "section": "6 분배 동향",
+   "title": "지니계수",
+   "file": "part1_2",
+   "sheet": "p33"
+  },
+  {
+   "page": "34",
+   "part": "Part 1 전국총괄",
+   "chapter": "2. 경제",
+   "section": "6 분배 동향",
+   "title": "상대적 빈곤율 / 저임금근로자 비율",
+   "file": "part1_2",
+   "sheet": "p34"
+  },
+  {
+   "page": "35",
+   "part": "Part 1 전국총괄",
+   "chapter": "2. 경제",
+   "section": "7 지역별 경제동향",
+   "title": "시·도별 총생산액 / 시·도별 사업체 수",
+   "file": "part1_2",
+   "sheet": "p35"
+  },
+  {
+   "page": "36",
+   "part": "Part 1 전국총괄",
+   "chapter": "2. 경제",
+   "section": "7 지역별 경제동향",
+   "title": "시·도별 제조업 사업체 수 / 시·도별 수출·입",
+   "file": "part1_2",
+   "sheet": "p36"
+  },
+  {
+   "page": "37",
+   "part": "Part 1 전국총괄",
+   "chapter": "2. 경제",
+   "section": "7 지역별 경제동향",
+   "title": "시·도별 물가",
+   "file": "part1_2",
+   "sheet": "p37"
+  },
+  {
+   "page": "40",
+   "part": "Part 1 전국총괄",
+   "chapter": "3. 고용",
+   "section": "1 노동력 현황",
+   "title": "15세이상 인구",
+   "file": "part1_3",
+   "sheet": "p40"
+  },
+  {
+   "page": "41",
+   "part": "Part 1 전국총괄",
+   "chapter": "3. 고용",
+   "section": "1 노동력 현황",
+   "title": "2024년 고용동향 (15세 이상 기준)",
+   "file": "part1_3",
+   "sheet": "p41"
+  },
+  {
+   "page": "42",
+   "part": "Part 1 전국총괄",
+   "chapter": "3. 고용",
+   "section": "1 노동력 현황",
+   "title": "경제활동인구",
+   "file": "part1_3",
+   "sheet": "p42"
+  },
+  {
+   "page": "43",
+   "part": "Part 1 전국총괄",
+   "chapter": "3. 고용",
+   "section": "2 취업자 및 고용률",
+   "title": "취업자(15세이상) / 고용률(15세 이상)",
+   "file": "part1_3",
+   "sheet": "p43"
+  },
+  {
+   "page": "44",
+   "part": "Part 1 전국총괄",
+   "chapter": "3. 고용",
+   "section": "2 취업자 및 고용률",
+   "title": "성별 취업자 및 고용률 (15세 이상)",
+   "file": "part1_3",
+   "sheet": "p44"
+  },
+  {
+   "page": "45",
+   "part": "Part 1 전국총괄",
+   "chapter": "3. 고용",
+   "section": "2 취업자 및 고용률",
+   "title": "연령별 취업자 / 연령별 고용률",
+   "file": "part1_3",
+   "sheet": "p45"
+  },
+  {
+   "page": "46",
+   "part": "Part 1 전국총괄",
+   "chapter": "3. 고용",
+   "section": "2 취업자 및 고용률",
+   "title": "종사상 지위별 취업자 / 규모별 취업자",
+   "file": "part1_3",
+   "sheet": "p46"
+  },
+  {
+   "page": "47",
+   "part": "Part 1 전국총괄",
+   "chapter": "3. 고용",
+   "section": "2 취업자 및 고용률",
+   "title": "직종별 취업자",
+   "file": "part1_3",
+   "sheet": "p47"
+  },
+  {
+   "page": "48",
+   "part": "Part 1 전국총괄",
+   "chapter": "3. 고용",
+   "section": "2 취업자 및 고용률",
+   "title": "산업별 취업자",
+   "file": "part1_3",
+   "sheet": "p48"
+  },
+  {
+   "page": "49",
+   "part": "Part 1 전국총괄",
+   "chapter": "3. 고용",
+   "section": "2 취업자 및 고용률",
+   "title": "1960년대 이후 산업별 종사자 비중의 변화",
+   "file": "part1_3",
+   "sheet": "p49"
+  },
+  {
+   "page": "50",
+   "part": "Part 1 전국총괄",
+   "chapter": "3. 고용",
+   "section": "2 취업자 및 고용률",
+   "title": "지역별 취업자 및 고용률",
+   "file": "part1_3",
+   "sheet": "p50"
+  },
+  {
+   "page": "51",
+   "part": "Part 1 전국총괄",
+   "chapter": "3. 고용",
+   "section": "2 취업자 및 고용률",
+   "title": "지역별 취업자 및 고용률 (계속)",
+   "file": "part1_3",
+   "sheet": "p51"
+  },
+  {
+   "page": "52",
+   "part": "Part 1 전국총괄",
+   "chapter": "3. 고용",
+   "section": "3 실업자 현황",
+   "title": "실업자 및 실업률 추이",
+   "file": "part1_3",
+   "sheet": "p52"
+  },
+  {
+   "page": "53",
+   "part": "Part 1 전국총괄",
+   "chapter": "3. 고용",
+   "section": "3 실업자 현황",
+   "title": "성별·연령별 실업자 및 실업률 / 고용보조지표",
+   "file": "part1_3",
+   "sheet": "p53"
+  },
+  {
+   "page": "54",
+   "part": "Part 1 전국총괄",
+   "chapter": "3. 고용",
+   "section": "4 비경제활동인구",
+   "title": "비경제활동인구 추이",
+   "file": "part1_3",
+   "sheet": "p54"
+  },
+  {
+   "page": "55",
+   "part": "Part 1 전국총괄",
+   "chapter": "3. 고용",
+   "section": "4 비경제활동인구",
+   "title": "성별 비경제활동인구 / 연령별 비경제활동인구",
+   "file": "part1_3",
+   "sheet": "p55"
+  },
+  {
+   "page": "56",
+   "part": "Part 1 전국총괄",
+   "chapter": "3. 고용",
+   "section": "4 비경제활동인구",
+   "title": "지역별 비경제활동인구",
+   "file": "part1_3",
+   "sheet": "p56"
+  },
+  {
+   "page": "57",
+   "part": "Part 1 전국총괄",
+   "chapter": "3. 고용",
+   "section": "4 비경제활동인구",
+   "title": "비경제활동 사유",
+   "file": "part1_3",
+   "sheet": "p57"
+  },
+  {
+   "page": "60",
+   "part": "Part 1 전국총괄",
+   "chapter": "4. 노동이동",
+   "section": "1 입·이직 현황",
+   "title": "입·이직 및 자발성 여부 / 5.3",
+   "file": "part1_4(1)",
+   "sheet": "p60"
+  },
+  {
+   "page": "61",
+   "part": "Part 1 전국총괄",
+   "chapter": "4. 노동이동",
+   "section": "1 입·이직 현황",
+   "title": "종사상 지위별 입·이직",
+   "file": "part1_4(1)",
+   "sheet": "p61"
+  },
+  {
+   "page": "62",
+   "part": "Part 1 전국총괄",
+   "chapter": "4. 노동이동",
+   "section": "1 입·이직 현황",
+   "title": "규모별 입·이직",
+   "file": "part1_4(1)",
+   "sheet": "p62"
+  },
+  {
+   "page": "63",
+   "part": "Part 1 전국총괄",
+   "chapter": "4. 노동이동",
+   "section": "1 입·이직 현황",
+   "title": "산업별 입·이직",
+   "file": "part1_4(1)",
+   "sheet": "p63"
+  },
+  {
+   "page": "64",
+   "part": "Part 1 전국총괄",
+   "chapter": "4. 노동이동",
+   "section": "2 고용24 구인·구직 현황",
+   "title": "구인·구직 추이",
+   "file": "part1_4(1)",
+   "sheet": "p64"
+  },
+  {
+   "page": "65",
+   "part": "Part 1 전국총괄",
+   "chapter": "4. 노동이동",
+   "section": "2 고용24 구인·구직 현황",
+   "title": "구인·구직 유형 / 구인·구직자의 희망 임금",
+   "file": "part1_4(1)",
+   "sheet": "p65"
+  },
+  {
+   "page": "66",
+   "part": "Part 1 전국총괄",
+   "chapter": "4. 노동이동",
+   "section": "2 고용24 구인·구직 현황",
+   "title": "연령별 구직건수 / 규모별 구인인원",
+   "file": "part1_4(1)",
+   "sheet": "p66"
+  },
+  {
+   "page": "67",
+   "part": "Part 1 전국총괄",
+   "chapter": "4. 노동이동",
+   "section": "2 고용24 구인·구직 현황",
+   "title": "산업별 구인인원 / 지역별 구인·구직",
+   "file": "part1_4(1)",
+   "sheet": "p67"
+  },
+  {
+   "page": "68",
+   "part": "Part 1 전국총괄",
+   "chapter": "4. 노동이동",
+   "section": "3 미충원 인원",
+   "title": "미충원 인원 추이 / 규모별 미충원 인원",
+   "file": "part1_4(2)",
+   "sheet": "p68"
+  },
+  {
+   "page": "69",
+   "part": "Part 1 전국총괄",
+   "chapter": "4. 노동이동",
+   "section": "3 미충원 인원",
+   "title": "직종별 미충원 인원",
+   "file": "part1_4(2)",
+   "sheet": "p69"
+  },
+  {
+   "page": "70",
+   "part": "Part 1 전국총괄",
+   "chapter": "4. 노동이동",
+   "section": "3 미충원 인원",
+   "title": "산업별 미충원 인원",
+   "file": "part1_4(2)",
+   "sheet": "p70"
+  },
+  {
+   "page": "71",
+   "part": "Part 1 전국총괄",
+   "chapter": "4. 노동이동",
+   "section": "3 미충원 인원",
+   "title": "지역별 미충원 인원",
+   "file": "part1_4(2)",
+   "sheet": "p71"
+  },
+  {
+   "page": "72",
+   "part": "Part 1 전국총괄",
+   "chapter": "4. 노동이동",
+   "section": "4 부족인원 및 채용계획인원",
+   "title": "부족인원 및 인력부족률 추이 / 규모별 부족인원 및 채용계획인원",
+   "file": "part1_4(2)",
+   "sheet": "p72"
+  },
+  {
+   "page": "73",
+   "part": "Part 1 전국총괄",
+   "chapter": "4. 노동이동",
+   "section": "4 부족인원 및 채용계획인원",
+   "title": "직종별 부족인원 및 채용계획인원",
+   "file": "part1_4(2)",
+   "sheet": "p73"
+  },
+  {
+   "page": "74",
+   "part": "Part 1 전국총괄",
+   "chapter": "4. 노동이동",
+   "section": "4 부족인원 및 채용계획인원",
+   "title": "산업별 부족인원 및 채용계획인원",
+   "file": "part1_4(2)",
+   "sheet": "p74"
+  },
+  {
+   "page": "75",
+   "part": "Part 1 전국총괄",
+   "chapter": "4. 노동이동",
+   "section": "4 부족인원 및 채용계획인원",
+   "title": "지역별 부족인원 및 채용계획인원",
+   "file": "part1_4(2)",
+   "sheet": "p75"
+  },
+  {
+   "page": "78",
+   "part": "Part 1 전국총괄",
+   "chapter": "5. 직업훈련",
+   "section": "1 직업훈련 현황",
+   "title": "훈련별 성별 직업훈련 / 훈련별 연령별 직업훈련",
+   "file": "part1_5",
+   "sheet": "p78,79"
+  },
+  {
+   "page": "79",
+   "part": "Part 1 전국총괄",
+   "chapter": "5. 직업훈련",
+   "section": "1 직업훈련 현황",
+   "title": "훈련별 학력별 직업훈련",
+   "file": "part1_5",
+   "sheet": "p78,79"
+  },
+  {
+   "page": "80",
+   "part": "Part 1 전국총괄",
+   "chapter": "5. 직업훈련",
+   "section": "1 직업훈련 현황",
+   "title": "직종별 국가기간 ·전략직종훈련",
+   "file": "part1_5",
+   "sheet": "p80"
+  },
+  {
+   "page": "81",
+   "part": "Part 1 전국총괄",
+   "chapter": "5. 직업훈련",
+   "section": "1 직업훈련 현황",
+   "title": "직종별 국민내일배움카드",
+   "file": "part1_5",
+   "sheet": "p81"
+  },
+  {
+   "page": "82",
+   "part": "Part 1 전국총괄",
+   "chapter": "5. 직업훈련",
+   "section": "2 수료자 취업현황",
+   "title": "훈련별 수료자 취업 / 훈련별 취업자 고용유지율",
+   "file": "part1_5",
+   "sheet": "p82"
+  },
+  {
+   "page": "83",
+   "part": "Part 1 전국총괄",
+   "chapter": "5. 직업훈련",
+   "section": "2 수료자 취업현황",
+   "title": "재직자 훈련",
+   "file": "part1_5",
+   "sheet": "p83"
+  },
+  {
+   "page": "86",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "1 월 평균임금 및 근로시간",
+   "title": "명목임금 및 근로시간 추이",
+   "file": "part1_6",
+   "sheet": "p86"
+  },
+  {
+   "page": "87",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "1 월 평균임금 및 근로시간",
+   "title": "실질임금",
+   "file": "part1_6",
+   "sheet": "p87"
+  },
+  {
+   "page": "88",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "1 월 평균임금 및 근로시간",
+   "title": "규모별 임금 및 근로시간",
+   "file": "part1_6",
+   "sheet": "p88"
+  },
+  {
+   "page": "89",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "1 월 평균임금 및 근로시간",
+   "title": "산업별 임금 및 근로시간",
+   "file": "part1_6",
+   "sheet": "p89"
+  },
+  {
+   "page": "90",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "1 월 평균임금 및 근로시간",
+   "title": "지역별 임금 및 근로시간",
+   "file": "part1_6",
+   "sheet": "p90"
+  },
+  {
+   "page": "91",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "2 시간당 임금 및 근로시간",
+   "title": "시간당 임금 및 근로시간 추이",
+   "file": "part1_6",
+   "sheet": "p91"
+  },
+  {
+   "page": "92",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "2 시간당 임금 및 근로시간",
+   "title": "성별 시간당 임금 및 근로시간",
+   "file": "part1_6",
+   "sheet": "p92"
+  },
+  {
+   "page": "93",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "2 시간당 임금 및 근로시간",
+   "title": "연령별 시간당 임금 및 근로시간",
+   "file": "part1_6",
+   "sheet": "p93"
+  },
+  {
+   "page": "94",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "2 시간당 임금 및 근로시간",
+   "title": "연령별 시간당 임금 및 근로시간 (계속)",
+   "file": "part1_6",
+   "sheet": "p94"
+  },
+  {
+   "page": "95",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "2 시간당 임금 및 근로시간",
+   "title": "학력별 시간당 임금 및 근로시간",
+   "file": "part1_6",
+   "sheet": "p95"
+  },
+  {
+   "page": "96",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "2 시간당 임금 및 근로시간",
+   "title": "학력별 시간당 임금 및 근로시간 (계속)",
+   "file": "part1_6",
+   "sheet": "p96"
+  },
+  {
+   "page": "97",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "2 시간당 임금 및 근로시간",
+   "title": "고용형태별 시간당 임금 및 근로시간",
+   "file": "part1_6",
+   "sheet": "p97"
+  },
+  {
+   "page": "98",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "2 시간당 임금 및 근로시간",
+   "title": "고용형태별 시간당 임금 및 근로시간 (계속)",
+   "file": "part1_6",
+   "sheet": "p98"
+  },
+  {
+   "page": "99",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "2 시간당 임금 및 근로시간",
+   "title": "규모별 시간당 임금 및 근로시간",
+   "file": "part1_6",
+   "sheet": "p99"
+  },
+  {
+   "page": "100",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "2 시간당 임금 및 근로시간",
+   "title": "규모별 시간당 임금 및 근로시간 (계속)",
+   "file": "part1_6",
+   "sheet": "p100"
+  },
+  {
+   "page": "101",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "2 시간당 임금 및 근로시간",
+   "title": "직종별 시간당 임금 및 근로시간",
+   "file": "part1_6",
+   "sheet": "p101"
+  },
+  {
+   "page": "102",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "2 시간당 임금 및 근로시간",
+   "title": "직종별 시간당 임금 및 근로시간 (계속)",
+   "file": "part1_6",
+   "sheet": "p102"
+  },
+  {
+   "page": "103",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "2 시간당 임금 및 근로시간",
+   "title": "산업별 시간당 임금 및 근로시간",
+   "file": "part1_6",
+   "sheet": "p103"
+  },
+  {
+   "page": "104",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "2 시간당 임금 및 근로시간",
+   "title": "산업별 시간당 임금 및 근로시간 (계속)",
+   "file": "part1_6",
+   "sheet": "p104,105"
+  },
+  {
+   "page": "105",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "2 시간당 임금 및 근로시간",
+   "title": "산업별 시간당 임금 및 근로시간 (계속)",
+   "file": "part1_6",
+   "sheet": "p104,105"
+  },
+  {
+   "page": "106",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "3 사회보험 가입율(고용형태별)",
+   "title": "고용형태별 4대 보험 가입률",
+   "file": "part1_6",
+   "sheet": "p106_107"
+  },
+  {
+   "page": "107",
+   "part": "Part 1 전국총괄",
+   "chapter": "6. 근로조건",
+   "section": "3 사회보험 가입율(고용형태별)",
+   "title": "고용형태별 4대 보험 가입률 (계속)",
+   "file": "part1_6",
+   "sheet": "p106_107"
+  },
+  {
+   "page": "110",
+   "part": "Part 1 전국총괄",
+   "chapter": "7. 노사협력",
+   "section": "1 노동조합",
+   "title": "노동조합 현황",
+   "file": "part1_7",
+   "sheet": "p110"
+  },
+  {
+   "page": "111",
+   "part": "Part 1 전국총괄",
+   "chapter": "7. 노사협력",
+   "section": "1 노동조합",
+   "title": "상급단체별 노동조합 현황",
+   "file": "part1_7",
+   "sheet": "p111"
+  },
+  {
+   "page": "112",
+   "part": "Part 1 전국총괄",
+   "chapter": "7. 노사협력",
+   "section": "1 노동조합",
+   "title": "조직형태별 노동조합 현황",
+   "file": "part1_7",
+   "sheet": "p112"
+  },
+  {
+   "page": "113",
+   "part": "Part 1 전국총괄",
+   "chapter": "7. 노사협력",
+   "section": "2 노사분규",
+   "title": "노사분규 발생건수 및 근로손실일수",
+   "file": "part1_7",
+   "sheet": "p113"
+  },
+  {
+   "page": "114",
+   "part": "Part 1 전국총괄",
+   "chapter": "7. 노사협력",
+   "section": "2 노사분규",
+   "title": "규모별 노사분규 발생건수",
+   "file": "part1_7",
+   "sheet": "p114"
+  },
+  {
+   "page": "115",
+   "part": "Part 1 전국총괄",
+   "chapter": "7. 노사협력",
+   "section": "2 노사분규",
+   "title": "업종별 노사분규 발생건수",
+   "file": "part1_7",
+   "sheet": "p115"
+  },
+  {
+   "page": "116",
+   "part": "Part 1 전국총괄",
+   "chapter": "7. 노사협력",
+   "section": "3 노사분쟁 사건",
+   "title": "조정사건",
+   "file": "part1_7",
+   "sheet": "p116_117"
+  },
+  {
+   "page": "117",
+   "part": "Part 1 전국총괄",
+   "chapter": "7. 노사협력",
+   "section": "3 노사분쟁 사건",
+   "title": "조정사건 (계속)",
+   "file": "part1_7",
+   "sheet": "p116_117"
+  },
+  {
+   "page": "118",
+   "part": "Part 1 전국총괄",
+   "chapter": "7. 노사협력",
+   "section": "3 노사분쟁 사건",
+   "title": "심판사건",
+   "file": "part1_7",
+   "sheet": "p118_119"
+  },
+  {
+   "page": "119",
+   "part": "Part 1 전국총괄",
+   "chapter": "7. 노사협력",
+   "section": "3 노사분쟁 사건",
+   "title": "심판사건 (계속)",
+   "file": "part1_7",
+   "sheet": "p118_119"
+  },
+  {
+   "page": "120",
+   "part": "Part 1 전국총괄",
+   "chapter": "7. 노사협력",
+   "section": "3 노사분쟁 사건",
+   "title": "차별시정사건",
+   "file": "part1_7",
+   "sheet": "p120_121"
+  },
+  {
+   "page": "121",
+   "part": "Part 1 전국총괄",
+   "chapter": "7. 노사협력",
+   "section": "3 노사분쟁 사건",
+   "title": "차별시정사건 (계속)",
+   "file": "part1_7",
+   "sheet": "p120_121"
+  },
+  {
+   "page": "122",
+   "part": "Part 1 전국총괄",
+   "chapter": "7. 노사협력",
+   "section": "4 근로개선 지도 현황",
+   "title": "체불임금 현황",
+   "file": "part1_7",
+   "sheet": "p122_123"
+  },
+  {
+   "page": "123",
+   "part": "Part 1 전국총괄",
+   "chapter": "7. 노사협력",
+   "section": "4 근로개선 지도 현황",
+   "title": "체불임금 현황 (계속)",
+   "file": "part1_7",
+   "sheet": "p122_123"
+  },
+  {
+   "page": "124",
+   "part": "Part 1 전국총괄",
+   "chapter": "7. 노사협력",
+   "section": "4 근로개선 지도 현황",
+   "title": "신고사건 현황",
+   "file": "part1_7",
+   "sheet": "p124"
+  },
+  {
+   "page": "125",
+   "part": "Part 1 전국총괄",
+   "chapter": "7. 노사협력",
+   "section": "4 근로개선 지도 현황",
+   "title": "대지급금",
+   "file": "part1_7",
+   "sheet": "p125"
+  },
+  {
+   "page": "128",
+   "part": "Part 1 전국총괄",
+   "chapter": "8. 산업안전",
+   "section": "1 산업재해",
+   "title": "산업재해 추이",
+   "file": "part1_8",
+   "sheet": "p128"
+  },
+  {
+   "page": "129",
+   "part": "Part 1 전국총괄",
+   "chapter": "8. 산업안전",
+   "section": "1 산업재해",
+   "title": "규모별 산업재해",
+   "file": "part1_8",
+   "sheet": "p129"
+  },
+  {
+   "page": "130",
+   "part": "Part 1 전국총괄",
+   "chapter": "8. 산업안전",
+   "section": "1 산업재해",
+   "title": "산업별 산업재해",
+   "file": "part1_8",
+   "sheet": "p130"
+  },
+  {
+   "page": "131",
+   "part": "Part 1 전국총괄",
+   "chapter": "8. 산업안전",
+   "section": "2 경제적 손실",
+   "title": "경제적 손실액 및 손실일수",
+   "file": "part1_8",
+   "sheet": "p131"
+  },
+  {
+   "page": "132",
+   "part": "Part 1 전국총괄",
+   "chapter": "8. 산업안전",
+   "section": "2 경제적 손실",
+   "title": "경제적 손실액 및 손실일수 (계속)",
+   "file": "part1_8",
+   "sheet": "p132"
+  },
+  {
+   "page": "133",
+   "part": "Part 1 전국총괄",
+   "chapter": "8. 산업안전",
+   "section": "3 산재보험",
+   "title": "적용사업장 및 근로자 등 추이",
+   "file": "part1_8",
+   "sheet": "p133"
+  },
+  {
+   "page": "134",
+   "part": "Part 1 전국총괄",
+   "chapter": "8. 산업안전",
+   "section": "3 산재보험",
+   "title": "규모별 보험급여 지급",
+   "file": "part1_8",
+   "sheet": "p134"
+  },
+  {
+   "page": "135",
+   "part": "Part 1 전국총괄",
+   "chapter": "8. 산업안전",
+   "section": "3 산재보험",
+   "title": "업종별 보험급여 지급",
+   "file": "part1_8",
+   "sheet": "p135"
+  },
+  {
+   "page": "138",
+   "part": "Part 1 전국총괄",
+   "chapter": "9. 시도별 노동시장의 주요특징 비교",
+   "section": "1 지역별 인구 현황",
+   "title": "주민등록인구현황",
+   "file": "part1_9",
+   "sheet": "p138"
+  },
+  {
+   "page": "139",
+   "part": "Part 1 전국총괄",
+   "chapter": "9. 시도별 노동시장의 주요특징 비교",
+   "section": "1 지역별 인구 현황",
+   "title": "주민등록인구현황 (계속)",
+   "file": "part1_9",
+   "sheet": "p139"
+  },
+  {
+   "page": "140",
+   "part": "Part 1 전국총괄",
+   "chapter": "9. 시도별 노동시장의 주요특징 비교",
+   "section": "2 인구 이동 현황",
+   "title": "국내인구이동통계",
+   "file": "part1_9",
+   "sheet": "p140"
+  },
+  {
+   "page": "141",
+   "part": "Part 1 전국총괄",
+   "chapter": "9. 시도별 노동시장의 주요특징 비교",
+   "section": "2 인구 이동 현황",
+   "title": "시도별 인구 이동 현황",
+   "file": "part1_9",
+   "sheet": "p141"
+  },
+  {
+   "page": "142",
+   "part": "Part 1 전국총괄",
+   "chapter": "9. 시도별 노동시장의 주요특징 비교",
+   "section": "3 지역내총생산(GRDP)",
+   "title": "지역소득",
+   "file": "part1_9",
+   "sheet": "p142"
+  },
+  {
+   "page": "143",
+   "part": "Part 1 전국총괄",
+   "chapter": "9. 시도별 노동시장의 주요특징 비교",
+   "section": "4 산업단지 분포 현황",
+   "title": "산업단지 현황",
+   "file": "",
+   "sheet": ""
+  },
+  {
+   "page": "144",
+   "part": "Part 1 전국총괄",
+   "chapter": "9. 시도별 노동시장의 주요특징 비교",
+   "section": "5 고용률",
+   "title": "경제활동인구조사",
+   "file": "part1_9",
+   "sheet": "p144"
+  },
+  {
+   "page": "145",
+   "part": "Part 1 전국총괄",
+   "chapter": "9. 시도별 노동시장의 주요특징 비교",
+   "section": "6 취업자 수",
+   "title": "경제활동인구조사",
+   "file": "part1_9",
+   "sheet": "p145"
+  },
+  {
+   "page": "146",
+   "part": "Part 1 전국총괄",
+   "chapter": "9. 시도별 노동시장의 주요특징 비교",
+   "section": "7 실업률",
+   "title": "경제활동인구조사",
+   "file": "part1_9",
+   "sheet": "p146"
+  },
+  {
+   "page": "147",
+   "part": "Part 1 전국총괄",
+   "chapter": "9. 시도별 노동시장의 주요특징 비교",
+   "section": "8 비경제활동인구",
+   "title": "경제활동인구조사",
+   "file": "part1_9",
+   "sheet": "p147"
+  },
+  {
+   "page": "148",
+   "part": "Part 1 전국총괄",
+   "chapter": "9. 시도별 노동시장의 주요특징 비교",
+   "section": "9 부족인원 및 채용계획인원",
+   "title": "직종별사업체 노동력조사 (’25.상반기)",
+   "file": "part1_9",
+   "sheet": "p148"
+  },
+  {
+   "page": "149",
+   "part": "Part 1 전국총괄",
+   "chapter": "9. 시도별 노동시장의 주요특징 비교",
+   "section": "10 월 평균임금 및 근로시간",
+   "title": "사업체노동력조사",
+   "file": "part1_9",
+   "sheet": "p149"
+  },
+  {
+   "page": "154",
+   "part": "Part 2 대상별 현황",
+   "chapter": "1. 청년",
+   "section": "1 인구 및 노동력 현황",
+   "title": "청년 인구 / 청년 노동력",
+   "file": "part2_1청년여성",
+   "sheet": "p154"
+  },
+  {
+   "page": "155",
+   "part": "Part 2 대상별 현황",
+   "chapter": "1. 청년",
+   "section": "2 청년 취업자 및 고용률",
+   "title": "취업자 및 고용률 / 성별 취업자 및 고용률",
+   "file": "part2_1청년여성",
+   "sheet": "p155"
+  },
+  {
+   "page": "156",
+   "part": "Part 2 대상별 현황",
+   "chapter": "1. 청년",
+   "section": "2 청년 취업자 및 고용률",
+   "title": "연령별 취업자 및 고용률",
+   "file": "part2_1청년여성",
+   "sheet": "p156"
+  },
+  {
+   "page": "157",
+   "part": "Part 2 대상별 현황",
+   "chapter": "1. 청년",
+   "section": "2 청년 취업자 및 고용률",
+   "title": "청년층 정규직 ·비정규직 분포",
+   "file": "part2_1청년여성",
+   "sheet": "p157"
+  },
+  {
+   "page": "158",
+   "part": "Part 2 대상별 현황",
+   "chapter": "1. 청년",
+   "section": "3 청년 실업 및 비경제활동인구",
+   "title": "실업자 및 실업률 / 비경제활동인구",
+   "file": "part2_1청년여성",
+   "sheet": "p158"
+  },
+  {
+   "page": "159",
+   "part": "Part 2 대상별 현황",
+   "chapter": "1. 청년",
+   "section": "4 청년 근로조건",
+   "title": "취업자 및 고용률",
+   "file": "part2_1청년여성",
+   "sheet": "p159"
+  },
+  {
+   "page": "160",
+   "part": "Part 2 대상별 현황",
+   "chapter": "1. 청년",
+   "section": "5 취업 활동 과정",
+   "title": "첫 취업 소요기간 / 취업 경험 및 취업 소요기간 분포",
+   "file": "part2_1청년여성",
+   "sheet": "p160"
+  },
+  {
+   "page": "161",
+   "part": "Part 2 대상별 현황",
+   "chapter": "1. 청년",
+   "section": "5 취업 활동 과정",
+   "title": "직업선택 기준 / 취업 희망기업 / 취업 애로사항",
+   "file": "part2_1청년여성",
+   "sheet": "p161"
+  },
+  {
+   "page": "164",
+   "part": "Part 2 대상별 현황",
+   "chapter": "2. 여성",
+   "section": "1 인구 및 노동력 현황",
+   "title": "여성 인구",
+   "file": "part2_1청년여성",
+   "sheet": "p164"
+  },
+  {
+   "page": "165",
+   "part": "Part 2 대상별 현황",
+   "chapter": "2. 여성",
+   "section": "1 인구 및 노동력 현황",
+   "title": "여성 노동력",
+   "file": "part2_1청년여성",
+   "sheet": "p165"
+  },
+  {
+   "page": "166",
+   "part": "Part 2 대상별 현황",
+   "chapter": "2. 여성",
+   "section": "2 여성 취업자 및 고용률",
+   "title": "취업자 및 고용률 / 연령별 여성 고용률(M-커브)",
+   "file": "part2_1청년여성",
+   "sheet": "p166"
+  },
+  {
+   "page": "167",
+   "part": "Part 2 대상별 현황",
+   "chapter": "2. 여성",
+   "section": "2 여성 취업자 및 고용률",
+   "title": "연령별 취업자 및 고용률",
+   "file": "part2_1청년여성",
+   "sheet": "p167"
+  },
+  {
+   "page": "168",
+   "part": "Part 2 대상별 현황",
+   "chapter": "2. 여성",
+   "section": "2 여성 취업자 및 고용률",
+   "title": "종사상지위별 취업자",
+   "file": "part2_1청년여성",
+   "sheet": "p168"
+  },
+  {
+   "page": "169",
+   "part": "Part 2 대상별 현황",
+   "chapter": "2. 여성",
+   "section": "2 여성 취업자 및 고용률",
+   "title": "여성의 정규직· 비정규직 분포",
+   "file": "part2_1청년여성",
+   "sheet": "p169"
+  },
+  {
+   "page": "170",
+   "part": "Part 2 대상별 현황",
+   "chapter": "2. 여성",
+   "section": "2 여성 취업자 및 고용률",
+   "title": "직종별 취업자",
+   "file": "part2_1청년여성",
+   "sheet": "p170"
+  },
+  {
+   "page": "171",
+   "part": "Part 2 대상별 현황",
+   "chapter": "2. 여성",
+   "section": "2 여성 취업자 및 고용률",
+   "title": "산업별 취업자",
+   "file": "part2_1청년여성",
+   "sheet": "p171"
+  },
+  {
+   "page": "172",
+   "part": "Part 2 대상별 현황",
+   "chapter": "2. 여성",
+   "section": "3 여성 실업 및 비경제활동인구",
+   "title": "실업자 및 실업률",
+   "file": "part2_1청년여성",
+   "sheet": "p172"
+  },
+  {
+   "page": "173",
+   "part": "Part 2 대상별 현황",
+   "chapter": "2. 여성",
+   "section": "3 여성 실업 및 비경제활동인구",
+   "title": "비경제활동인구",
+   "file": "part2_1청년여성",
+   "sheet": "p173"
+  },
+  {
+   "page": "174",
+   "part": "Part 2 대상별 현황",
+   "chapter": "2. 여성",
+   "section": "3 여성 실업 및 비경제활동인구",
+   "title": "비경제활동 사유",
+   "file": "part2_1청년여성",
+   "sheet": "p174"
+  },
+  {
+   "page": "175",
+   "part": "Part 2 대상별 현황",
+   "chapter": "2. 여성",
+   "section": "4 여성 근로조건",
+   "title": "임금 및 근로시간",
+   "file": "part2_1청년여성",
+   "sheet": "p175"
+  },
+  {
+   "page": "178",
+   "part": "Part 2 대상별 현황",
+   "chapter": "3. 장년(50세 이상)",
+   "section": "1 인구 및 노동력 현황",
+   "title": "장년 인구 / 장년 노동력",
+   "file": "part2_2장년비정규직",
+   "sheet": "p178"
+  },
+  {
+   "page": "179",
+   "part": "Part 2 대상별 현황",
+   "chapter": "3. 장년(50세 이상)",
+   "section": "2 장년 취업자 및 고용률",
+   "title": "취업자 및 고용률 / 국제비교",
+   "file": "part2_2장년비정규직",
+   "sheet": "p179"
+  },
+  {
+   "page": "180",
+   "part": "Part 2 대상별 현황",
+   "chapter": "3. 장년(50세 이상)",
+   "section": "2 장년 취업자 및 고용률",
+   "title": "성별 취업자 및 고용률 / 연령별 취업자 및 고용률",
+   "file": "part2_2장년비정규직",
+   "sheet": "p180"
+  },
+  {
+   "page": "181",
+   "part": "Part 2 대상별 현황",
+   "chapter": "3. 장년(50세 이상)",
+   "section": "2 장년 취업자 및 고용률",
+   "title": "장년층 정규직· 비정규직 분포",
+   "file": "part2_2장년비정규직",
+   "sheet": "p181"
+  },
+  {
+   "page": "182",
+   "part": "Part 2 대상별 현황",
+   "chapter": "3. 장년(50세 이상)",
+   "section": "3 장년 실업 및 비경제활동인구",
+   "title": "실업자 및 실업률 / 장년 노동력",
+   "file": "part2_2장년비정규직",
+   "sheet": "p182"
+  },
+  {
+   "page": "183",
+   "part": "Part 2 대상별 현황",
+   "chapter": "3. 장년(50세 이상)",
+   "section": "4 장년 근로조건",
+   "title": "임금 및 근로시간",
+   "file": "part2_2장년비정규직",
+   "sheet": "p183"
+  },
+  {
+   "page": "184",
+   "part": "Part 2 대상별 현황",
+   "chapter": "3. 장년(50세 이상)",
+   "section": "5 정년 현황",
+   "title": "근속기간",
+   "file": "part2_2장년비정규직",
+   "sheet": "p184"
+  },
+  {
+   "page": "185",
+   "part": "Part 2 대상별 현황",
+   "chapter": "3. 장년(50세 이상)",
+   "section": "5 정년 현황",
+   "title": "일자리를 그만 둔 사유",
+   "file": "part2_2장년비정규직",
+   "sheet": "p185"
+  },
+  {
+   "page": "186",
+   "part": "Part 2 대상별 현황",
+   "chapter": "3. 장년(50세 이상)",
+   "section": "5 정년 현황",
+   "title": "희망일자리 / 희망 임금수준",
+   "file": "part2_2장년비정규직",
+   "sheet": "p186"
+  },
+  {
+   "page": "187",
+   "part": "Part 2 대상별 현황",
+   "chapter": "3. 장년(50세 이상)",
+   "section": "5 정년 현황",
+   "title": "구직경험 및 비구직사유 현황 / 정년 / 노동시장 은퇴",
+   "file": "part2_2장년비정규직",
+   "sheet": "p187"
+  },
+  {
+   "page": "188",
+   "part": "Part 2 대상별 현황",
+   "chapter": "3. 장년(50세 이상)",
+   "section": "6 장년층 동태 분석",
+   "title": "취업활동 상태 변동",
+   "file": "part2_2장년비정규직",
+   "sheet": "p188"
+  },
+  {
+   "page": "189",
+   "part": "Part 2 대상별 현황",
+   "chapter": "3. 장년(50세 이상)",
+   "section": "6 장년층 동태 분석",
+   "title": "직업 변동",
+   "file": "part2_2장년비정규직",
+   "sheet": "p189"
+  },
+  {
+   "page": "190",
+   "part": "Part 2 대상별 현황",
+   "chapter": "3. 장년(50세 이상)",
+   "section": "6 장년층 동태 분석",
+   "title": "산업 변동",
+   "file": "part2_2장년비정규직",
+   "sheet": "p190"
+  },
+  {
+   "page": "191",
+   "part": "Part 2 대상별 현황",
+   "chapter": "3. 장년(50세 이상)",
+   "section": "6 장년층 동태 분석",
+   "title": "산업 변동",
+   "file": "part2_2장년비정규직",
+   "sheet": "p191"
+  },
+  {
+   "page": "194",
+   "part": "Part 2 대상별 현황",
+   "chapter": "4. 비정규직",
+   "section": "1 비정규직 취업현황",
+   "title": "비정규직 현황",
+   "file": "part2_2장년비정규직",
+   "sheet": "p194"
+  },
+  {
+   "page": "195",
+   "part": "Part 2 대상별 현황",
+   "chapter": "4. 비정규직",
+   "section": "1 비정규직 취업현황",
+   "title": "성별 현황",
+   "file": "part2_2장년비정규직",
+   "sheet": "p195"
+  },
+  {
+   "page": "196",
+   "part": "Part 2 대상별 현황",
+   "chapter": "4. 비정규직",
+   "section": "1 비정규직 취업현황",
+   "title": "연령별 현황",
+   "file": "part2_2장년비정규직",
+   "sheet": "p196"
+  },
+  {
+   "page": "197",
+   "part": "Part 2 대상별 현황",
+   "chapter": "4. 비정규직",
+   "section": "1 비정규직 취업현황",
+   "title": "사업체 규모별 현황",
+   "file": "part2_2장년비정규직",
+   "sheet": "p197"
+  },
+  {
+   "page": "198",
+   "part": "Part 2 대상별 현황",
+   "chapter": "4. 비정규직",
+   "section": "1 비정규직 취업현황",
+   "title": "직업별 현황",
+   "file": "part2_2장년비정규직",
+   "sheet": "p198"
+  },
+  {
+   "page": "199",
+   "part": "Part 2 대상별 현황",
+   "chapter": "4. 비정규직",
+   "section": "1 비정규직 취업현황",
+   "title": "산업별 현황",
+   "file": "part2_2장년비정규직",
+   "sheet": "p199_200"
+  },
+  {
+   "page": "200",
+   "part": "Part 2 대상별 현황",
+   "chapter": "4. 비정규직",
+   "section": "1 비정규직 취업현황",
+   "title": "산업별 현황 (계속)",
+   "file": "part2_2장년비정규직",
+   "sheet": "p199_200"
+  },
+  {
+   "page": "201",
+   "part": "Part 2 대상별 현황",
+   "chapter": "4. 비정규직",
+   "section": "2 근로조건",
+   "title": "임금 및 근로시간",
+   "file": "part2_2장년비정규직",
+   "sheet": "p201"
+  },
+  {
+   "page": "202",
+   "part": "Part 2 대상별 현황",
+   "chapter": "4. 비정규직",
+   "section": "2 근로조건",
+   "title": "성별 임금 및 근로시간",
+   "file": "part2_2장년비정규직",
+   "sheet": "p202"
+  },
+  {
+   "page": "203",
+   "part": "Part 2 대상별 현황",
+   "chapter": "4. 비정규직",
+   "section": "2 근로조건",
+   "title": "연령별 임금 및 근로시간",
+   "file": "part2_2장년비정규직",
+   "sheet": "p203"
+  },
+  {
+   "page": "204",
+   "part": "Part 2 대상별 현황",
+   "chapter": "4. 비정규직",
+   "section": "2 근로조건",
+   "title": "규모별 임금 및 근로시간",
+   "file": "part2_2장년비정규직",
+   "sheet": "p204"
+  },
+  {
+   "page": "205",
+   "part": "Part 2 대상별 현황",
+   "chapter": "4. 비정규직",
+   "section": "2 근로조건",
+   "title": "직종별 임금 및 근로시간",
+   "file": "part2_2장년비정규직",
+   "sheet": "p205"
+  },
+  {
+   "page": "206",
+   "part": "Part 2 대상별 현황",
+   "chapter": "4. 비정규직",
+   "section": "2 근로조건",
+   "title": "산업별 임금 및 근로시간",
+   "file": "part2_2장년비정규직",
+   "sheet": "p206"
+  },
+  {
+   "page": "207",
+   "part": "Part 2 대상별 현황",
+   "chapter": "4. 비정규직",
+   "section": "2 근로조건",
+   "title": "사회보험 적용",
+   "file": "part2_2장년비정규직",
+   "sheet": "p207"
+  },
+  {
+   "page": "208",
+   "part": "Part 2 대상별 현황",
+   "chapter": "4. 비정규직",
+   "section": "3 고용형태 변화",
+   "title": "기간제근로자 / 근속기간별 정규직 전환",
+   "file": "part2_2장년비정규직",
+   "sheet": "p208"
+  },
+  {
+   "page": "214",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "1 인구 및 고용",
+   "title": "인구",
+   "file": "part3",
+   "sheet": "p214"
+  },
+  {
+   "page": "215",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "1 인구 및 고용",
+   "title": "경제활동참가율",
+   "file": "part3",
+   "sheet": "p215"
+  },
+  {
+   "page": "216",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "1 인구 및 고용",
+   "title": "고용률",
+   "file": "part3",
+   "sheet": "p216"
+  },
+  {
+   "page": "217",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "1 인구 및 고용",
+   "title": "성별 고용률",
+   "file": "part3",
+   "sheet": "p217"
+  },
+  {
+   "page": "218",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "1 인구 및 고용",
+   "title": "성별 고용률 (계속)",
+   "file": "part3",
+   "sheet": "p218"
+  },
+  {
+   "page": "219",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "1 인구 및 고용",
+   "title": "연령별 고용률",
+   "file": "part3",
+   "sheet": "p219"
+  },
+  {
+   "page": "220",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "1 인구 및 고용",
+   "title": "연령별 고용률 (계속)",
+   "file": "part3",
+   "sheet": "p220"
+  },
+  {
+   "page": "221",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "1 인구 및 고용",
+   "title": "연령별 고용률 (계속)",
+   "file": "part3",
+   "sheet": "p221"
+  },
+  {
+   "page": "222",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "1 인구 및 고용",
+   "title": "실업률",
+   "file": "part3",
+   "sheet": "p222"
+  },
+  {
+   "page": "223",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "1 인구 및 고용",
+   "title": "고용구조",
+   "file": "part3",
+   "sheet": "p223"
+  },
+  {
+   "page": "224",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "1 인구 및 고용",
+   "title": "고용구조 (계속)",
+   "file": "part3",
+   "sheet": "p224"
+  },
+  {
+   "page": "225",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "1 인구 및 고용",
+   "title": "고용구조 (계속)",
+   "file": "part3",
+   "sheet": "p225"
+  },
+  {
+   "page": "226",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "2 근로조건",
+   "title": "피용자보수",
+   "file": "part3",
+   "sheet": "p226"
+  },
+  {
+   "page": "227",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "2 근로조건",
+   "title": "실질 최저임금",
+   "file": "part3",
+   "sheet": "p227"
+  },
+  {
+   "page": "228",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "2 근로조건",
+   "title": "최저임금의 상대적 수준",
+   "file": "part3",
+   "sheet": "p228"
+  },
+  {
+   "page": "229",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "2 근로조건",
+   "title": "최저임금의 상대적 수준 (계속)",
+   "file": "part3",
+   "sheet": "p229"
+  },
+  {
+   "page": "230",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "2 근로조건",
+   "title": "연간 근로시간 및 취업시간",
+   "file": "part3",
+   "sheet": "p230"
+  },
+  {
+   "page": "231",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "2 근로조건",
+   "title": "연간 근로시간 및 취업시간 (계속)",
+   "file": "part3",
+   "sheet": "p231"
+  },
+  {
+   "page": "232",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "2 근로조건",
+   "title": "근속기간",
+   "file": "part3",
+   "sheet": "p232"
+  },
+  {
+   "page": "233",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "2 근로조건",
+   "title": "은퇴연령",
+   "file": "part3",
+   "sheet": "p233"
+  },
+  {
+   "page": "234",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "2 근로조건",
+   "title": "은퇴연령 (계속)",
+   "file": "part3",
+   "sheet": "p234"
+  },
+  {
+   "page": "235",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "3 분배지표",
+   "title": "저임금근로자 비중",
+   "file": "part3",
+   "sheet": "p235"
+  },
+  {
+   "page": "236",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "3 분배지표",
+   "title": "소득 5분위 배율",
+   "file": "part3",
+   "sheet": "p236"
+  },
+  {
+   "page": "237",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "3 분배지표",
+   "title": "임금 10분위수 배율",
+   "file": "part3",
+   "sheet": "p237"
+  },
+  {
+   "page": "238",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "3 분배지표",
+   "title": "지니계수",
+   "file": "part3",
+   "sheet": "p238"
+  },
+  {
+   "page": "239",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "4 기타 고용노동지표",
+   "title": "노동생산성",
+   "file": "part3",
+   "sheet": "p239"
+  },
+  {
+   "page": "240",
+   "part": "부록 고용노동관련 OECD 국제비교",
+   "chapter": "부록",
+   "section": "4 기타 고용노동지표",
+   "title": "국가별 제조업 및 서비스업 노동생산성",
+   "file": "part3",
+   "sheet": "p240"
+  }
+ ]
+}

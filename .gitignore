@@ -30,4 +30,17 @@ data/raw/*
 !data/cellmap/
 !data/layout.json
 !data/gate-snapshot.json
+# toc.json(48KB) 은 **발간 PDF 의 목차**다. Part > 장 > 절 > 지면 3단. 엑셀 작업본의
+#   part/sheet 는 제작 편의를 위한 분할이라 독자가 보는 구조가 아니다. 재생성 불가 —
+#   회차가 바뀌면 사람이 갱신한다.
+# charts.json(328KB) 은 작업본이 **선언한** 차트(종류·계열·범위·축)다. 목업 단계에서
+#   차트 종류를 추론했다가 결함 5건을 냈으므로, 이 파일이 유일한 근거다. 원천은
+#   작업본 엑셀뿐이다.
+!data/toc.json
+!data/charts.json
 __pycache__/
+
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example

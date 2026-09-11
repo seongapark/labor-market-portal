@@ -12,10 +12,15 @@
     "dump:oracle": "python tools/extract/dump_oracle.py",
     "dump:formulas": "python tools/extract/dump_formulas.py",
     "smoke:raw": "node scripts/smoke-raw.ts",
-    "verify": "node scripts/verify-all.ts"
+    "verify": "node scripts/verify-all.ts",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev",
+    "dump:charts": "python tools/extract/dump_charts.py",
+    "build:web": "node web/build-data.mjs && node -e \"const{copyFileSync}=require('fs');for(const f of['index.html','chart.js'])copyFileSync('web/'+f,'dist/'+f)\""
   },
   "devDependencies": {
     "@types/node": "^22.20.2",
-    "typescript": "^5.6.0"
+    "typescript": "^5.6.0",
+    "wrangler": "^4.131.0"
   }
 }

@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>노동시장 지표 포털</title>
+<meta name="description" content="통계로 보는 우리나라 노동시장의 모습 — 2025년 기준. 발간본 수치를 원자료에서 다시 계산해 전건 대조한 결과.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%235a8f30'/%3E%3Crect x='7' y='16' width='4' height='9' fill='%23fff'/%3E%3Crect x='14' y='11' width='4' height='14' fill='%23fff'/%3E%3Crect x='21' y='7' width='4' height='18' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+/* 사용자 결정: 나이트모드 없음 — 밝은 화면 하나로 간다 */
+:root{
+  --paper:#f7f6f2; --card:#fff; --ink:#1d2229; --ink2:#49505d; --muted:#7b8292;
+  --line:#e3e0d8; --line2:#f0ede6;
+  /* 목업 승인 팔레트 */
+  --s1:#8ec46b; --s2:#eb6834; --s3:#4a3aa7; --agg:#5a8f30;
+  --up:#c0392b; --down:#0b6bd6;
+  --ok:#5a8f30; --ok-bg:#f1f7ea; --flag:#c0392b; --flag-bg:#fdf1ef;
+  --shadow:0 1px 2px rgba(29,34,41,.05), 0 8px 24px rgba(29,34,41,.05);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:'Noto Sans KR',system-ui,-apple-system,'Malgun Gothic',sans-serif;
+  font-size:14px; line-height:1.6; -webkit-text-size-adjust:100%;
+}
+.mono{font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace}
+
+header{background:var(--card); border-bottom:1px solid var(--line)}
+.hwrap{max-width:1420px; margin:0 auto; padding-block:18px; padding-inline:20px;
+       display:flex; flex-wrap:wrap; gap:16px; align-items:flex-end; justify-content:space-between}
+.brand h1{margin:0; font-size:18px; font-weight:700; letter-spacing:-.01em}
+.brand p{margin:3px 0 0; font-size:12.5px; color:var(--muted)}
+.asof{display:flex; gap:8px; flex-wrap:wrap}
+.asof div{border:1px solid var(--line); border-radius:8px; padding:7px 11px; background:var(--paper); min-width:92px}
+.asof b{display:block; font-size:16px; font-weight:700; letter-spacing:-.02em; font-variant-numeric:tabular-nums}
+.asof span{display:block; font-size:10.5px; color:var(--muted)}
+.asof .g b{color:var(--ok)}
+
+main{max-width:1420px; margin:0 auto; padding-inline:20px; padding-block:18px;
+     display:grid; grid-template-columns:296px minmax(0,1fr); gap:18px; align-items:start}
+@media (max-width:920px){ main{grid-template-columns:1fr} }
+
+nav{background:var(--card); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow);
+    position:sticky; top:14px; max-height:calc(100vh - 28px); display:flex; flex-direction:column; overflow:hidden}
+@media (max-width:920px){ nav{position:static; max-height:none} }
+.sbox{padding:10px; border-bottom:1px solid var(--line2)}
+.sbox input{width:100%; padding:8px 10px; font:inherit; font-size:13px; color:var(--ink);
+            border:1px solid var(--line); border-radius:7px; background:var(--paper)}
+.sbox input:focus{outline:2px solid var(--s1); outline-offset:-1px}
+.tree{overflow-y:auto; padding:6px}
+
+/* Part › 장 › 절 › 지면 — 발간본 목차 구조 */
+.nd{margin-bottom:1px}
+.nd>button{width:100%; display:flex; align-items:center; gap:6px; background:none; border:0;
+           border-radius:6px; cursor:pointer; font:inherit; text-align:left; color:var(--ink2)}
+.nd>button:hover{background:var(--line2)}
+.nd>button .cnt{margin-left:auto; font-size:10px; color:var(--muted); font-variant-numeric:tabular-nums}
+.caret{width:8px; flex:none; color:var(--muted); transition:transform .14s}
+.nd.open>button>.caret{transform:rotate(90deg)}
+.nd>.kids{display:none}
+.nd.open>.kids{display:block}
+.nd.l0>button{padding:8px; font-size:13px; font-weight:700; color:var(--ink); letter-spacing:-.01em}
+.nd.l0{margin-bottom:3px}
+.nd.l1>button{padding:6px 8px 6px 18px; font-size:12.5px; font-weight:500}
+.nd.l2>button{padding:5px 8px 5px 30px; font-size:12px; color:var(--muted)}
+.pg{width:100%; display:flex; gap:7px; align-items:baseline; padding:4px 8px 4px 42px;
+    background:none; border:0; border-radius:6px; cursor:pointer; font:inherit; font-size:12px;
+    color:var(--ink2); text-align:left}
+.pg:hover{background:var(--line2); color:var(--ink)}
+.pg[aria-current="true"]{background:var(--ok-bg); color:var(--ok); font-weight:500}
+.pg .pn{flex:none; font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--muted);
+        min-width:24px; text-align:right}
+.pg[aria-current="true"] .pn{color:var(--ok)}
+.pg .tt{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.pg .dot{color:var(--flag); font-weight:700; flex:none}
+.pg.nodata .tt{color:var(--muted); font-style:italic}
+
+.card{background:var(--card); border:1px solid var(--line); border-radius:10px;
+      box-shadow:var(--shadow); overflow:hidden}
+.chead{padding:16px 18px 14px; border-bottom:1px solid var(--line2)}
+.chead h2{margin:0; font-size:18px; font-weight:700; letter-spacing:-.015em; text-wrap:balance}
+.crumb{font-size:11.5px; color:var(--muted); margin-bottom:6px}
+.srcline{margin-top:7px; font-size:12px; color:var(--muted)}
+.srcline b{color:var(--ink2); font-weight:500}
+.chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:11px}
+.chip{font-size:11px; padding:3px 9px; border-radius:20px; border:1px solid var(--line);
+      color:var(--muted); background:var(--paper); font-variant-numeric:tabular-nums}
+.chip.ok{border-color:transparent; background:var(--ok-bg); color:var(--ok); font-weight:500}
+.chip.flag{border-color:transparent; background:var(--flag-bg); color:var(--flag); font-weight:500}
+
+/* 차트 — 통합문서가 선언한 것을 그린다 */
+.charts{padding:14px 18px 4px; display:grid; gap:14px}
+.charts.two{grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}
+.chart{border:1px solid var(--line2); border-radius:9px; padding:10px 12px 8px; background:var(--card)}
+.ctitle{font-size:12px; font-weight:600; color:var(--ink2); margin-bottom:4px; text-wrap:balance}
+.clegend{display:flex; flex-wrap:wrap; gap:4px 14px; margin-top:6px; font-size:11px; color:var(--ink2)}
+.clegend i{display:inline-block; width:9px; height:9px; border-radius:2px; margin-right:5px;
+           vertical-align:-1px}
+.cnote{margin-top:6px; font-size:10.5px; color:var(--muted); line-height:1.45}
+.nochart{padding:12px 18px; font-size:12px; color:var(--muted)}
+.tw{overflow:auto; max-height:72vh}
+table{border-collapse:separate; border-spacing:0; font-size:12.5px; width:max-content; min-width:100%}
+td{border-right:1px solid var(--line2); border-bottom:1px solid var(--line2); padding:4px 9px;
+   white-space:nowrap; max-width:300px; overflow:hidden; text-overflow:ellipsis}
+td.v{text-align:right; font-variant-numeric:tabular-nums}
+td.l{color:var(--ink2); background:var(--paper); font-weight:500; position:sticky; left:0; z-index:1}
+td.x{text-align:right; font-variant-numeric:tabular-nums; background:var(--flag-bg);
+     color:var(--flag); font-weight:700; cursor:help}
+tr:hover td:not(.l){background:var(--ok-bg)}
+
+.note{margin-top:16px; padding:14px 16px; background:var(--card); border:1px solid var(--line);
+      border-left:3px solid var(--s1); border-radius:9px; font-size:12.5px; color:var(--ink2)}
+.note h3{margin:0 0 8px; font-size:13px; color:var(--ink)}
+.note ul{margin:6px 0 0; padding-left:18px}
+.note li{margin-bottom:5px}
+.note b{color:var(--ink)}
+.note code{font-family:'IBM Plex Mono',monospace; font-size:11.5px; background:var(--paper);
+           padding:1px 4px; border-radius:3px}
+footer{max-width:1420px; margin:0 auto; padding:4px 20px 30px; font-size:11.5px; color:var(--muted)}
+footer a{color:var(--down)}
+@media print{
+  nav,.sbox,footer,.note{display:none}
+  main{display:block; max-width:none; padding:0}
+  .card{border:0; box-shadow:none}
+  .tw{max-height:none; overflow:visible}
+}
+</style>
+</head>
+<body>
+<header><div class="hwrap">
+  <div class="brand">
+    <h1>노동시장 지표 포털</h1>
+    <p>「통계로 보는 우리나라 노동시장의 모습」 — 발간본 수치를 원자료에서 다시 계산해 전건 대조</p>
+  </div>
+  <div class="asof" id="asof"></div>
+</div></header>
+
+<main>
+  <nav>
+    <div class="sbox"><input id="q" type="search" placeholder="지면·제목·출처 검색" autocomplete="off"></div>
+    <div class="tree" id="tree"></div>
+  </nav>
+  <div>
+    <section class="card" id="page"></section>
+    <div class="note">
+      <h3>지금 보시는 것 — 어디까지 된 것인가</h3>
+      <ul>
+        <li><b>목차는 발간 PDF 기준입니다.</b> Part › 장 › 절 › 지면 4단으로, 엑셀 작업본의 파일 분할이
+            아니라 독자가 아는 구조입니다. 회차가 바뀌면 목차는 사람이 갱신합니다.</li>
+        <li><b>수치는 실제 검증된 값입니다.</b> 엑셀 수식 37,467개를 SQL 질의로 옮기고, 발간 확정본에
+            인쇄된 <b>29,558칸</b>과 전건 대조해 전부 일치한 결과입니다. 불일치 0, 실행오류 0.</li>
+        <li><b>그래프는 통합문서가 선언한 것을 그립니다.</b> 차트 종류·계열·범위·축이 엑셀
+            <code>xl/charts</code> 에 들어 있어 그것을 읽습니다 — 추론하지 않습니다. 실측으로
+            막대 200 · 선 111 · 방사형 10 · 영역 3 · 파이 2 · 도넛 2 입니다. 사용자가 명시적으로
+            다르게 지시한 <code>p40</code>·<code>p195</code>만 재정의했고, 그 지면에는 이유를 함께 적었습니다.</li>
+        <li><b>붉은 칸은 발간본이 틀린 곳입니다.</b> 세종특별자치시 순이동 3칸 — 인쇄본이 현재 원자료의
+            정확히 2배입니다. 마우스를 올리면 두 값이 함께 보입니다. 확정본은 고치지 않았습니다.</li>
+        <li><b>한계</b> — 일치 중 <b>586칸</b>은 인쇄값이 <code>0</code>이나 <code>-</code>여서 대조가 사실상
+            검증하지 못합니다. 그 칸을 「검증됨」으로 읽지 마십시오.</li>
+      </ul>
+    </div>
+  </div>
+</main>
+<footer id="foot"></footer>
+
+<script src="chart.js"></script>
+<script>
+var FMT = function (n) {
+  if (typeof n === 'number') {
+    return Number.isInteger(n) ? n.toLocaleString('ko-KR') : (+n.toFixed(4)).toLocaleString('ko-KR');
+  }
+  return String(n);
+};
+var esc = function (t) {
+  return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+};
+
+var D = null, cur = -1;
+var tree = document.getElementById('tree');
+
+fetch('data.json').then(function (r) { return r.json(); }).then(function (d) { D = d; boot(); })
+  .catch(function (e) {
+    document.getElementById('page').innerHTML =
+      '<div class="chead"><h2>데이터를 불러오지 못했습니다</h2><p class="srcline">' + esc(e) + '</p></div>';
+  });
+
+function boot() {
+  var pct = (D.meta.rate * 100).toFixed(3);
+  var cards = [
+    ['g', String(D.meta.anchor), '기준연도'],
+    ['g', pct + '%', '인쇄값 재현율'],
+    ['', D.meta.counts.match.toLocaleString('ko-KR'), '검증 수치'],
+    ['', String(D.meta.pages), '지면']
+  ];
+  document.getElementById('asof').innerHTML = cards.map(function (c) {
+    return '<div class="' + c[0] + '"><b>' + c[1] + '</b><span>' + c[2] + '</span></div>';
+  }).join('');
+
+  document.getElementById('foot').innerHTML =
+    '기준연도 앵커 <b>' + D.meta.anchor + '</b> · 커밋 <span class="mono">' + D.meta.commit + '</span>'
+    + ' · 생성 ' + new Date(D.meta.generated_at).toLocaleString('ko-KR')
+    + ' · 목차는 발간 PDF 기준'
+    + ' · <a href="' + D.meta.repo + '" target="_blank" rel="noopener">저장소</a>';
+
+  document.getElementById('q').addEventListener('input', function (e) { renderTree(e.target.value); });
+  renderTree('');
+
+  var start = 0;
+  try {
+    var v = localStorage.getItem('lmp.page');
+    if (v !== null && D.pages[+v]) start = +v;
+  } catch (e) {}
+  show(start);
+}
+
+/* 발간본 목차 구조로 묶는다: Part › 장 › 절 › 지면 */
+function groupTree(idxs) {
+  var parts = new Map();
+  idxs.forEach(function (i) {
+    var p = D.pages[i];
+    if (!parts.has(p.part)) parts.set(p.part, new Map());
+    var chs = parts.get(p.part);
+    if (!chs.has(p.chapter)) chs.set(p.chapter, new Map());
+    var secs = chs.get(p.chapter);
+    var key = p.section || '';
+    if (!secs.has(key)) secs.set(key, []);
+    secs.get(key).push(i);
+  });
+  return parts;
+}
+
+function node(level, label, count, childrenHtml, open) {
+  return '<div class="nd l' + level + (open ? ' open' : '') + '">'
+    + '<button type="button"><svg class="caret" viewBox="0 0 10 10" aria-hidden="true">'
+    + '<path d="M3 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>'
+    + '<span>' + esc(label) + '</span><span class="cnt">' + count + '</span></button>'
+    + '<div class="kids">' + childrenHtml + '</div></div>';
+}
+
+function pageBtn(i) {
+  var p = D.pages[i];
+  var nodata = !p.cells.length;
+  return '<button type="button" class="pg' + (nodata ? ' nodata' : '') + '" data-i="' + i + '">'
+    + '<span class="pn">' + p.page + '</span>'
+    + '<span class="tt">' + esc(p.title) + (nodata ? ' (수치 없음)' : '') + '</span>'
+    + (p.exempt ? '<span class="dot" title="발간본이 틀린 칸 포함">●</span>' : '')
+    + '</button>';
+}
+
+function renderTree(filter) {
+  var f = (filter || '').trim().toLowerCase();
+  var idxs = [];
+  D.pages.forEach(function (p, i) {
+    if (!f) { idxs.push(i); return; }
+    var hay = (p.title + ' p' + p.page + ' ' + p.org + ' ' + p.stat + ' ' + p.chapter + ' ' + p.section).toLowerCase();
+    if (hay.indexOf(f) >= 0) idxs.push(i);
+  });
+  if (!idxs.length) {
+    tree.innerHTML = '<p style="padding:10px;color:var(--muted);font-size:12.5px">찾는 지면이 없습니다.</p>';
+    return;
+  }
+  var open = !!f;
+  var html = '';
+  groupTree(idxs).forEach(function (chs, part) {
+    var cHtml = '', partN = 0;
+    chs.forEach(function (secs, ch) {
+      var sHtml = '', chN = 0;
+      secs.forEach(function (pages, sec) {
+        var pHtml = pages.map(pageBtn).join('');
+        chN += pages.length;
+        sHtml += sec ? node(2, sec, pages.length, pHtml, open) : pHtml;
+      });
+      partN += chN;
+      cHtml += node(1, ch, chN, sHtml, open);
+    });
+    html += node(0, part, partN, cHtml, true);   /* Part 는 항상 펼친다 */
+  });
+  tree.innerHTML = html;
+
+  Array.prototype.forEach.call(tree.querySelectorAll('.nd > button'), function (b) {
+    b.addEventListener('click', function () { b.parentElement.classList.toggle('open'); });
+  });
+  Array.prototype.forEach.call(tree.querySelectorAll('.pg'), function (b) {
+    b.addEventListener('click', function () { show(+b.dataset.i); });
+  });
+  if (cur >= 0) { openFor(cur); mark(cur); }
+}
+
+function openFor(i) {
+  var el = tree.querySelector('.pg[data-i="' + i + '"]');
+  while (el) {
+    if (el.classList && el.classList.contains('nd')) el.classList.add('open');
+    el = el.parentElement;
+  }
+}
+function mark(i) {
+  Array.prototype.forEach.call(tree.querySelectorAll('.pg'), function (b) {
+    b.setAttribute('aria-current', String(+b.dataset.i === i));
+  });
+}
+
+function show(i) {
+  cur = i;
+  var p = D.pages[i];
+  var grid = new Map();
+  p.cells.forEach(function (c) { grid.set(c.r + ':' + c.c, c); });
+  var rset = {}, cset = {};
+  p.cells.forEach(function (c) { rset[c.r] = 1; cset[c.c] = 1; });
+  var rs = Object.keys(rset).map(Number).sort(function (a, b) { return a - b; });
+  var cs = Object.keys(cset).map(Number).sort(function (a, b) { return a - b; });
+
+  var body = '';
+  rs.forEach(function (r) {
+    body += '<tr>';
+    cs.forEach(function (c) {
+      var cl = grid.get(r + ':' + c);
+      if (!cl) { body += '<td></td>'; return; }
+      if (cl.k === 'x') {
+        body += '<td class="x" title="발간본 ' + FMT(cl.o) + ' · 현재 원자료 ' + FMT(cl.v)
+              + ' — 발간본이 틀린 칸">' + FMT(cl.v) + '</td>';
+      } else {
+        body += '<td class="' + (cl.k === 'l' ? 'l' : 'v') + '">' + esc(FMT(cl.v)) + '</td>';
+      }
+    });
+    body += '</tr>';
+  });
+
+  var crumb = esc(p.part) + ' › ' + esc(p.chapter) + (p.section ? ' › ' + esc(p.section) : '');
+  document.getElementById('page').innerHTML =
+    '<div class="chead">'
+    + '<div class="crumb">' + crumb + '</div>'
+    + '<h2>' + esc(p.title) + '</h2>'
+    + '<div class="srcline">'
+    + (p.org ? '출처기관 <b>' + esc(p.org) + '</b>' : '')
+    + (p.org && p.stat ? ' &nbsp;·&nbsp; ' : '')
+    + (p.stat ? '출처통계 <b>' + esc(p.stat) + '</b>' : '')
+    + (!p.org && !p.stat ? '<i>출처가 발간본에 적혀 있지 않습니다</i>' : '')
+    + '</div>'
+    + '<div class="chips">'
+    + '<span class="chip">' + p.page + '쪽</span>'
+    + (p.cells.length
+        ? '<span class="chip ok">검증 ' + p.verified.toLocaleString('ko-KR') + '칸</span>'
+        : '<span class="chip">수치 없음 — 도식·그래프 지면</span>')
+    + (p.exempt ? '<span class="chip flag">발간본 오류 ' + p.exempt + '칸</span>' : '')
+    + (p.cells.length ? '<span class="chip">' + rs.length + '행 × ' + cs.length + '열</span>' : '')
+    + '</div></div>'
+    + (p.charts && p.charts.length ? '<div class="charts' + (p.charts.length > 1 ? ' two' : '') + '" id="charts"></div>' : '')
+    + (p.cells.length ? '<div class="tw"><table><tbody>' + body + '</tbody></table></div>' : '');
+
+  if (p.charts && p.charts.length && window.LMPChart) {
+    var host = document.getElementById('charts');
+    p.charts.forEach(function (c, ci) {
+      try { LMPChart.render(host, c, ci); }
+      catch (err) {
+        var d = document.createElement('div');
+        d.className = 'cnote';
+        d.textContent = '차트를 그리지 못했습니다: ' + err;
+        host.appendChild(d);
+      }
+    });
+  }
+
+  openFor(i); mark(i);
+  try { localStorage.setItem('lmp.page', String(i)); } catch (e) {}
+}
+</script>
+</body>
+</html>
