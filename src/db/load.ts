@@ -187,3 +187,56 @@ export function loadAll(db: DatabaseSync, rawDir: string): Partial<Record<Src, L
 
   return out;
 }
+
+/** 전체 리뷰 F11: **관문의 자료 쪽을 못박는 지문.**
+    `data/obs.sqlite` 와 `data/raw/**` 는 gitignore 라, 저장소 어디에도 입력 자료의
+    규모·시점이 적혀 있지 않았다. 그래서 다른 시점의 DB 로 관문을 다시 돌렸을 때
+    「번역 회귀」와 「자료 개정」을 구별할 수 없었는데, 그 모호함을 없애려고 만든 것이
+    `gate-snapshot.json` 이다(세종 3칸의 면제 사유도 추적되지 않는 DB 에 대한 진술이다).
+
+    **파일 해시는 쓸모없다** — 재수집마다 달라지고, 무엇이 달라졌는지는 말해 주지 않는다.
+    내용 지문이어야 한다: 표별 행 수와 시점의 최대값(`prd_de`·`TIME_PERIOD`). 싸다
+    (한 표당 한 행씩 집계 세 번). */
+export type TableFingerprint = { rows: number; max_period: string | null };
+export type DataFingerprint = {
+  rows: { obs: number; oecd_obs: number; grid: number };
+  /** KOSIS 표ID → 행 수 · 최대 prd_de */
+  kosis: Record<string, TableFingerprint>;
+  /** OECD 데이터셋 → 행 수 · 최대 TIME_PERIOD */
+  oecd: Record<string, TableFingerprint>;
+  /** 격자 원천 → 행 수 · 시트 수 */
+  grid: Record<string, { rows: number; sheets: number }>;
+};
+
+export function dataFingerprint(db: DatabaseSync): DataFingerprint {
+  const one = (sql: string) => (db.prepare(sql).get() as { n: number } | undefined)?.n ?? 0;
+  const kosis: Record<string, TableFingerprint> = {};
+  for (const r of db.prepare(
+    `SELECT table_id AS t, COUNT(*) AS n, MAX(prd_de) AS m FROM obs
+      WHERE src = 'kosis' GROUP BY table_id ORDER BY table_id`,
+  ).all() as { t: string; n: number; m: string | null }[]) {
+    kosis[r.t] = { rows: r.n, max_period: r.m };
+  }
+  const oecd: Record<string, TableFingerprint> = {};
+  for (const r of db.prepare(
+    `SELECT "table_id" AS t, COUNT(*) AS n, MAX("TIME_PERIOD") AS m FROM oecd_obs
+      GROUP BY "table_id" ORDER BY "table_id"`,
+  ).all() as { t: string; n: number; m: string | null }[]) {
+    oecd[r.t] = { rows: r.n, max_period: r.m };
+  }
+  const grid: Record<string, { rows: number; sheets: number }> = {};
+  for (const r of db.prepare(
+    `SELECT src AS s, COUNT(*) AS n, COUNT(DISTINCT sheet) AS sh FROM grid
+      GROUP BY src ORDER BY src`,
+  ).all() as { s: string; n: number; sh: number }[]) {
+    grid[r.s] = { rows: r.n, sheets: r.sh };
+  }
+  return {
+    rows: {
+      obs: one('SELECT COUNT(*) AS n FROM obs'),
+      oecd_obs: one('SELECT COUNT(*) AS n FROM oecd_obs'),
+      grid: one('SELECT COUNT(*) AS n FROM grid'),
+    },
+    kosis, oecd, grid,
+  };
+}

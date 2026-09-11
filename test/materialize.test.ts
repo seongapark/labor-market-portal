@@ -170,6 +170,36 @@ test('gate-snapshot: 앵커·커밋·시각과 대조 대상 전부의 계산값
   assert.equal(snap.values['part1_9!p140!C14'], -47);
 });
 
+// 전체 리뷰 F11: 스냅샷이 **자료 쪽 지문**도 담는다. obs.sqlite 와 data/raw 는 추적되지
+// 않으므로, 이것이 없으면 값이 달라졌을 때 「번역 회귀」와 「자료 개정」을 구별할 수 없다.
+// (지금 DB 와 같은지 단정하지 않는다 — 재수집으로 달라지는 것이 **정보**이고, 값이
+// 달라졌는지는 바로 위 드리프트 시험이 잡는다. 여기서는 지문이 실제로 담겨 있고
+// 자기 자신과 앞뒤가 맞는지를 본다.)
+test('gate-snapshot: 자료 판본 지문(표별 행 수·최대 시점)을 담는다', () => {
+  const snap = JSON.parse(readFileSync(join('data', 'gate-snapshot.json'), 'utf8')) as {
+    data?: {
+      rows: { obs: number; oecd_obs: number; grid: number };
+      kosis: Record<string, { rows: number; max_period: string | null }>;
+      oecd: Record<string, { rows: number; max_period: string | null }>;
+      grid: Record<string, { rows: number; sheets: number }>;
+    };
+  };
+  const d = snap.data;
+  assert.ok(d, '스냅샷에 자료 지문(data)이 없다 — npm run build:snapshot');
+  // 세 테이블 전부 비어 있지 않다
+  assert.ok(d.rows.obs > 0 && d.rows.oecd_obs > 0 && d.rows.grid > 0, JSON.stringify(d.rows));
+  // 표별 행 수의 합이 테이블 행 수와 같다 — 지문이 일부만 담기면 어긋난다
+  const sum = (o: Record<string, { rows: number }>) =>
+    Object.values(o).reduce((a, b) => a + b.rows, 0);
+  assert.equal(sum(d.kosis), d.rows.obs);
+  assert.equal(sum(d.oecd), d.rows.oecd_obs);
+  assert.equal(sum(d.grid), d.rows.grid);
+  // 최대 시점이 표마다 적혀 있다(연도 4자리 또는 연월 6자리)
+  for (const [t, v] of [...Object.entries(d.kosis), ...Object.entries(d.oecd)]) {
+    assert.match(String(v.max_period), /^\d{4}(\d{2})?$/, `${t} 의 최대 시점이 없다`);
+  }
+});
+
 test('gate-snapshot 은 지금 계산값과 같다 — 다르면 회귀이거나 자료가 개정된 것이다', () => {
   const snap = JSON.parse(readFileSync(join('data', 'gate-snapshot.json'), 'utf8')) as {
     values: Record<string, number | string | null>;

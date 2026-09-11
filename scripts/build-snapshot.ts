@@ -10,7 +10,7 @@
 import { readFileSync, readdirSync, writeFileSync, existsSync, statSync } from 'node:fs';
 import { join, basename } from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { openDb } from '../src/db/load.ts';
+import { openDb, dataFingerprint } from '../src/db/load.ts';
 import { verifyCellMap, applyKnownDivergences,
          type CellResult, type OracleDump, type KnownDivergence } from '../src/verify/compare.ts';
 import { summarize } from './verify-all.ts';
@@ -64,6 +64,10 @@ const out = {
   commit,                       // 생성 시점의 HEAD (이 파일을 담는 커밋의 부모다)
   generated_at: new Date().toISOString(),
   source: 'data/cellmap/*.json + data/oracle/*.json + data/obs.sqlite (수식 파일을 읽지 않는다)',
+  // 전체 리뷰 F11: **자료 쪽 지문.** obs.sqlite 와 data/raw 는 추적되지 않으므로, 이것이
+  // 없으면 나중에 값이 달라졌을 때 「번역 회귀」와 「자료 개정」을 구별할 수 없다.
+  // 파일 해시는 재수집마다 달라져 쓸모없다 — 표별 행 수와 최대 시점(내용 지문)을 담는다.
+  data: dataFingerprint(db),
   counts: s.byVerdict,
   comparable: s.comparable,
   rate: s.rate,

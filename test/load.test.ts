@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { openDb, loadJsonl, loadOecdJsonl, loadGridJsonl, loadAll } from '../src/db/load.ts';
+import { openDb, loadJsonl, loadOecdJsonl, loadGridJsonl, loadAll,
+         dataFingerprint } from '../src/db/load.ts';
 
 test('loadJsonl: 헤더 이름을 obs 열로 옮긴다', () => {
   const db = openDb(':memory:');
@@ -126,4 +127,31 @@ test('loadAll: 소스마다 어느 테이블로 갔는지와 행수를 함께 �
     etc: { table: 'grid', rows: 1 },
     panel: { table: 'grid', rows: 1 },
   });
+});
+
+// ── 전체 리뷰 F11 — 관문의 자료 쪽을 못박는 지문 ────────────────────────────
+// obs.sqlite 와 data/raw 는 추적되지 않는다. 지문이 없으면 다른 시점의 DB 로 관문을
+// 다시 돌렸을 때 「번역 회귀」와 「자료 개정」을 구별할 수 없다. 파일 해시는 재수집마다
+// 달라져 쓸모없으므로 **내용 지문**(표별 행 수 · 최대 시점)을 담는다.
+test('F11: dataFingerprint — 표별 행 수와 최대 시점을 담는다', () => {
+  const db = openDb(':memory:');
+  loadJsonl(db, 'kosis', 'T1', [
+    { PRD_DE: '2024', DT: 1 }, { PRD_DE: '2025', DT: 2 },
+  ].map((x) => JSON.stringify(x)));
+  loadJsonl(db, 'kosis', 'T2', [{ PRD_DE: '202408', DT: 3 }].map((x) => JSON.stringify(x)));
+  loadOecdJsonl(db, 'LP', [
+    { REF_AREA: 'KOR', '국가명': '한국', TIME_PERIOD: '2024', value: 1 },
+    { REF_AREA: 'KOR', '국가명': '한국', TIME_PERIOD: '2025', value: 2 },
+  ].map((x) => JSON.stringify(x)));
+  loadGridJsonl(db, 'etc', 'S', [{ r: 1, c: 1, v: 'x' }, { r: 2, c: 1, v: 1 }]
+    .map((x) => JSON.stringify(x)));
+
+  const f = dataFingerprint(db);
+  assert.deepEqual(f.rows, { obs: 3, oecd_obs: 2, grid: 2 });
+  assert.deepEqual(f.kosis, {
+    T1: { rows: 2, max_period: '2025' },
+    T2: { rows: 1, max_period: '202408' },
+  });
+  assert.deepEqual(f.oecd, { LP: { rows: 2, max_period: '2025' } });
+  assert.deepEqual(f.grid, { etc: { rows: 2, sheets: 1 } });
 });
