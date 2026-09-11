@@ -11,4 +11,9 @@ dist/
 data/*
 !data/oracle/
 !data/formulas/
+# headers.json(32KB) 은 열 문자 -> 열 이름 매핑이다. 이것이 없으면 수식을 실행할 수
+# 없으므로, raw 의 나머지(226MB)는 버리되 이 파일만 예외로 추적한다.
+!data/raw/
+data/raw/*
+!data/raw/headers.json
 __pycache__/
