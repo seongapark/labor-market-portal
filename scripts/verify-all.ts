@@ -61,6 +61,11 @@ export function summarize(rows: CellResult[]): Summary {
 }
 
 function main() {
+  // Task 9 단위 10: BASE_YEAR 는 이제 **앵커**다(리뷰 지적 6 — 단위 8 이후 이 값을 읽는
+  // 곳이 없어 거짓 손잡이였다). 관문의 전제는 인쇄된 값의 재현이므로 기본값 2025 로
+  // 돌린다. 2025 가 아닌 값으로 돌리면 앵커를 주입하는 part(part1_5·part3)에서 RULING 17
+  // 단정이 던져 즉시 멈춘다 — 「확정본과 대조한다」와 「다른 연도로 계산한다」는 동시에
+  // 성립할 수 없기 때문이다. 다른 연도를 계산해 보려면 관문이 아니라 anchorCell 을 쓴다.
   const YEAR = process.env.BASE_YEAR ?? '2025';
   const dataDir = 'data';
   const headers = JSON.parse(

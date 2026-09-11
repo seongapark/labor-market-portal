@@ -87,7 +87,8 @@ export function hasAnchorFormula(formulas: Record<string, Record<string, string>
 /** RULING 17 (Task 9 단위 10): `AnchorCtx` 를 만든다. 앵커 수식이 없는 통합문서
     (`part1_5`·`part3` — `KOSIS_원데이터.xlsx` 로의 외부링크가 아예 없어 사람이 2025 를
     손으로 박았다)에는 앵커 자리에 앵커 값을 **직접 심는다**. 그러지 않으면 원데이터를
-    2026년치로 받아도 그 두 part 의 연도가 2025 에 얼어붙는다(지면 셀 218칸).
+    2026년치로 받아도 그 두 part 의 연도가 2025 에 얼어붙는다 — 실측으로 지면 374칸
+    (part1_5 50 · part3 324)이 얼어붙은 값 대신 계산값을 타게 된다.
 
     근거 = 「2025 를 타이핑한 사람은 앵커를 옮겨 적고 있었다」. 그 근거를 주석이 아니라
     **검사되는 불변식**으로 박는다: `frozen`(확정본의 앵커 자리 값)을 주면 그것이 앵커와
@@ -135,7 +136,7 @@ function evalFormula(ac: AnchorCtx, sheet: string, formula: string): string | nu
   const e = parseFormula(formula, PARSE_CTX);                            // 규칙 3
   if (e.op === 'unsupported') return undefined;
   try {
-    const v = execute(e, { db: NO_DB, grids: STRICT_GRIDS, sheet, year: '', anchor: ac });
+    const v = execute(e, { db: NO_DB, grids: STRICT_GRIDS, sheet, anchor: ac });
     return v === null ? undefined : v;     // null 은 실행기의 오류값이다 — 계산 불가로 본다
   } catch (err) {
     if (err instanceof Unresolved) return undefined;

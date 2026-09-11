@@ -90,7 +90,7 @@ test('STRICT_GRIDS: 실데이터 part3!_13개국!C3 은 확정본으로 떨어�
   const db = null as never;
   assert.equal(
     execute({ op: 'cell', sheet: '_13개국', ref: 'C3' },
-      { db, grids: oracle as never, sheet: 'p214', year: '2025', anchor: ac }),
+      { db, grids: oracle as never, sheet: 'p214', anchor: ac }),
     oracle['_13개국']['C3'],
   );
   assert.equal(oracle['_13개국']['C3'], 35250.42);
@@ -343,13 +343,13 @@ const grid: Grid = { B5: 1999, C6: 1999 };
 test('회귀: anchor 없이 부른 execute 는 지금까지처럼 격자에서 읽는다', () => {
   const e: Expr = { op: 'cell', ref: 'B5' };
   const db = null as never;
-  assert.equal(execute(e, { db, grids: { p1: grid }, sheet: 'p1', year: '2025' }), 1999);
+  assert.equal(execute(e, { db, grids: { p1: grid }, sheet: 'p1' }), 1999);
 });
 
 test('anchor 가 있으면 셀은 앵커에서 먼저 계산되고, 못 하면 격자로 떨어진다', () => {
   const ac = ctx({ _시계열: { B1: ANCHOR_FORMULA }, p1: { B5: '=_시계열!B1-1' } });
   const db = null as never;
-  const c = { db, grids: { p1: grid }, sheet: 'p1', year: '2025', anchor: ac };
+  const c = { db, grids: { p1: grid }, sheet: 'p1', anchor: ac };
   assert.equal(execute({ op: 'cell', ref: 'B5' }, c), 2024);   // 앵커에서 계산 (격자의 1999 아님)
   assert.equal(execute({ op: 'cell', ref: 'C6' }, c), 1999);   // 수식이 없어 격자로
 });
@@ -362,7 +362,7 @@ test('연도 조건도 앵커에서 계산한다', () => {
   const e: Expr = { op: 'sumifs', q: { src: 'kosis', table: 'T', value: 'DT',
     where: { PRD_DE: { kind: 'year', ref: 'C6' } } } };
   // 격자에는 1999 가 들어 있지만 앵커가 이긴다
-  assert.equal(execute(e, { db, grids: { p1: grid }, sheet: 'p1', year: '2025', anchor: ac }), 7);
+  assert.equal(execute(e, { db, grids: { p1: grid }, sheet: 'p1', anchor: ac }), 7);
 });
 
 // 앵커 자리에 (앵커가 아닌) 수식이 있으면 심을 자리가 없다 — 단정도 하지 않는다.

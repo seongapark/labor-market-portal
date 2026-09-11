@@ -94,15 +94,21 @@ export function verifyPart(
   oracle: OracleDump,
   db: DatabaseSync,
   headers: Headers,
+  /** 기준연도. Task 9 단위 10: 이 인자가 **앵커의 출처**다 — 단위 8 이후로 실행기가
+      읽지 않는 죽은 손잡이였다(리뷰 지적 6). 시그니처는 그대로 두고 뜻만 되살렸다. */
   year: string,
-  anchor = 2025,
+  anchor = Number(year),
 ): CellResult[] {
+  if (!Number.isInteger(anchor)) {
+    throw new Error(`기준연도(앵커)를 정수로 못 읽었다: ${JSON.stringify(year)}`);
+  }
   const out: CellResult[] = [];
   const ctx = { extmap: formulas.extmap, headers };
 
   // Task 9 단위 8: 연도는 확정본에서 읽지 않고 앵커('[N]0_수집현황'!$A$1)에서 계산한다.
-  // 작업본 수식을 이미 들고 있으니 그것으로 AnchorCtx 를 만든다. 기본 앵커는 2025 —
-  // 관문의 전제가 "인쇄된 값의 재현"이므로 다른 값으로 관문을 돌리지 않는다.
+  // 작업본 수식을 이미 들고 있으니 그것으로 AnchorCtx 를 만든다. 앵커는 year(기본
+  // BASE_YEAR=2025)에서 온다 — 관문의 전제가 "인쇄된 값의 재현"이므로 2025 아닌 값으로
+  // 관문을 돌리면 주입 part 에서 RULING 17 단정이 던진다. 그게 맞는 실패다.
   // 이로써 관문은 확정본의 연도를 *믿는* 대신 앵커에서 사슬이 제대로 계산되는지를
   // *증명한다*. 앵커로 못 구하는 셀(수식이 없는 리터럴 등)만 격자로 떨어진다.
   // Task 9 단위 10 (RULING 17): 앵커 수식이 없는 part(part1_5·part3)에는 앵커 자리에
@@ -136,7 +142,7 @@ export function verifyPart(
       }
       let got: number | string | null = null;
       try {
-        got = execute(e, { db, grids, sheet, year, anchor: anchorCtx });
+        got = execute(e, { db, grids, sheet, anchor: anchorCtx });
       } catch (err) {
         out.push({ part, sheet, ref, verdict: 'error', expected, got: null,
                    reason: (err as Error).message });

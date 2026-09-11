@@ -207,3 +207,33 @@ test('verifyPart: 연도 조건을 확정본이 아니라 앵커에서 계산한
   assert.equal(r24.B7.got, 99);
   assert.equal(r24.B7.verdict, 'mismatch');
 });
+
+// Task 9 단위 10 (리뷰 지적 6): year 인자(=BASE_YEAR)가 **앵커의 출처**다.
+// 단위 8 이후 이 값을 읽는 곳이 없어 「기준연도를 여기 주면 무언가 달라진다」는
+// 거짓 손잡이였다. 이 시험이 그것을 다시 죽지 않게 묶는다.
+test('verifyPart: year 인자가 앵커의 출처다 — BASE_YEAR 가 실제로 연도를 옮긴다', () => {
+  const db = openDb(':memory:');
+  loadJsonl(db, 'kosis', 'T', [
+    JSON.stringify({ PRD_DE: '2025', ITM_NM: '취업자', DT: 120 }),
+    JSON.stringify({ PRD_DE: '2024', ITM_NM: '취업자', DT: 99 }),
+  ]);
+  const headers: Headers = { kosis: { T: ['ITM_NM', 'DT', 'PRD_DE'] }, oecd: {}, etc: {}, panel: {} };
+  const formulas = {
+    extmap: { '1': 'KOSIS_원데이터.xlsx' },
+    sheets: {
+      _시계열: { B1: "='[1]0_수집현황'!$A$1" },
+      p1: {
+        C6: '=_시계열!B1',
+        B7: '=SUMIFS([1]T!$B:$B,[1]T!$C:$C,TEXT(C$6,"0"),[1]T!$A:$A,"취업자")',
+      },
+    },
+  };
+  const oracle = { _시계열: { B1: 2025 }, p1: { C6: 2025, B7: 120 } };
+  const got = (year: string) => {
+    const r = verifyPart('partX', formulas, oracle, db, headers, year);
+    return Object.fromEntries(r.map((x) => [x.ref, x.got]));
+  };
+  assert.deepEqual(got('2025'), { C6: 2025, B7: 120 });
+  assert.deepEqual(got('2024'), { C6: 2024, B7: 99 });   // 앵커가 따라 움직인다
+  assert.throws(() => got('올해'), /기준연도\(앵커\)를 정수로 못 읽었다/);
+});
