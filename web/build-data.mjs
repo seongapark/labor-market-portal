@@ -17,7 +17,14 @@ import { join, dirname } from 'node:path';
 const ROOT = process.env.REPO_DIR ? process.env.REPO_DIR + '/' : './';
 const OUT = process.env.OUT ?? 'dist/data.json';
 
-const snap = JSON.parse(readFileSync(ROOT + 'data/gate-snapshot.json', 'utf8'));
+/* 값의 출처는 **계산값**이다 — 원데이터에서 계산한 것.
+   전에는 gate-snapshot(관문 통과 시점의 동결 스냅샷)을 읽어서, 원데이터를 다시 받아도
+   화면이 바뀌지 않았다. 스냅샷은 이제 「회귀인가 개정인가」를 가르는 기준선으로만 쓴다. */
+const computed = JSON.parse(readFileSync(ROOT + 'data/computed-values.json', 'utf8'));
+const snapRef = JSON.parse(readFileSync(ROOT + 'data/gate-snapshot.json', 'utf8'));
+const snap = { values: computed.values, anchor: computed.anchor,
+  commit: snapRef.commit, generated_at: computed.generated_at,
+  comparable: Object.keys(computed.values).length, rate: snapRef.rate, counts: snapRef.counts };
 const toc = JSON.parse(readFileSync(ROOT + 'data/toc.json', 'utf8'));
 const layout = JSON.parse(readFileSync(ROOT + 'data/layout.json', 'utf8'));
 const known = JSON.parse(readFileSync(ROOT + 'data/known-divergences.json', 'utf8'));
@@ -59,17 +66,17 @@ const colStr = (n) => { let s = ''; while (n > 0) { const m = (n - 1) % 26; s = 
 const exempt = new Set(known.map((k) => `${k.part}!${k.sheet}!${k.ref}`));
 
 // 계산값을 지면별로 모은다
-const computed = {};
+const byPage = {};
 for (const [key, v] of Object.entries(snap.values)) {
   const j = key.lastIndexOf('!');
-  (computed[key.slice(0, j)] = computed[key.slice(0, j)] || {})[key.slice(j + 1)] = v;
+  (byPage[key.slice(0, j)] = byPage[key.slice(0, j)] || {})[key.slice(j + 1)] = v;
 }
 
 /** 해석용 전체 값 맵: 계산값이 있으면 계산값, 없으면 확정본. 행 제한 없음.
  *  차트 범위가 1~3행(제목 줄)이나 표 밖을 가리킬 수 있으므로 걸러내지 않는다. */
 function fullMap(part, sheet) {
   const oc = oracle[part]?.[sheet] || {};
-  const comp = computed[`${part}!${sheet}`] || {};
+  const comp = byPage[`${part}!${sheet}`] || {};
   const out = {};
   for (const [k, v] of Object.entries(oc)) out[k] = v;
   for (const [k, v] of Object.entries(comp)) out[k] = v;
@@ -270,11 +277,15 @@ const pages = [];
 for (const t of toc.pages) {
   const pageKey = t.file && t.sheet ? `${t.file}!${t.sheet}` : null;
   const oc = (pageKey && oracle[t.file]?.[t.sheet]) || {};
-  const comp = (pageKey && computed[pageKey]) || {};
+  const comp = (pageKey && byPage[pageKey]) || {};
   const src = (pageKey && srcOf.get(pageKey)) || { org: '', stat: '' };
 
   const specs = pageKey ? chartDefs.parts?.[t.file]?.[t.sheet] : null;
-  const thin = pageKey ? tableCols(t.file, t.sheet, specs) : null;
+  /* 희소 라벨 행 규칙은 **끈다**. 발간 PDF 가 반증했다 —
+     p8 의 인쇄 표는 `["구 분","1970","1980",…]` = **10년 단위 13열**인데
+     엑셀의 희소 라벨 행(4행)은 **5년 단위 21열**을 낸다. 표 모양은 PDF 가 답한다.
+     `tableCols` 는 근거 기록을 위해 남겨 두되 적용하지 않는다. */
+  const thin = null;
 
   const cells = [];
   let verified = 0, exemptN = 0;
@@ -327,6 +338,8 @@ const out = {
     repo: 'https://github.com/seongapark/labor-market-portal',
     toc_source: toc.source,
     chart_source: chartDefs.source,
+    value_source: 'data/computed-values.json — cellmap + constants + obs.sqlite 에서 계산. '
+      + '확정본을 읽지 않는다.',
   },
   exempt: known,
   pages,

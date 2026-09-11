@@ -21,7 +21,10 @@
     "deploy": "wrangler deploy",
     "preview": "wrangler dev",
     "dump:charts": "python tools/extract/dump_charts.py",
-    "build:web": "node web/build-data.mjs && node -e \"const{copyFileSync}=require('fs');for(const f of['index.html','chart.js'])copyFileSync('web/'+f,'dist/'+f)\""
+    "build:web": "node web/build-data.mjs && node -e \"const{copyFileSync}=require('fs');for(const f of['index.html','chart.js'])copyFileSync('web/'+f,'dist/'+f)\"",
+    "match:tables": "node scripts/match-printed-tables.mjs",
+    "dump:pdf": "python tools/extract/dump_pdf.py",
+    "update": "npm run compute && npm run build:web"
   },
   "devDependencies": {
     "@types/node": "^22.20.2",
