@@ -1,4 +1,5 @@
 import type { DatabaseSync } from 'node:sqlite';
+import { anchorCell, type AnchorCtx } from './anchor.ts';
 import type { Crit, Expr, Grid, Query } from '../types.ts';
 
 /** RULING 8: ExecCtx 는 파트 전체의 격자(시트명 → Grid)를 들고, 지금 계산 중인 시트를 함께 표시한다.
@@ -6,8 +7,13 @@ import type { Crit, Expr, Grid, Query } from '../types.ts';
     단일 grid 로는 풀 수 없다는 것을 Task 5 가 확인했다.
     RULING 10: year 필드는 더 이상 연도 조건(critValue 의 'year' 분기)에 쓰이지 않는다 —
     그 분기는 이제 격자에 셀이 없으면 이 값으로 조용히 대체하지 않고 던진다. Task 8 의
-    verifyPart 호출부 시그니처를 건드리지 않기 위해 필드 자체는 남겨 둔다. */
-export type ExecCtx = { db: DatabaseSync; grids: Record<string, Grid>; sheet: string; year: string };
+    verifyPart 호출부 시그니처를 건드리지 않기 위해 필드 자체는 남겨 둔다.
+    RULING 11 (Task 9 단위 8): anchor 를 주면 셀 값은 **먼저 앵커에서 계산한다**. 앵커로 못
+    구하는 셀만 지금까지처럼 격자(확정본)로 떨어진다. anchor 가 없으면 동작은 전과 똑같다. */
+export type ExecCtx = {
+  db: DatabaseSync; grids: Record<string, Grid>; sheet: string; year: string;
+  anchor?: AnchorCtx;
+};
 
 /** jsonl 키 → obs 열 (parse 가 내는 이름은 대문자 헤더 이름이다) */
 const COL: Record<string, string> = {
@@ -29,6 +35,12 @@ function dbCol(name: string): string {
     없는 시트·없는 셀은 null 이다 — 예외를 던지지 않는다. 오라클과 대조할 때(8단계) 불일치로
     잡히길 바라는 신호이기 때문이다. */
 function gridCell(ctx: ExecCtx, sheet: string, ref: string): string | number | null {
+  // RULING 11: 앵커에서 계산할 수 있는 셀(연도 사슬과 그 씨앗셀)은 확정본을 읽지 않고
+  // 계산한다 — 원데이터가 2026년치로 바뀌면 연도도 따라 움직여야 하기 때문이다.
+  if (ctx.anchor) {
+    const a = anchorCell(ctx.anchor, sheet, ref);
+    if (a !== undefined) return a;
+  }
   const v = ctx.grids[sheet]?.[ref];
   return v === undefined ? null : v;
 }
@@ -42,6 +54,9 @@ function critValue(c: Crit, ctx: ExecCtx): string {
     // 머리글이 조용히 기준연도의 답을 받고 대조에서 절대 드러나지 않는다 — 던져서
     // verifyPart(8단계) 가 error 판정으로 잡게 한다. 조용히 틀린 값보다 크래시가 낫다
     // (RULING 7 과 같은 원칙).
+    // RULING 11: gridCell 이 anchor 를 먼저 본다 — 연도 조건은 anchor 가 있으면 앵커에서
+    // 계산된 값을 받고, 앵커로 못 구할 때만 격자로 떨어진다. 아래 문자열 변환은 그대로
+    // 거치므로 SUMIFS 기준값의 모양(정수 문자열)은 변하지 않는다.
     const v = gridCell(ctx, ctx.sheet, c.ref);
     if (v === null) throw new Error(`연도 조건 셀이 격자에 없다: ${ctx.sheet}!${c.ref}`);
     // prd_de·TIME_PERIOD 는 TEXT 열이다 — 숫자를 그대로 두면 "2025.0" 같은 꼴이
