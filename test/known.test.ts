@@ -126,3 +126,19 @@ test('면제 적용은 멱등이다 — 두 번 돌려도 묵은 것으로 오�
   const third = applyKnownDivergences(first.rows, [entry({ computed: 999 })]);
   assert.equal(third.stale.length, 1);
 });
+
+// 코디네이터 판정(2026-09-11): 면제는 **분모에 남긴다.** presentation 은 애초에 확정본에
+// 대해 주장할 것이 없는 칸(부록·서식)이라 분모에서 빼지만, 면제는 「인쇄된 값과 다르다는
+// 것을 알고 넘긴」 칸이다. 일치율은 「이 비율만큼 인쇄본을 재현했다」는 주장 그대로여야
+// 하므로, 100.000% 는 세 칸에 대해 거짓이 된다. 넘치게 말하지 않는 수가 둥근 수보다 낫다.
+test('일치율: 면제는 분모에 남는다 (presentation 과 다르다)', () => {
+  const out: CellResult[] = [
+    { part: 'p1', sheet: 'a', ref: 'A1', verdict: 'match', expected: 1, got: 1 },
+    { part: 'p1', sheet: 'a', ref: 'A2', verdict: 'known-divergence', expected: 2, got: 1, reason: 'x' },
+    { part: 'p1', sheet: 'a', ref: 'A3', verdict: 'presentation', expected: 3, got: null, reason: 'INDEX' },
+  ];
+  const s = summarize(out, 0);
+  assert.equal(s.comparable, 2, '면제가 분모에서 빠졌다');
+  assert.equal(s.rate, 1 / 2);
+  assert.equal(s.gatePassed, true, '면제는 관문을 막지 않는다');
+});

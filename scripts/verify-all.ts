@@ -50,10 +50,15 @@ export function summarize(rows: CellResult[], stale = 0): Summary {
   const mm = byVerdict.mismatch ?? 0;
   const er = byVerdict.error ?? 0;
   const un = byVerdict.unsupported ?? 0;
-  // presentation(같은시트 INDEX/MATCH/RANK 정렬)은 대조가 아니므로 분모에 넣지 않는다.
-  // Task 9 단위 9: known-divergence(사용자가 「인쇄본이 틀렸다」고 판정한 칸)도 같은
-  // 이유로 뺀다 — 그 칸에서 우리는 인쇄된 값을 재현하지 않기로 **정했다**.
-  const comparable = m + mm + er;
+  // presentation(같은시트 INDEX/MATCH/RANK 정렬)은 대조가 아니므로 분모에 넣지 않는다 —
+  // 부록·서식 칸이라 확정본에 대해 **애초에 주장할 것이 없다.**
+  // Task 9 단위 9 (판정 2026-09-11): known-divergence 는 **다르다 — 분모에 남긴다.**
+  // 면제는 「인쇄된 값과 다르다는 것을 알고 넘긴」 칸이고, 일치율은 「이 비율만큼 인쇄본을
+  // 재현했다」는 주장 그대로여야 한다. 면제를 분모에서 빼면 100.000% 가 되는데 그것은
+  // 세 칸에 대해 거짓이다 — 면제표가 아무리 잘 보여도 그렇다. 넘치게 말하지 않는 수가
+  // 둥근 수보다 낫다. 관문(gatePassed)에서만 빼고 분모에는 남긴다.
+  const kd = byVerdict['known-divergence'] ?? 0;
+  const comparable = m + mm + er + kd;
   return {
     total: rows.length,
     comparable,
@@ -144,7 +149,7 @@ function main() {
     `- 파싱 못함 ${s.byVerdict.unsupported ?? 0} · 확정본에 값 없음 ${s.byVerdict['no-oracle'] ?? 0}`,
     `- 표현(presentation) **${s.byVerdict.presentation ?? 0}** — OECD 부록의 같은시트 INDEX/MATCH/RANK 정렬 수식. 원천 통합문서를 참조하지 않는 표시 로직이라 SQL 로 재구현하지 않기로 정했다. 대조 분모·관문 모두에서 제외한다.`,
     `- 면제(known-divergence) **${s.byVerdict['known-divergence'] ?? 0}** — 사용자가 「인쇄본이 틀렸다」고 판정한 칸. 확정본은 고치지 않았다(확정본은 계속 「인쇄된 것」을 뜻한다). 대조 분모·관문에서 제외하지만 **차이가 그대로일 때만** 면제된다.`,
-    `- 일치율 **${(s.rate * 100).toFixed(3)}%**`,
+    `- 일치율 **${(s.rate * 100).toFixed(3)}%** — 분모는 대조 가능 ${s.comparable} 이고 **면제 ${s.byVerdict['known-divergence'] ?? 0}건도 분모에 든다**(인쇄본을 재현하지 못한 칸이므로). presentation 만 분모에서 뺀다.`,
     '',
     `## 관문: ${s.gatePassed ? '통과' : '미통과'} (불일치 0 · 오류 0 · 파싱못함 0 · 묵은 면제 0 — presentation 과 면제는 제외)`,
     '',
@@ -162,7 +167,7 @@ function main() {
   ];
   for (const part of Object.keys(s.byPart).sort()) {
     const b = s.byPart[part];
-    const comp = (b.match ?? 0) + (b.mismatch ?? 0) + (b.error ?? 0);
+    const comp = (b.match ?? 0) + (b.mismatch ?? 0) + (b.error ?? 0) + (b['known-divergence'] ?? 0);
     lines.push(`| ${part} | ${comp} | ${b.match ?? 0} | ${b.mismatch ?? 0} | ${b.error ?? 0} | ${b.unsupported ?? 0} | ${b.presentation ?? 0} | ${b['known-divergence'] ?? 0} | ${b['no-oracle'] ?? 0} | ${comp ? ((b.match ?? 0) / comp * 100).toFixed(2) : '—'}% |`);
   }
   writeFileSync(join('reports', 'verify-summary.md'), lines.join('\n') + '\n');
