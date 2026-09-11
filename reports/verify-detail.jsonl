@@ -443,16 +443,6 @@
 {"part":"part1_4(1)","sheet":"p67","ref":"D47","verdict":"error","expected":178939,"got":null,"reason":"실행 불가: src 'etc' 는 long 테이블이 없다 (grid 좌표만 적재됨)"}
 {"part":"part1_4(1)","sheet":"p67","ref":"C48","verdict":"error","expected":11,"got":null,"reason":"실행 불가: src 'etc' 는 long 테이블이 없다 (grid 좌표만 적재됨)"}
 {"part":"part1_4(1)","sheet":"p67","ref":"D48","verdict":"error","expected":119,"got":null,"reason":"실행 불가: src 'etc' 는 long 테이블이 없다 (grid 좌표만 적재됨)"}
-{"part":"part1_5","sheet":"p78,79","ref":"B15","verdict":"unsupported","expected":"2021년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"C15","verdict":"unsupported","expected":"2022년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"D15","verdict":"unsupported","expected":"2023년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"E15","verdict":"unsupported","expected":"2024년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"F15","verdict":"unsupported","expected":"2025년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"K15","verdict":"unsupported","expected":"2021년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"L15","verdict":"unsupported","expected":"2022년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"M15","verdict":"unsupported","expected":"2023년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"N15","verdict":"unsupported","expected":"2024년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"O15","verdict":"unsupported","expected":"2025년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p78,79","ref":"B16","verdict":"error","expected":46804,"got":null,"reason":"실행 불가: src 'etc' 는 long 테이블이 없다 (grid 좌표만 적재됨)"}
 {"part":"part1_5","sheet":"p78,79","ref":"C16","verdict":"error","expected":29462,"got":null,"reason":"실행 불가: src 'etc' 는 long 테이블이 없다 (grid 좌표만 적재됨)"}
 {"part":"part1_5","sheet":"p78,79","ref":"D16","verdict":"error","expected":23207,"got":null,"reason":"실행 불가: src 'etc' 는 long 테이블이 없다 (grid 좌표만 적재됨)"}
@@ -483,16 +473,6 @@
 {"part":"part1_5","sheet":"p78,79","ref":"M18","verdict":"unsupported","expected":773809,"got":null,"reason":"못 다루는 함수: SUM"}
 {"part":"part1_5","sheet":"p78,79","ref":"N18","verdict":"unsupported","expected":630442,"got":null,"reason":"못 다루는 함수: SUM"}
 {"part":"part1_5","sheet":"p78,79","ref":"O18","verdict":"unsupported","expected":627838,"got":null,"reason":"못 다루는 함수: SUM"}
-{"part":"part1_5","sheet":"p78,79","ref":"B35","verdict":"unsupported","expected":"2021년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"C35","verdict":"unsupported","expected":"2022년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"D35","verdict":"unsupported","expected":"2023년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"E35","verdict":"unsupported","expected":"2024년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"F35","verdict":"unsupported","expected":"2025년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"K35","verdict":"unsupported","expected":"2021년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"L35","verdict":"unsupported","expected":"2022년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"M35","verdict":"unsupported","expected":"2023년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"N35","verdict":"unsupported","expected":"2024년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"O35","verdict":"unsupported","expected":"2025년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p78,79","ref":"B36","verdict":"error","expected":3891,"got":null,"reason":"실행 불가: src 'etc' 는 long 테이블이 없다 (grid 좌표만 적재됨)"}
 {"part":"part1_5","sheet":"p78,79","ref":"C36","verdict":"error","expected":3057,"got":null,"reason":"실행 불가: src 'etc' 는 long 테이블이 없다 (grid 좌표만 적재됨)"}
 {"part":"part1_5","sheet":"p78,79","ref":"D36","verdict":"error","expected":2240,"got":null,"reason":"실행 불가: src 'etc' 는 long 테이블이 없다 (grid 좌표만 적재됨)"}
@@ -563,16 +543,6 @@
 {"part":"part1_5","sheet":"p78,79","ref":"M42","verdict":"unsupported","expected":777584,"got":null,"reason":"못 다루는 함수: SUM"}
 {"part":"part1_5","sheet":"p78,79","ref":"N42","verdict":"unsupported","expected":633283,"got":null,"reason":"못 다루는 함수: SUM"}
 {"part":"part1_5","sheet":"p78,79","ref":"O42","verdict":"unsupported","expected":630509,"got":null,"reason":"못 다루는 함수: SUM"}
-{"part":"part1_5","sheet":"p78,79","ref":"C57","verdict":"unsupported","expected":"2021년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"D57","verdict":"unsupported","expected":"2022년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"E57","verdict":"unsupported","expected":"2023년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"F57","verdict":"unsupported","expected":"2024년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"G57","verdict":"unsupported","expected":"2025년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"K57","verdict":"unsupported","expected":"2021년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"L57","verdict":"unsupported","expected":"2022년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"M57","verdict":"unsupported","expected":"2023년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"N57","verdict":"unsupported","expected":"2024년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_5","sheet":"p78,79","ref":"O57","verdict":"unsupported","expected":"2025년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p78,79","ref":"C58","verdict":"unsupported","expected":271,"got":null,"reason":"못 다루는 함수: SUM"}
 {"part":"part1_5","sheet":"p78,79","ref":"D58","verdict":"unsupported","expected":188,"got":null,"reason":"못 다루는 함수: SUM"}
 {"part":"part1_5","sheet":"p78,79","ref":"E58","verdict":"unsupported","expected":139,"got":null,"reason":"못 다루는 함수: SUM"}
@@ -693,10 +663,6 @@
 {"part":"part1_5","sheet":"p78,79","ref":"M70","verdict":"error","expected":0,"got":null,"reason":"실행 불가: src 'etc' 는 long 테이블이 없다 (grid 좌표만 적재됨)"}
 {"part":"part1_5","sheet":"p78,79","ref":"N70","verdict":"error","expected":0,"got":null,"reason":"실행 불가: src 'etc' 는 long 테이블이 없다 (grid 좌표만 적재됨)"}
 {"part":"part1_5","sheet":"p78,79","ref":"O70","verdict":"error","expected":0,"got":null,"reason":"실행 불가: src 'etc' 는 long 테이블이 없다 (grid 좌표만 적재됨)"}
-{"part":"part1_5","sheet":"p80","ref":"C28","verdict":"unsupported","expected":"2025년/1분기","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년/1분기\"}]"}
-{"part":"part1_5","sheet":"p80","ref":"E28","verdict":"unsupported","expected":"2025년/2분기","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년/2분기\"}]"}
-{"part":"part1_5","sheet":"p80","ref":"G28","verdict":"unsupported","expected":"2025년/3분기","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년/3분기\"}]"}
-{"part":"part1_5","sheet":"p80","ref":"I28","verdict":"unsupported","expected":"2025년/4분기","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년/4분기\"}]"}
 {"part":"part1_5","sheet":"p80","ref":"C29","verdict":"unsupported","expected":8961,"got":null,"reason":"못 다루는 함수: SUM"}
 {"part":"part1_5","sheet":"p80","ref":"E29","verdict":"unsupported","expected":8024,"got":null,"reason":"못 다루는 함수: SUM"}
 {"part":"part1_5","sheet":"p80","ref":"G29","verdict":"unsupported","expected":6624,"got":null,"reason":"못 다루는 함수: SUM"}
@@ -791,10 +757,6 @@
 {"part":"part1_5","sheet":"p80","ref":"G44","verdict":"error","expected":0,"got":null,"reason":"실행 불가: src 'etc' 는 long 테이블이 없다 (grid 좌표만 적재됨)"}
 {"part":"part1_5","sheet":"p80","ref":"I44","verdict":"error","expected":13,"got":null,"reason":"실행 불가: src 'etc' 는 long 테이블이 없다 (grid 좌표만 적재됨)"}
 {"part":"part1_5","sheet":"p80","ref":"L44","verdict":"presentation","expected":14,"got":null,"reason":"못 다루는 함수: RANK"}
-{"part":"part1_5","sheet":"p81","ref":"C28","verdict":"unsupported","expected":"2025년/1분기","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년/1분기\"}]"}
-{"part":"part1_5","sheet":"p81","ref":"E28","verdict":"unsupported","expected":"2025년/2분기","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년/2분기\"}]"}
-{"part":"part1_5","sheet":"p81","ref":"G28","verdict":"unsupported","expected":"2025년/3분기","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년/3분기\"}]"}
-{"part":"part1_5","sheet":"p81","ref":"I28","verdict":"unsupported","expected":"2025년/4분기","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년/4분기\"}]"}
 {"part":"part1_5","sheet":"p81","ref":"C29","verdict":"unsupported","expected":196495,"got":null,"reason":"못 다루는 함수: SUM"}
 {"part":"part1_5","sheet":"p81","ref":"E29","verdict":"unsupported","expected":186179,"got":null,"reason":"못 다루는 함수: SUM"}
 {"part":"part1_5","sheet":"p81","ref":"G29","verdict":"unsupported","expected":189196,"got":null,"reason":"못 다루는 함수: SUM"}
@@ -1003,33 +965,21 @@
 {"part":"part1_5","sheet":"p81","ref":"G63","verdict":"error","expected":0,"got":null,"reason":"실행 불가: src 'etc' 는 long 테이블이 없다 (grid 좌표만 적재됨)"}
 {"part":"part1_5","sheet":"p81","ref":"I63","verdict":"error","expected":1,"got":null,"reason":"실행 불가: src 'etc' 는 long 테이블이 없다 (grid 좌표만 적재됨)"}
 {"part":"part1_5","sheet":"p81","ref":"L63","verdict":"presentation","expected":34,"got":null,"reason":"못 다루는 함수: RANK"}
-{"part":"part1_5","sheet":"p82","ref":"A7","verdict":"unsupported","expected":"2022년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"B7","verdict":"unsupported","expected":"69.3%","got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_5","sheet":"p82","ref":"J7","verdict":"unsupported","expected":"2022년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"K7","verdict":"unsupported","expected":754.162,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_5","sheet":"p82","ref":"L7","verdict":"unsupported","expected":158.83,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_5","sheet":"p82","ref":"A8","verdict":"unsupported","expected":"2023년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"B8","verdict":"unsupported","expected":"64.5%","got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_5","sheet":"p82","ref":"J8","verdict":"unsupported","expected":"2023년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"K8","verdict":"unsupported","expected":896.367,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_5","sheet":"p82","ref":"L8","verdict":"unsupported","expected":178.282,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_5","sheet":"p82","ref":"A9","verdict":"unsupported","expected":"2024년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"B9","verdict":"unsupported","expected":"63.3%","got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_5","sheet":"p82","ref":"J9","verdict":"unsupported","expected":"2024년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"K9","verdict":"unsupported","expected":689.014,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_5","sheet":"p82","ref":"L9","verdict":"unsupported","expected":150.594,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_5","sheet":"p82","ref":"A10","verdict":"unsupported","expected":"2025년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"B10","verdict":"unsupported","expected":"63.3%","got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_5","sheet":"p82","ref":"J10","verdict":"unsupported","expected":"2025년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"K10","verdict":"unsupported","expected":672.921,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_5","sheet":"p82","ref":"L10","verdict":"unsupported","expected":154.012,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_5","sheet":"p82","ref":"A32","verdict":"unsupported","expected":"2022년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"B32","verdict":"unsupported","expected":"68.5%","got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_5","sheet":"p82","ref":"A33","verdict":"unsupported","expected":"2023년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"B33","verdict":"unsupported","expected":"67.2%","got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_5","sheet":"p82","ref":"A34","verdict":"unsupported","expected":"2024년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"B34","verdict":"unsupported","expected":"66%","got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_5","sheet":"p82","ref":"A35","verdict":"unsupported","expected":"2025년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_5","sheet":"p82","ref":"B35","verdict":"unsupported","expected":"47.7%","got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_5","sheet":"p83","ref":"C6","verdict":"unsupported","expected":846.236,"got":null,"reason":"산술에 외부통합문서 참조가 왔다: C2"}
 {"part":"part1_5","sheet":"p83","ref":"C7","verdict":"unsupported","expected":774.351,"got":null,"reason":"산술에 외부통합문서 참조가 왔다: C3"}
@@ -1249,27 +1199,16 @@
 {"part":"part1_5","sheet":"p83","ref":"G58","verdict":"unsupported","expected":"2025직종_제조 단순직","got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_5","sheet":"p83","ref":"H58","verdict":"unsupported","expected":"단순제조","got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_5","sheet":"p83","ref":"I58","verdict":"unsupported","expected":0.37,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_6","sheet":"p104 참고박스","ref":"B10","verdict":"unsupported","expected":"2025년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
-{"part":"part1_6","sheet":"p104 참고박스","ref":"C10","verdict":"unsupported","expected":"2025.6월","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\".6월\"}]"}
-{"part":"part1_6","sheet":"p104 참고박스","ref":"D10","verdict":"unsupported","expected":"2025.8월","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\".8월\"}]"}
 {"part":"part1_6","sheet":"p104 참고박스","ref":"D11","verdict":"unsupported","expected":3205,"got":null,"reason":"조건을 못 읽었다: [{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$B$6\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"08\"}]"}
 {"part":"part1_6","sheet":"p104 참고박스","ref":"D13","verdict":"unsupported","expected":33.4,"got":null,"reason":"조건을 못 읽었다: [{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$B$6\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"08\"}]"}
-{"part":"part1_6","sheet":"p104 참고박스","ref":"B17","verdict":"unsupported","expected":"사업체노동력조사('25년)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"'\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"RIGHT\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$B$6\"},{\"t\":\"comma\"},{\"t\":\"num\",\"v\":2},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년)\"}]"}
-{"part":"part1_6","sheet":"p104 참고박스","ref":"C17","verdict":"unsupported","expected":"고용형태별근로실태조사('25.6월)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"'\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"RIGHT\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$B$6\"},{\"t\":\"comma\"},{\"t\":\"num\",\"v\":2},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\".6월)\"}]"}
-{"part":"part1_6","sheet":"p104 참고박스","ref":"D17","verdict":"unsupported","expected":"경제활동인구조사 근로형태별 부가조사('25.8월)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"'\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"RIGHT\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$B$6\"},{\"t\":\"comma\"},{\"t\":\"num\",\"v\":2},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\".8월)\"}]"}
-{"part":"part1_6","sheet":"p104 참고박스","ref":"B18","verdict":"unsupported","expected":"월평균 4,205천원","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"TEXT\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$B$11\"},{\"t\":\"comma\"},{\"t\":\"str\",\"v\":\"#,##0\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"천원\"}]"}
-{"part":"part1_6","sheet":"p104 참고박스","ref":"C18","verdict":"unsupported","expected":"월 3,834천원 (시간당 25,839원)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"TEXT\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$C$11\"},{\"t\":\"comma\"},{\"t\":\"str\",\"v\":\"#,##0\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"천원 (시간당 \"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"TEXT\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$C$12\"},{\"t\":\"comma\"},{\"t\":\"str\",\"v\":\"#,##0\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"원)\"}]"}
-{"part":"part1_6","sheet":"p104 참고박스","ref":"D18","verdict":"unsupported","expected":"월 3,205천원","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"TEXT\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$D$11\"},{\"t\":\"comma\"},{\"t\":\"str\",\"v\":\"#,##0\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"천원\"}]"}
-{"part":"part1_6","sheet":"p104 참고박스","ref":"B19","verdict":"unsupported","expected":"월평균 153.8시간","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"TEXT\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$B$13\"},{\"t\":\"comma\"},{\"t\":\"str\",\"v\":\"0.0\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"시간\"}]"}
-{"part":"part1_6","sheet":"p104 참고박스","ref":"C19","verdict":"unsupported","expected":"월 146.3시간","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"TEXT\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$C$13\"},{\"t\":\"comma\"},{\"t\":\"str\",\"v\":\"0.0\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"시간\"}]"}
-{"part":"part1_6","sheet":"p104 참고박스","ref":"D19","verdict":"unsupported","expected":"주당 평균 33.4시간","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"TEXT\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$D$13\"},{\"t\":\"comma\"},{\"t\":\"str\",\"v\":\"0.0\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"시간\"}]"}
-{"part":"part1_6","sheet":"p107 참고박스","ref":"C9","verdict":"unsupported","expected":"2025.6월","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\".6월\"}]"}
-{"part":"part1_6","sheet":"p107 참고박스","ref":"D9","verdict":"unsupported","expected":"2025.8월","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\".8월\"}]"}
+{"part":"part1_6","sheet":"p104 참고박스","ref":"B17","verdict":"unsupported","expected":"사업체노동력조사('25년)","got":null,"reason":"못 다루는 함수: RIGHT"}
+{"part":"part1_6","sheet":"p104 참고박스","ref":"C17","verdict":"unsupported","expected":"고용형태별근로실태조사('25.6월)","got":null,"reason":"못 다루는 함수: RIGHT"}
+{"part":"part1_6","sheet":"p104 참고박스","ref":"D17","verdict":"unsupported","expected":"경제활동인구조사 근로형태별 부가조사('25.8월)","got":null,"reason":"못 다루는 함수: RIGHT"}
 {"part":"part1_6","sheet":"p107 참고박스","ref":"D10","verdict":"unsupported","expected":76.2,"got":null,"reason":"조건을 못 읽었다: [{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$B$5\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"08\"}]"}
 {"part":"part1_6","sheet":"p107 참고박스","ref":"D11","verdict":"unsupported","expected":79,"got":null,"reason":"조건을 못 읽었다: [{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$B$5\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"08\"}]"}
 {"part":"part1_6","sheet":"p107 참고박스","ref":"D12","verdict":"unsupported","expected":68.5,"got":null,"reason":"조건을 못 읽었다: [{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$B$5\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"08\"}]"}
-{"part":"part1_6","sheet":"p107 참고박스","ref":"A17","verdict":"unsupported","expected":"고용형태별근로실태조사('25.6월)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"RIGHT\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$B$5\"},{\"t\":\"comma\"},{\"t\":\"num\",\"v\":2},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\".6월)\"}]"}
-{"part":"part1_6","sheet":"p107 참고박스","ref":"A18","verdict":"unsupported","expected":"경제활동인구조사 근로형태별 부가조사('25.8월)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"RIGHT\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$B$5\"},{\"t\":\"comma\"},{\"t\":\"num\",\"v\":2},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\".8월)\"}]"}
+{"part":"part1_6","sheet":"p107 참고박스","ref":"A17","verdict":"unsupported","expected":"고용형태별근로실태조사('25.6월)","got":null,"reason":"못 다루는 함수: RIGHT"}
+{"part":"part1_6","sheet":"p107 참고박스","ref":"A18","verdict":"unsupported","expected":"경제활동인구조사 근로형태별 부가조사('25.8월)","got":null,"reason":"못 다루는 함수: RIGHT"}
 {"part":"part1_7","sheet":"p110","ref":"D20","verdict":"unsupported","expected":116,"got":null,"reason":"못 다루는 함수: SUM"}
 {"part":"part1_7","sheet":"p110","ref":"F20","verdict":"unsupported","expected":5736,"got":null,"reason":"못 다루는 함수: SUM"}
 {"part":"part1_7","sheet":"p110","ref":"D24","verdict":"unsupported","expected":122,"got":null,"reason":"못 다루는 함수: SUM"}
@@ -2026,95 +1965,72 @@
 {"part":"part1_7","sheet":"p120_121","ref":"J50","verdict":"unsupported","expected":0,"got":null,"reason":"etc/p120_121 9번째 열에 이름이 없다 (J:J)"}
 {"part":"part1_7","sheet":"p120_121","ref":"K50","verdict":"unsupported","expected":7,"got":null,"reason":"etc/p120_121 10번째 열에 이름이 없다 (K:K)"}
 {"part":"part1_7","sheet":"p120_121","ref":"L50","verdict":"unsupported","expected":19,"got":null,"reason":"etc/p120_121 11번째 열에 이름이 없다 (L:L)"}
-{"part":"part1_7","sheet":"p122_123","ref":"A6","verdict":"unsupported","expected":"2017년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"B6","verdict":"unsupported","expected":202215,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"C6","verdict":"unsupported","expected":312338,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"D6","verdict":"unsupported","expected":12889,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"A7","verdict":"unsupported","expected":"2018년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"B7","verdict":"unsupported","expected":217958,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"C7","verdict":"unsupported","expected":336857,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"D7","verdict":"unsupported","expected":15509,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"A8","verdict":"unsupported","expected":"2019년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"B8","verdict":"unsupported","expected":222618,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"C8","verdict":"unsupported","expected":336019,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"D8","verdict":"unsupported","expected":16561,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"A9","verdict":"unsupported","expected":"2020년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"B9","verdict":"unsupported","expected":192813,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"C9","verdict":"unsupported","expected":287976,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"D9","verdict":"unsupported","expected":15374,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"A10","verdict":"unsupported","expected":"2021년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"B10","verdict":"unsupported","expected":157864,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"C10","verdict":"unsupported","expected":242541,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"D10","verdict":"unsupported","expected":13141,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"A11","verdict":"unsupported","expected":"2022년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"B11","verdict":"unsupported","expected":153342,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"C11","verdict":"unsupported","expected":233458,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"D11","verdict":"unsupported","expected":13101,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"A12","verdict":"unsupported","expected":"2023년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"B12","verdict":"unsupported","expected":182487,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"C12","verdict":"unsupported","expected":270074,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"D12","verdict":"unsupported","expected":17267,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"A13","verdict":"unsupported","expected":"2024년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"B13","verdict":"unsupported","expected":190200,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"C13","verdict":"unsupported","expected":275947,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"D13","verdict":"unsupported","expected":19425,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"A14","verdict":"unsupported","expected":"2025년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"B14","verdict":"unsupported","expected":178847,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"C14","verdict":"unsupported","expected":256481,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"D14","verdict":"unsupported","expected":20006,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"B27","verdict":"unsupported","expected":"2012년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"C27","verdict":"unsupported","expected":179278,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"E27","verdict":"unsupported","expected":121664,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"G27","verdict":"unsupported","expected":57614,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"B28","verdict":"unsupported","expected":"2013년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"C28","verdict":"unsupported","expected":175041,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"E28","verdict":"unsupported","expected":114064,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"G28","verdict":"unsupported","expected":60977,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"B29","verdict":"unsupported","expected":"2014년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"C29","verdict":"unsupported","expected":190077,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"E29","verdict":"unsupported","expected":131052,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"G29","verdict":"unsupported","expected":59025,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"B30","verdict":"unsupported","expected":"2015년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"C30","verdict":"unsupported","expected":197393,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"E30","verdict":"unsupported","expected":141171,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"G30","verdict":"unsupported","expected":56222,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"B31","verdict":"unsupported","expected":"2016년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"C31","verdict":"unsupported","expected":211241,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"E31","verdict":"unsupported","expected":152290,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"G31","verdict":"unsupported","expected":58951,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"B32","verdict":"unsupported","expected":"2017년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"C32","verdict":"unsupported","expected":202215,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"E32","verdict":"unsupported","expected":149464,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"G32","verdict":"unsupported","expected":52751,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"B33","verdict":"unsupported","expected":"2018년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"C33","verdict":"unsupported","expected":217958,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"E33","verdict":"unsupported","expected":151504,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"G33","verdict":"unsupported","expected":66454,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"B34","verdict":"unsupported","expected":"2019년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"C34","verdict":"unsupported","expected":222618,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"E34","verdict":"unsupported","expected":150798,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"G34","verdict":"unsupported","expected":71820,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"B35","verdict":"unsupported","expected":"2020년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"C35","verdict":"unsupported","expected":192813,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"E35","verdict":"unsupported","expected":134170,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"G35","verdict":"unsupported","expected":58643,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"B36","verdict":"unsupported","expected":"2021년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"C36","verdict":"unsupported","expected":157864,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"E36","verdict":"unsupported","expected":111001,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"G36","verdict":"unsupported","expected":46863,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"B37","verdict":"unsupported","expected":"2022년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"C37","verdict":"unsupported","expected":153342,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"E37","verdict":"unsupported","expected":114318,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"G37","verdict":"unsupported","expected":39024,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"B38","verdict":"unsupported","expected":"2023년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"C38","verdict":"unsupported","expected":182487,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"E38","verdict":"unsupported","expected":141275,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"G38","verdict":"unsupported","expected":41212,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"B39","verdict":"unsupported","expected":"2024년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"C39","verdict":"unsupported","expected":190200,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"E39","verdict":"unsupported","expected":150687,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"G39","verdict":"unsupported","expected":39513,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p122_123","ref":"B40","verdict":"unsupported","expected":"2025년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p122_123","ref":"C40","verdict":"unsupported","expected":178847,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"E40","verdict":"unsupported","expected":137644,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"G40","verdict":"unsupported","expected":41203,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
@@ -2202,63 +2118,54 @@
 {"part":"part1_7","sheet":"p122_123","ref":"C77","verdict":"unsupported","expected":20006,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"E77","verdict":"unsupported","expected":13474,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p122_123","ref":"G77","verdict":"unsupported","expected":6532,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_7","sheet":"p124","ref":"A6","verdict":"unsupported","expected":"2017년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p124","ref":"B6","verdict":"unsupported","expected":372330,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p124","ref":"C6","verdict":"unsupported","expected":374006,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p124","ref":"D6","verdict":"unsupported","expected":"294,525","got":null,"reason":"못 다루는 함수: LEFT"}
 {"part":"part1_7","sheet":"p124","ref":"E6","verdict":"unsupported","expected":"(78.7)","got":null,"reason":"못 다루는 함수: RIGHT"}
 {"part":"part1_7","sheet":"p124","ref":"F6","verdict":"unsupported","expected":"79,481","got":null,"reason":"못 다루는 함수: LEFT"}
 {"part":"part1_7","sheet":"p124","ref":"G6","verdict":"unsupported","expected":"(21.3)","got":null,"reason":"못 다루는 함수: RIGHT"}
-{"part":"part1_7","sheet":"p124","ref":"A7","verdict":"unsupported","expected":"2018년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p124","ref":"B7","verdict":"unsupported","expected":390736,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p124","ref":"C7","verdict":"unsupported","expected":399207,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p124","ref":"D7","verdict":"unsupported","expected":"318,153","got":null,"reason":"못 다루는 함수: LEFT"}
 {"part":"part1_7","sheet":"p124","ref":"E7","verdict":"unsupported","expected":"(79.7)","got":null,"reason":"못 다루는 함수: RIGHT"}
 {"part":"part1_7","sheet":"p124","ref":"F7","verdict":"unsupported","expected":"81,054","got":null,"reason":"못 다루는 함수: LEFT"}
 {"part":"part1_7","sheet":"p124","ref":"G7","verdict":"unsupported","expected":"(20.3)","got":null,"reason":"못 다루는 함수: RIGHT"}
-{"part":"part1_7","sheet":"p124","ref":"A8","verdict":"unsupported","expected":"2019년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p124","ref":"B8","verdict":"unsupported","expected":403023,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p124","ref":"C8","verdict":"unsupported","expected":417708,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p124","ref":"D8","verdict":"unsupported","expected":"335,764","got":null,"reason":"못 다루는 함수: LEFT"}
 {"part":"part1_7","sheet":"p124","ref":"E8","verdict":"unsupported","expected":"(80.4)","got":null,"reason":"못 다루는 함수: RIGHT"}
 {"part":"part1_7","sheet":"p124","ref":"F8","verdict":"unsupported","expected":"81,944","got":null,"reason":"못 다루는 함수: LEFT"}
 {"part":"part1_7","sheet":"p124","ref":"G8","verdict":"unsupported","expected":"(19.6)","got":null,"reason":"못 다루는 함수: RIGHT"}
-{"part":"part1_7","sheet":"p124","ref":"A9","verdict":"unsupported","expected":"2020년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p124","ref":"B9","verdict":"unsupported","expected":364355,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p124","ref":"C9","verdict":"unsupported","expected":380138,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p124","ref":"D9","verdict":"unsupported","expected":"313,462","got":null,"reason":"못 다루는 함수: LEFT"}
 {"part":"part1_7","sheet":"p124","ref":"E9","verdict":"unsupported","expected":"(82.5)","got":null,"reason":"못 다루는 함수: RIGHT"}
 {"part":"part1_7","sheet":"p124","ref":"F9","verdict":"unsupported","expected":"66,676","got":null,"reason":"못 다루는 함수: LEFT"}
 {"part":"part1_7","sheet":"p124","ref":"G9","verdict":"unsupported","expected":"(17.5)","got":null,"reason":"못 다루는 함수: RIGHT"}
-{"part":"part1_7","sheet":"p124","ref":"A10","verdict":"unsupported","expected":"2021년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p124","ref":"B10","verdict":"unsupported","expected":314308,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p124","ref":"C10","verdict":"unsupported","expected":322994,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p124","ref":"D10","verdict":"unsupported","expected":"271,119","got":null,"reason":"못 다루는 함수: LEFT"}
 {"part":"part1_7","sheet":"p124","ref":"E10","verdict":"unsupported","expected":"(83.9)","got":null,"reason":"못 다루는 함수: RIGHT"}
 {"part":"part1_7","sheet":"p124","ref":"F10","verdict":"unsupported","expected":"51,875","got":null,"reason":"못 다루는 함수: LEFT"}
 {"part":"part1_7","sheet":"p124","ref":"G10","verdict":"unsupported","expected":"(16.1)","got":null,"reason":"못 다루는 함수: RIGHT"}
-{"part":"part1_7","sheet":"p124","ref":"A11","verdict":"unsupported","expected":"2022년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p124","ref":"B11","verdict":"unsupported","expected":305519,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p124","ref":"C11","verdict":"unsupported","expected":310805,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p124","ref":"D11","verdict":"unsupported","expected":"267,987","got":null,"reason":"못 다루는 함수: LEFT"}
 {"part":"part1_7","sheet":"p124","ref":"E11","verdict":"unsupported","expected":"(86.2)","got":null,"reason":"못 다루는 함수: RIGHT"}
 {"part":"part1_7","sheet":"p124","ref":"F11","verdict":"unsupported","expected":"42,818","got":null,"reason":"못 다루는 함수: LEFT"}
 {"part":"part1_7","sheet":"p124","ref":"G11","verdict":"unsupported","expected":"(13.8)","got":null,"reason":"못 다루는 함수: RIGHT"}
-{"part":"part1_7","sheet":"p124","ref":"A12","verdict":"unsupported","expected":"2023년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p124","ref":"B12","verdict":"unsupported","expected":371116,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p124","ref":"C12","verdict":"unsupported","expected":370653,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p124","ref":"D12","verdict":"unsupported","expected":"326,805","got":null,"reason":"못 다루는 함수: LEFT"}
 {"part":"part1_7","sheet":"p124","ref":"E12","verdict":"unsupported","expected":"(88.2)","got":null,"reason":"못 다루는 함수: RIGHT"}
 {"part":"part1_7","sheet":"p124","ref":"F12","verdict":"unsupported","expected":"43,848","got":null,"reason":"못 다루는 함수: LEFT"}
 {"part":"part1_7","sheet":"p124","ref":"G12","verdict":"unsupported","expected":"(11.8)","got":null,"reason":"못 다루는 함수: RIGHT"}
-{"part":"part1_7","sheet":"p124","ref":"A13","verdict":"unsupported","expected":"2024년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p124","ref":"B13","verdict":"unsupported","expected":394145,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p124","ref":"C13","verdict":"unsupported","expected":398041,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p124","ref":"D13","verdict":"unsupported","expected":"341,907","got":null,"reason":"못 다루는 함수: LEFT"}
 {"part":"part1_7","sheet":"p124","ref":"E13","verdict":"unsupported","expected":"(85.9)","got":null,"reason":"못 다루는 함수: RIGHT"}
 {"part":"part1_7","sheet":"p124","ref":"F13","verdict":"unsupported","expected":"56,134","got":null,"reason":"못 다루는 함수: LEFT"}
 {"part":"part1_7","sheet":"p124","ref":"G13","verdict":"unsupported","expected":"(14.1)","got":null,"reason":"못 다루는 함수: RIGHT"}
-{"part":"part1_7","sheet":"p124","ref":"A14","verdict":"unsupported","expected":"2025년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_7","sheet":"p124","ref":"B14","verdict":"unsupported","expected":373853,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p124","ref":"C14","verdict":"unsupported","expected":377942,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p124","ref":"D14","verdict":"unsupported","expected":"319,233","got":null,"reason":"못 다루는 함수: LEFT"}
@@ -2292,7 +2199,6 @@
 {"part":"part1_7","sheet":"p125","ref":"B15","verdict":"unsupported","expected":23706,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p125","ref":"C15","verdict":"unsupported","expected":115374,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_7","sheet":"p125","ref":"D15","verdict":"unsupported","expected":6845.11,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p128","ref":"B6","verdict":"unsupported","expected":"2013년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p128","ref":"C6","verdict":"unsupported","expected":15449228,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"D6","verdict":"unsupported","expected":-0.6379746679132668,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"E6","verdict":"unsupported","expected":91824,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
@@ -2303,7 +2209,6 @@
 {"part":"part1_8","sheet":"p128","ref":"J6","verdict":"unsupported","expected":1.2486060792163853,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"K6","verdict":"unsupported","expected":1.65,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"L6","verdict":"unsupported","expected":2.85,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p128","ref":"B7","verdict":"unsupported","expected":"2014년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p128","ref":"C7","verdict":"unsupported","expected":17062308,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"D7","verdict":"unsupported","expected":10.441168969737518,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"E7","verdict":"unsupported","expected":90909,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
@@ -2314,7 +2219,6 @@
 {"part":"part1_8","sheet":"p128","ref":"J7","verdict":"unsupported","expected":1.0842612851672822,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"K7","verdict":"unsupported","expected":1.38,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"L7","verdict":"unsupported","expected":2.57,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p128","ref":"B8","verdict":"unsupported","expected":"2015년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p128","ref":"C8","verdict":"unsupported","expected":17968931,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"D8","verdict":"unsupported","expected":5.313601184552524,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"E8","verdict":"unsupported","expected":90129,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
@@ -2325,7 +2229,6 @@
 {"part":"part1_8","sheet":"p128","ref":"J8","verdict":"unsupported","expected":1.0072942013078017,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"K8","verdict":"unsupported","expected":1.28,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"L8","verdict":"unsupported","expected":2.4,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p128","ref":"B9","verdict":"unsupported","expected":"2016년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p128","ref":"C9","verdict":"unsupported","expected":18431716,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"D9","verdict":"unsupported","expected":2.575473187581387,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"E9","verdict":"unsupported","expected":90656,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
@@ -2336,7 +2239,6 @@
 {"part":"part1_8","sheet":"p128","ref":"J9","verdict":"unsupported","expected":0.9640990562137568,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"K9","verdict":"unsupported","expected":1.24,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"L9","verdict":"unsupported","expected":2.38,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p128","ref":"B10","verdict":"unsupported","expected":"2017년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p128","ref":"C10","verdict":"unsupported","expected":18560142,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"D10","verdict":"unsupported","expected":0.696766378127788,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"E10","verdict":"unsupported","expected":89848,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
@@ -2347,7 +2249,6 @@
 {"part":"part1_8","sheet":"p128","ref":"J10","verdict":"unsupported","expected":1.054410036302524,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"K10","verdict":"unsupported","expected":1.27,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"L10","verdict":"unsupported","expected":2.38,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p128","ref":"B11","verdict":"unsupported","expected":"2018년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p128","ref":"C11","verdict":"unsupported","expected":19073438,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"D11","verdict":"unsupported","expected":2.7655822891872273,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"E11","verdict":"unsupported","expected":102305,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
@@ -2358,7 +2259,6 @@
 {"part":"part1_8","sheet":"p128","ref":"J11","verdict":"unsupported","expected":1.1230277415115197,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"K11","verdict":"unsupported","expected":1.33,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"L11","verdict":"unsupported","expected":2.56,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p128","ref":"B12","verdict":"unsupported","expected":"2019년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p128","ref":"C12","verdict":"unsupported","expected":18725160,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"D12","verdict":"unsupported","expected":-1.8259843872929462,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"E12","verdict":"unsupported","expected":109242,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
@@ -2369,7 +2269,6 @@
 {"part":"part1_8","sheet":"p128","ref":"J12","verdict":"unsupported","expected":1.0787624778640075,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"K12","verdict":"unsupported","expected":1.49,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"L12","verdict":"unsupported","expected":2.96,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p128","ref":"B13","verdict":"unsupported","expected":"2020년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p128","ref":"C13","verdict":"unsupported","expected":18974513,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"D13","verdict":"unsupported","expected":1.3316468323902173,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"E13","verdict":"unsupported","expected":108379,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
@@ -2380,7 +2279,6 @@
 {"part":"part1_8","sheet":"p128","ref":"J13","verdict":"unsupported","expected":1.0867209081993303,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"K13","verdict":"unsupported","expected":1.51,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"L13","verdict":"unsupported","expected":2.94,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p128","ref":"B14","verdict":"unsupported","expected":"2021년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p128","ref":"C14","verdict":"unsupported","expected":19378565,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"D14","verdict":"unsupported","expected":2.129445957321803,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"E14","verdict":"unsupported","expected":122713,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
@@ -2391,7 +2289,6 @@
 {"part":"part1_8","sheet":"p128","ref":"J14","verdict":"unsupported","expected":1.073350890532916,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"K14","verdict":"unsupported","expected":1.62,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"L14","verdict":"unsupported","expected":3.26,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p128","ref":"B15","verdict":"unsupported","expected":"2022년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p128","ref":"C15","verdict":"unsupported","expected":20173615,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"D15","verdict":"unsupported","expected":4.102728968837476,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"E15","verdict":"unsupported","expected":130348,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
@@ -2402,7 +2299,6 @@
 {"part":"part1_8","sheet":"p128","ref":"J15","verdict":"unsupported","expected":1.101934383103871,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"K15","verdict":"unsupported","expected":1.58,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"L15","verdict":"unsupported","expected":3.36,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p128","ref":"B16","verdict":"unsupported","expected":"2023년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p128","ref":"C16","verdict":"unsupported","expected":20637107,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"D16","verdict":"unsupported","expected":2.297515839377325,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"E16","verdict":"unsupported","expected":136796,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
@@ -2413,7 +2309,6 @@
 {"part":"part1_8","sheet":"p128","ref":"J16","verdict":"unsupported","expected":0.9768811103222947,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"K16","verdict":"unsupported","expected":1.65,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"L16","verdict":"unsupported","expected":3.52,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p128","ref":"B17","verdict":"unsupported","expected":"2024년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p128","ref":"C17","verdict":"unsupported","expected":21420560,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"D17","verdict":"unsupported","expected":3.7963315303835947,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p128","ref":"E17","verdict":"unsupported","expected":142771,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
@@ -2553,57 +2448,46 @@
 {"part":"part1_8","sheet":"p130","ref":"E16","verdict":"unsupported","expected":53328,"got":null,"reason":"못 다루는 함수: HLOOKUP"}
 {"part":"part1_8","sheet":"p130","ref":"H16","verdict":"unsupported","expected":399,"got":null,"reason":"못 다루는 함수: HLOOKUP"}
 {"part":"part1_8","sheet":"p130","ref":"J16","verdict":"unsupported","expected":0.31503535857379783,"got":null,"reason":"못 다루는 함수: HLOOKUP"}
-{"part":"part1_8","sheet":"p131","ref":"B7","verdict":"unsupported","expected":"2014년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p131","ref":"C7","verdict":"unsupported","expected":19632795,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"D7","verdict":"unsupported","expected":3926559,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"E7","verdict":"unsupported","expected":15706236,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"F7","verdict":"unsupported","expected":48398387,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p131","ref":"B8","verdict":"unsupported","expected":"2015년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p131","ref":"C8","verdict":"unsupported","expected":20395540,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"D8","verdict":"unsupported","expected":4079108,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"E8","verdict":"unsupported","expected":16316432,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"F8","verdict":"unsupported","expected":47538877,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p131","ref":"B9","verdict":"unsupported","expected":"2016년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p131","ref":"C9","verdict":"unsupported","expected":21400275,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"D9","verdict":"unsupported","expected":4280055,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"E9","verdict":"unsupported","expected":17120220,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"F9","verdict":"unsupported","expected":47035222,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p131","ref":"B10","verdict":"unsupported","expected":"2017년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p131","ref":"C10","verdict":"unsupported","expected":22180190,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"D10","verdict":"unsupported","expected":4436038,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"E10","verdict":"unsupported","expected":17744152,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"F10","verdict":"unsupported","expected":47355044,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p131","ref":"B11","verdict":"unsupported","expected":"2018년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p131","ref":"C11","verdict":"unsupported","expected":25169507,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"D11","verdict":"unsupported","expected":5033901,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"E11","verdict":"unsupported","expected":20135606,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"F11","verdict":"unsupported","expected":52757858,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p131","ref":"B12","verdict":"unsupported","expected":"2019년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p131","ref":"C12","verdict":"unsupported","expected":27646799,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"D12","verdict":"unsupported","expected":5529360,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"E12","verdict":"unsupported","expected":22117440,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"F12","verdict":"unsupported","expected":54544623,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p131","ref":"B13","verdict":"unsupported","expected":"2020년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p131","ref":"C13","verdict":"unsupported","expected":29984095,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"D13","verdict":"unsupported","expected":5996819,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"E13","verdict":"unsupported","expected":23987276,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"F13","verdict":"unsupported","expected":55343490,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p131","ref":"B14","verdict":"unsupported","expected":"2021년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p131","ref":"C14","verdict":"unsupported","expected":32264700,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"D14","verdict":"unsupported","expected":6452940,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"E14","verdict":"unsupported","expected":25811760,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"F14","verdict":"unsupported","expected":60492479,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p131","ref":"B15","verdict":"unsupported","expected":"2022년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p131","ref":"C15","verdict":"unsupported","expected":33432430,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"D15","verdict":"unsupported","expected":6686486,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"E15","verdict":"unsupported","expected":26745944,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"F15","verdict":"unsupported","expected":60701773,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p131","ref":"B16","verdict":"unsupported","expected":"2023년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p131","ref":"C16","verdict":"unsupported","expected":36424705,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"D16","verdict":"unsupported","expected":7284941,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"E16","verdict":"unsupported","expected":29139764,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"F16","verdict":"unsupported","expected":63845877,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
-{"part":"part1_8","sheet":"p131","ref":"B17","verdict":"unsupported","expected":"2024년","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년\"}]"}
 {"part":"part1_8","sheet":"p131","ref":"C17","verdict":"unsupported","expected":38166595,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"D17","verdict":"unsupported","expected":7633319,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
 {"part":"part1_8","sheet":"p131","ref":"E17","verdict":"unsupported","expected":30533276,"got":null,"reason":"못 다루는 함수: VLOOKUP"}
@@ -3410,7 +3294,7 @@
 {"part":"part3","sheet":"p214","ref":"A41","verdict":"presentation","expected":"에스토니아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p214","ref":"A42","verdict":"presentation","expected":"룩셈부르크","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p214","ref":"A43","verdict":"presentation","expected":"아이슬란드","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p214","ref":"A46","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$48:$A$60\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$47\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p214","ref":"A46","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p214","ref":"A48","verdict":"presentation","expected":"미국","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p214","ref":"B48","verdict":"presentation","expected":205720,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p214","ref":"C48","verdict":"presentation","expected":205256,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -3543,7 +3427,7 @@
 {"part":"part3","sheet":"p215","ref":"A42","verdict":"presentation","expected":"코스타리카","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p215","ref":"A43","verdict":"presentation","expected":"멕시코","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p215","ref":"A44","verdict":"presentation","expected":"튀르키예","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p215","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$49:$A$61\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$48\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p215","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p215","ref":"A49","verdict":"presentation","expected":"일본","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p215","ref":"B49","verdict":"presentation","expected":79.58227339670638,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p215","ref":"C49","verdict":"presentation","expected":80.04048582995951,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -3676,7 +3560,7 @@
 {"part":"part3","sheet":"p216","ref":"A42","verdict":"presentation","expected":"이탈리아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p216","ref":"A43","verdict":"presentation","expected":"코스타리카","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p216","ref":"A44","verdict":"presentation","expected":"튀르키예","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p216","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$49:$A$61\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$48\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p216","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p216","ref":"A49","verdict":"presentation","expected":"일본","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p216","ref":"B49","verdict":"presentation","expected":77.26603293613603,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p216","ref":"C49","verdict":"presentation","expected":77.65182186234817,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -3809,7 +3693,7 @@
 {"part":"part3","sheet":"p217","ref":"A42","verdict":"presentation","expected":"이탈리아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"A43","verdict":"presentation","expected":"벨기에","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"A44","verdict":"presentation","expected":"이스라엘","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p217","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$49:$A$61\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$48\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p217","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p217","ref":"A49","verdict":"presentation","expected":"일본","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"B49","verdict":"presentation","expected":83.7959291567539,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p217","ref":"C49","verdict":"presentation","expected":83.87956301625366,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -3942,7 +3826,7 @@
 {"part":"part3","sheet":"p218","ref":"A42","verdict":"presentation","expected":"멕시코","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p218","ref":"A43","verdict":"presentation","expected":"코스타리카","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p218","ref":"A44","verdict":"presentation","expected":"튀르키예","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p218","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$49:$A$61\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$48\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p218","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p218","ref":"A49","verdict":"presentation","expected":"일본","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p218","ref":"B49","verdict":"presentation","expected":70.56429734129136,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p218","ref":"C49","verdict":"presentation","expected":71.26059611703582,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4075,7 +3959,7 @@
 {"part":"part3","sheet":"p219","ref":"A42","verdict":"presentation","expected":"칠레","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"A43","verdict":"presentation","expected":"그리스","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"A44","verdict":"presentation","expected":"이탈리아","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p219","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$49:$A$61\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$48\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p219","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p219","ref":"A49","verdict":"presentation","expected":"캐나다","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"B49","verdict":"presentation","expected":59.274777241487634,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p219","ref":"C49","verdict":"presentation","expected":64.55687889231858,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4208,7 +4092,7 @@
 {"part":"part3","sheet":"p220","ref":"A42","verdict":"presentation","expected":"코스타리카","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"A43","verdict":"presentation","expected":"멕시코","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"A44","verdict":"presentation","expected":"튀르키예","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p220","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$49:$A$61\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$48\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p220","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p220","ref":"A49","verdict":"presentation","expected":"일본","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"B49","verdict":"presentation","expected":85.23670082967301,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p220","ref":"C49","verdict":"presentation","expected":85.58070866141733,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4341,7 +4225,7 @@
 {"part":"part3","sheet":"p221","ref":"A42","verdict":"presentation","expected":"코스타리카","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p221","ref":"A43","verdict":"presentation","expected":"룩셈부르크","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p221","ref":"A44","verdict":"presentation","expected":"튀르키예","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p221","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$49:$A$61\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$48\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p221","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p221","ref":"A49","verdict":"presentation","expected":"일본","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p221","ref":"B49","verdict":"presentation","expected":76.65140614780903,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p221","ref":"C49","verdict":"presentation","expected":76.90789473684211,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4474,7 +4358,7 @@
 {"part":"part3","sheet":"p222","ref":"A42","verdict":"presentation","expected":"한국","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p222","ref":"A43","verdict":"presentation","expected":"멕시코","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p222","ref":"A44","verdict":"presentation","expected":"일본","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p222","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$49:$A$61\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$48\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p222","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p222","ref":"A49","verdict":"presentation","expected":"스페인","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p222","ref":"B49","verdict":"presentation","expected":15.648811655850729,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p222","ref":"C49","verdict":"presentation","expected":15.03752339099308,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4607,7 +4491,7 @@
 {"part":"part3","sheet":"p223","ref":"A42","verdict":"presentation","expected":"헝가리","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p223","ref":"A43","verdict":"presentation","expected":"리투아니아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p223","ref":"A44","verdict":"presentation","expected":"슬로바키아","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p223","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$49:$A$61\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$48\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p223","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p223","ref":"A49","verdict":"presentation","expected":"독일","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p223","ref":"B49","verdict":"presentation","expected":44.989000000000004,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p223","ref":"C49","verdict":"presentation","expected":44.234,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4739,7 +4623,7 @@
 {"part":"part3","sheet":"p224","ref":"A41","verdict":"presentation","expected":"영국","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p224","ref":"A42","verdict":"presentation","expected":"아이슬란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p224","ref":"A43","verdict":"presentation","expected":"칠레","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p224","ref":"A46","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$48:$A$60\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$47\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p224","ref":"A46","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2025년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p224","ref":"A48","verdict":"presentation","expected":"콜롬비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p224","ref":"B48","verdict":"presentation","expected":51.20629656052534,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p224","ref":"C48","verdict":"presentation","expected":48.88557327623832,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4871,7 +4755,7 @@
 {"part":"part3","sheet":"p225","ref":"A41","verdict":"presentation","expected":"미국","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p225","ref":"A42","verdict":"presentation","expected":"이스라엘","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p225","ref":"A43","verdict":"presentation","expected":"호주","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p225","ref":"A46","verdict":"unsupported","expected":"■ 책자 수록 11개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$48:$A$60\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$47\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p225","ref":"A46","verdict":"unsupported","expected":"■ 책자 수록 11개국 (2025년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p225","ref":"A48","verdict":"presentation","expected":"한국","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p225","ref":"B48","verdict":"presentation","expected":26.055,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p225","ref":"C48","verdict":"presentation","expected":28.303,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -4989,7 +4873,7 @@
 {"part":"part3","sheet":"p226","ref":"A41","verdict":"presentation","expected":"코스타리카","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p226","ref":"A42","verdict":"presentation","expected":"콜롬비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p226","ref":"A43","verdict":"presentation","expected":"튀르키예","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p226","ref":"A46","verdict":"unsupported","expected":"■ 책자 수록 11개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$48:$A$60\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$47\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p226","ref":"A46","verdict":"unsupported","expected":"■ 책자 수록 11개국 (2025년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p226","ref":"A48","verdict":"presentation","expected":"미국","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p226","ref":"B48","verdict":"presentation","expected":85170.596,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p226","ref":"C48","verdict":"presentation","expected":86695.78,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -5107,7 +4991,7 @@
 {"part":"part3","sheet":"p227","ref":"A41","verdict":"presentation","expected":"오스트리아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p227","ref":"A42","verdict":"presentation","expected":"이탈리아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p227","ref":"A43","verdict":"presentation","expected":"핀란드","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p227","ref":"A46","verdict":"unsupported","expected":"■ 책자 수록 12개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$48:$A$60\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$47\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p227","ref":"A46","verdict":"unsupported","expected":"■ 책자 수록 12개국 (2025년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p227","ref":"A48","verdict":"presentation","expected":"독일","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p227","ref":"B48","verdict":"presentation","expected":31424.1233896821,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p227","ref":"C48","verdict":"presentation","expected":31494.6436771934,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -5232,7 +5116,7 @@
 {"part":"part3","sheet":"p228","ref":"A41","verdict":"presentation","expected":"이탈리아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p228","ref":"A42","verdict":"presentation","expected":"칠레","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p228","ref":"A43","verdict":"presentation","expected":"핀란드","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p228","ref":"A46","verdict":"unsupported","expected":"■ 책자 수록 12개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$48:$A$60\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$47\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p228","ref":"A46","verdict":"unsupported","expected":"■ 책자 수록 12개국 (2025년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p228","ref":"A48","verdict":"presentation","expected":"멕시코","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p228","ref":"B48","verdict":"presentation","expected":41.2846848816159,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p228","ref":"C48","verdict":"presentation","expected":45.0377684837277,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -5357,7 +5241,7 @@
 {"part":"part3","sheet":"p229","ref":"A41","verdict":"presentation","expected":"이탈리아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p229","ref":"A42","verdict":"presentation","expected":"칠레","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p229","ref":"A43","verdict":"presentation","expected":"핀란드","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p229","ref":"A46","verdict":"unsupported","expected":"■ 책자 수록 12개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$48:$A$60\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$47\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p229","ref":"A46","verdict":"unsupported","expected":"■ 책자 수록 12개국 (2025년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p229","ref":"A48","verdict":"presentation","expected":"콜롬비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p229","ref":"B48","verdict":"presentation","expected":90.6509122203098,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p229","ref":"C48","verdict":"presentation","expected":90.8526,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -5482,7 +5366,7 @@
 {"part":"part3","sheet":"p230","ref":"A42","verdict":"presentation","expected":"이스라엘","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p230","ref":"A43","verdict":"presentation","expected":"콜롬비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p230","ref":"A44","verdict":"presentation","expected":"튀르키예","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p230","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 11개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$49:$A$61\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$48\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p230","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 11개국 (2025년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p230","ref":"A49","verdict":"presentation","expected":"멕시코","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p230","ref":"B49","verdict":"presentation","expected":1744.531,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p230","ref":"C49","verdict":"presentation","expected":2328.28,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -5600,7 +5484,7 @@
 {"part":"part3","sheet":"p231","ref":"A42","verdict":"presentation","expected":"독일","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p231","ref":"A43","verdict":"presentation","expected":"콜롬비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p231","ref":"A44","verdict":"presentation","expected":"튀르키예","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p231","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 11개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$49:$A$61\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$48\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p231","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 11개국 (2025년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p231","ref":"A49","verdict":"presentation","expected":"멕시코","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p231","ref":"B49","verdict":"presentation","expected":2231.1,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p231","ref":"C49","verdict":"presentation","expected":2235.1,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -5718,7 +5602,7 @@
 {"part":"part3","sheet":"p232","ref":"A40","verdict":"presentation","expected":"코스타리카","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p232","ref":"A41","verdict":"presentation","expected":"콜롬비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p232","ref":"A42","verdict":"presentation","expected":"호주","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p232","ref":"A45","verdict":"unsupported","expected":"■ 책자 수록 7개국 (2025년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$47:$A$59\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$46\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p232","ref":"A45","verdict":"unsupported","expected":"■ 책자 수록 7개국 (2025년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p232","ref":"A47","verdict":"presentation","expected":"이탈리아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p232","ref":"B47","verdict":"presentation","expected":12.406,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p232","ref":"C47","verdict":"presentation","expected":12.048,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -5808,7 +5692,7 @@
 {"part":"part3","sheet":"p233","ref":"A42","verdict":"presentation","expected":"슬로베니아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p233","ref":"A43","verdict":"presentation","expected":"튀르키예","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p233","ref":"A44","verdict":"presentation","expected":"룩셈부르크","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p233","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2024년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$49:$A$61\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$48\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p233","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2024년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p233","ref":"A49","verdict":"presentation","expected":"멕시코","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p233","ref":"B49","verdict":"presentation","expected":67.6,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p233","ref":"C49","verdict":"presentation","expected":66.2,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -5940,7 +5824,7 @@
 {"part":"part3","sheet":"p234","ref":"A42","verdict":"presentation","expected":"룩셈부르크","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p234","ref":"A43","verdict":"presentation","expected":"코스타리카","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p234","ref":"A44","verdict":"presentation","expected":"슬로베니아","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p234","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2024년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$49:$A$61\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$48\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p234","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 13개국 (2024년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p234","ref":"A49","verdict":"presentation","expected":"한국","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p234","ref":"B49","verdict":"presentation","expected":67.9,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p234","ref":"C49","verdict":"presentation","expected":64.9,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -6072,7 +5956,7 @@
 {"part":"part3","sheet":"p235","ref":"A40","verdict":"presentation","expected":"튀르키예","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p235","ref":"A41","verdict":"presentation","expected":"폴란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p235","ref":"A42","verdict":"presentation","expected":"핀란드","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p235","ref":"A45","verdict":"unsupported","expected":"■ 책자 수록 10개국 (2024년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$47:$A$59\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$46\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p235","ref":"A45","verdict":"unsupported","expected":"■ 책자 수록 10개국 (2024년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p235","ref":"A47","verdict":"presentation","expected":"미국","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p235","ref":"B47","verdict":"presentation","expected":23.379881617,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p235","ref":"C47","verdict":"presentation","expected":23.81,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -6183,7 +6067,7 @@
 {"part":"part3","sheet":"p236","ref":"A42","verdict":"presentation","expected":"콜롬비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p236","ref":"A43","verdict":"presentation","expected":"튀르키예","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p236","ref":"A44","verdict":"presentation","expected":"호주","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p236","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 10개국 (2023년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$49:$A$61\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$48\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p236","ref":"A47","verdict":"unsupported","expected":"■ 책자 수록 10개국 (2023년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p236","ref":"A49","verdict":"presentation","expected":"미국","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p236","ref":"B49","verdict":"presentation","expected":8.40312143129045,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p236","ref":"C49","verdict":"presentation","expected":8.41533101045296,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -6294,7 +6178,7 @@
 {"part":"part3","sheet":"p237","ref":"A44","verdict":"presentation","expected":"아이슬란드","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p237","ref":"A45","verdict":"presentation","expected":"이스라엘","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p237","ref":"A46","verdict":"presentation","expected":"튀르키예","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p237","ref":"A49","verdict":"unsupported","expected":"■ 책자 수록 12개국 (2024년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$51:$A$63\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$50\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p237","ref":"A49","verdict":"unsupported","expected":"■ 책자 수록 12개국 (2024년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p237","ref":"A51","verdict":"presentation","expected":"콜롬비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p237","ref":"B51","verdict":"presentation","expected":4.5455555556,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p237","ref":"C51","verdict":"presentation","expected":4.6666666667,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -6419,7 +6303,7 @@
 {"part":"part3","sheet":"p238","ref":"A41","verdict":"presentation","expected":"콜롬비아","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p238","ref":"A42","verdict":"presentation","expected":"튀르키예","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p238","ref":"A43","verdict":"presentation","expected":"호주","got":null,"reason":"못 다루는 함수: INDEX"}
-{"part":"part3","sheet":"p238","ref":"A46","verdict":"unsupported","expected":"■ 책자 수록 10개국 (2023년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$48:$A$60\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$47\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p238","ref":"A46","verdict":"unsupported","expected":"■ 책자 수록 10개국 (2023년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p238","ref":"A48","verdict":"presentation","expected":"미국","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p238","ref":"B48","verdict":"presentation","expected":0.3927,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p238","ref":"C48","verdict":"presentation","expected":0.3949,"got":null,"reason":"못 다루는 함수: INDEX"}
@@ -6765,7 +6649,7 @@
 {"part":"part3","sheet":"p239","ref":"E44","verdict":"error","expected":"-","got":null,"reason":"실행 불가: src 'etc' 는 long 테이블이 없다 (grid 좌표만 적재됨)"}
 {"part":"part3","sheet":"p239","ref":"F44","verdict":"error","expected":"-","got":null,"reason":"실행 불가: src 'etc' 는 long 테이블이 없다 (grid 좌표만 적재됨)"}
 {"part":"part3","sheet":"p239","ref":"G44","verdict":"error","expected":"-","got":null,"reason":"실행 불가: src 'etc' 는 long 테이블이 없다 (grid 좌표만 적재됨)"}
-{"part":"part3","sheet":"p239","ref":"A46","verdict":"unsupported","expected":"■ 책자 수록 12개국 (2023년 내림차순)","got":null,"reason":"남은 토큰이 있다: [{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"fn\",\"v\":\"COUNTA\"},{\"t\":\"lp\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$A$48:$A$60\"},{\"t\":\"rp\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"개국 (\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"ref\",\"ext\":null,\"sheet\":null,\"a1\":\"$G$47\"},{\"t\":\"op\",\"v\":\"&\"},{\"t\":\"str\",\"v\":\"년 내림차순)\"}]"}
+{"part":"part3","sheet":"p239","ref":"A46","verdict":"unsupported","expected":"■ 책자 수록 12개국 (2023년 내림차순)","got":null,"reason":"못 다루는 함수: COUNTA"}
 {"part":"part3","sheet":"p239","ref":"A48","verdict":"presentation","expected":"미국","got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p239","ref":"B48","verdict":"presentation","expected":134.73281,"got":null,"reason":"못 다루는 함수: INDEX"}
 {"part":"part3","sheet":"p239","ref":"C48","verdict":"presentation","expected":136.65297,"got":null,"reason":"못 다루는 함수: INDEX"}

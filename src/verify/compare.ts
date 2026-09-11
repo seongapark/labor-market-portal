@@ -1,6 +1,7 @@
 import type { DatabaseSync } from 'node:sqlite';
 import { parseFormula } from '../cellmap/parse.ts';
 import { execute } from '../query/execute.ts';
+import type { AnchorCtx } from '../query/anchor.ts';
 import { tokenize } from '../cellmap/tokenize.ts';
 import type { Grid, Headers } from '../types.ts';
 
@@ -86,9 +87,17 @@ export function verifyPart(
   db: DatabaseSync,
   headers: Headers,
   year: string,
+  anchor = 2025,
 ): CellResult[] {
   const out: CellResult[] = [];
   const ctx = { extmap: formulas.extmap, headers };
+
+  // Task 9 단위 8: 연도는 확정본에서 읽지 않고 앵커('[N]0_수집현황'!$A$1)에서 계산한다.
+  // 작업본 수식을 이미 들고 있으니 그것으로 AnchorCtx 를 만든다. 기본 앵커는 2025 —
+  // 관문의 전제가 "인쇄된 값의 재현"이므로 다른 값으로 관문을 돌리지 않는다.
+  // 이로써 관문은 확정본의 연도를 *믿는* 대신 앵커에서 사슬이 제대로 계산되는지를
+  // *증명한다*. 앵커로 못 구하는 셀(수식이 없는 리터럴 등)만 격자로 떨어진다.
+  const anchorCtx: AnchorCtx = { formulas: formulas.sheets, anchor };
 
   // RULING 8: 실행기에는 파트 전체의 격자(시트명 → Grid)를 넘긴다. booklet 페이지 간
   // 셀 참조('p68'!$F$5, 2,616건)와 보조시트(_시계열, 2,092건) 참조가 실측으로 나와,
@@ -115,7 +124,7 @@ export function verifyPart(
       }
       let got: number | string | null = null;
       try {
-        got = execute(e, { db, grids, sheet, year });
+        got = execute(e, { db, grids, sheet, year, anchor: anchorCtx });
       } catch (err) {
         out.push({ part, sheet, ref, verdict: 'error', expected, got: null,
                    reason: (err as Error).message });

@@ -160,3 +160,38 @@ test('sameValue: 천단위 구분자가 찍힌 숫자 문자열을 숫자로 읽
   assert.equal(sameValue('12,34', 1234), false);
   assert.equal(sameValue('4,205천원', 4205), false);
 });
+
+// Task 9 단위 8: 연도를 앵커에서 계산한다는 것을 실제로 잡는 테스트.
+// 확정본 격자의 연도 머리글(C6)에 일부러 틀린 값(1999)을 넣는다 — verifyPart 가
+// 앵커를 쓰지 않고 예전처럼 격자에서 연도를 읽으면 SUMIFS 가 0 을 내 mismatch 가 난다.
+test('verifyPart: 연도 조건을 확정본이 아니라 앵커에서 계산한다', () => {
+  const db = openDb(':memory:');
+  loadJsonl(db, 'kosis', 'T', [
+    JSON.stringify({ PRD_DE: '2025', ITM_NM: '취업자', DT: 120 }),
+    JSON.stringify({ PRD_DE: '2024', ITM_NM: '취업자', DT: 99 }),
+  ]);
+  const headers: Headers = { kosis: { T: ['ITM_NM', 'DT', 'PRD_DE'] }, oecd: {}, etc: {}, panel: {} };
+  const formulas = {
+    extmap: { '1': 'KOSIS_원데이터.xlsx' },
+    sheets: {
+      _시계열: { B1: "='[1]0_수집현황'!$A$1" },
+      p1: {
+        C6: '=_시계열!B1',
+        B7: '=SUMIFS([1]T!$B:$B,[1]T!$C:$C,TEXT(C$6,"0"),[1]T!$A:$A,"취업자")',
+      },
+    },
+  };
+  const oracle = { _시계열: { B1: 2025 }, p1: { C6: 1999, B7: 120 } };
+  const by = (rs: ReturnType<typeof verifyPart>) => Object.fromEntries(rs.map((r) => [r.ref, r]));
+
+  const r = by(verifyPart('partX', formulas, oracle, db, headers, '2025'));
+  assert.equal(r.B7.verdict, 'match');
+  assert.equal(r.B7.got, 120);
+  assert.equal(r.C6.got, 2025);          // 격자의 1999 가 아니라 앵커에서 계산한 값
+  assert.equal(r.C6.verdict, 'mismatch');// 확정본이 틀렸으니 드러나야 한다
+
+  // 앵커를 옮기면 연도 조건이 따라 움직인다 — 확정본은 그대로다.
+  const r24 = by(verifyPart('partX', formulas, oracle, db, headers, '2025', 2024));
+  assert.equal(r24.B7.got, 99);
+  assert.equal(r24.B7.verdict, 'mismatch');
+});
