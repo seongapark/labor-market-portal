@@ -5,7 +5,57 @@ import { makeAnchorCtx, ANCHOR_SEAT, type AnchorCtx } from '../query/anchor.ts';
 import { tokenize } from '../cellmap/tokenize.ts';
 import type { Grid, Headers } from '../types.ts';
 
-export type Verdict = 'match' | 'mismatch' | 'unsupported' | 'no-oracle' | 'error' | 'presentation';
+export type Verdict = 'match' | 'mismatch' | 'unsupported' | 'no-oracle' | 'error' | 'presentation'
+  // Task 9 단위 9: 사용자가 「인쇄본이 틀렸다」고 판정한 칸. 확정본은 고치지 않는다 —
+  // 확정본은 계속 「인쇄된 것」을 뜻하고, 그래서 나머지 29,558칸의 재현 주장이 유효하다.
+  | 'known-divergence';
+
+/** Task 9 단위 9: 면제 한 건. **좌표만으로 면제하지 않는다** — 기대하는 확정본 값과
+    기대하는 계산값을 둘 다 적고, 둘 다 그대로일 때만 면제한다. 면제 목록은 관문을
+    느슨하게 만드는 장치이므로, 좌표만 걸면 그 칸은 영원히 눈먼 자리가 된다. */
+export type KnownDivergence = {
+  part: string; sheet: string; ref: string;
+  oracle: number | string;
+  computed: number | string;
+  reason: string;
+  decided_by: string;
+  decided_on: string;
+};
+
+/** 더 이상 유효하지 않은 면제. 관문을 **실패**시켜야 한다 — 면제가 조용히 쌓이면
+    관문이 썩는다. */
+export type StaleDivergence = { entry: KnownDivergence; why: string };
+
+/** 면제를 적용한다. `mismatch` 이고 두 값이 그대로인 칸만 `known-divergence` 로 바꾸고,
+    그러지 못한 면제 항목은 **묵은 것**으로 돌려준다(호출부가 관문을 실패시킨다).
+    **멱등이다**: 이미 `known-divergence` 인 칸은 두 값만 다시 확인하고 그대로 둔다 —
+    관문이 part 별로 적용한 뒤 전체에 대해 묵음 검사를 한 번 더 돌리기 때문이다. */
+export function applyKnownDivergences(
+  rows: CellResult[], known: KnownDivergence[],
+): { rows: CellResult[]; stale: StaleDivergence[] } {
+  const byKey = new Map(rows.map((r) => [`${r.part}!${r.sheet}!${r.ref}`, r]));
+  const out = rows.slice();
+  const stale: StaleDivergence[] = [];
+  for (const e of known) {
+    const key = `${e.part}!${e.sheet}!${e.ref}`;
+    const r = byKey.get(key);
+    if (!r) { stale.push({ entry: e, why: `그 좌표가 대조 결과에 없다 (${key})` }); continue; }
+    if (r.verdict !== 'mismatch' && r.verdict !== 'known-divergence') {
+      stale.push({ entry: e, why: `더 이상 불일치가 아니다 — 지금 판정은 ${r.verdict} 다 (${key})` });
+      continue;
+    }
+    if (!sameValue(e.oracle, r.expected)) {
+      stale.push({ entry: e, why: `확정본 값이 달라졌다: 적힌 값 ${JSON.stringify(e.oracle)} / 지금 ${JSON.stringify(r.expected)} (${key})` });
+      continue;
+    }
+    if (!sameValue(e.computed, r.got)) {
+      stale.push({ entry: e, why: `계산값이 달라졌다: 적힌 값 ${JSON.stringify(e.computed)} / 지금 ${JSON.stringify(r.got)} (${key})` });
+      continue;
+    }
+    out[out.indexOf(r)] = { ...r, verdict: 'known-divergence', reason: e.reason };
+  }
+  return { rows: out, stale };
+}
 
 // booklet 의 OECD 부록 페이지는 같은 시트의 값을 INDEX/MATCH/RANK 로 정렬·표시만
 // 한다 — 원천 통합문서에서 아무 것도 가져오지 않는다. 이 정렬 로직은 SQL 로 재구현하지

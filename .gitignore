@@ -16,4 +16,7 @@ data/*
 !data/raw/
 data/raw/*
 !data/raw/headers.json
+# known-divergences.json(3KB) 은 사용자가 「인쇄본이 틀렸다」고 판정한 칸의 면제
+# 목록이다. 사람의 결정이라 재생성할 수 없고, 관문 판정에 직접 들어간다 — 추적한다.
+!data/known-divergences.json
 __pycache__/
