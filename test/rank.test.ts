@@ -78,22 +78,26 @@ test('순위 계산 뺄셈형 + ">0": part3!p230!I8 = 4', () => {
 // presentation 판정을 지키는 경계 — 이것이 깨지면 관문의 presentation 3,364 가 무너진다.
 // 실측: presentation 3,364건의 INDEX/MATCH 범위는 **전부 시트 한정**(3,246건)이고,
 // 이 단위가 푸는 순위 계산 28건은 **전부 한정 없음**이다. 그 선으로 가른다.
-test('다른 시트를 가리키는 INDEX/MATCH 는 여전히 unsupported 이고 이유에 함수 이름이 남는다', () => {
+// 전체 리뷰 F1 이후: 판정은 이유 문자열이 아니라 **표식**(`presentation: true`)으로
+// 전해진다 — 시트 한정 검사를 지우면 파싱이 성공해 표식이 사라지고 이 단정이 빨강이 된다.
+test('다른 시트를 가리키는 INDEX/MATCH 는 여전히 unsupported 이고 표현 표식을 싣는다', () => {
   const e = parseFormula("=INDEX('p214'!$B$48:$B$60,MATCH($A48,'p214'!$A$48:$A$60,0))",
     { extmap: {}, headers });
   assert.equal(e.op, 'unsupported');
-  // compare.ts 의 presentation 판정이 이유에서 INDEX/MATCH/RANK 를 찾는다 — 이름이 남아야 한다
-  assert.match((e as { reason: string }).reason, /INDEX/);
+  assert.equal((e as { presentation?: true }).presentation, true);
   const e2 = parseFormula('=INDEX(_정렬기준!$A$3:$A$41,MATCH(ROW()-5,_정렬기준!$CA$3:$CA$41,0))',
     { extmap: {}, headers });
   assert.equal(e2.op, 'unsupported');
-  assert.match((e2 as { reason: string }).reason, /INDEX/);
+  assert.equal((e2 as { presentation?: true }).presentation, true);
 });
 
-test('MATCH 의 세 번째 인자가 0 이 아니면 unsupported 다', () => {
+test('MATCH 의 세 번째 인자가 0 이 아니면 unsupported 다 — 표현 표식을 싣지 않는다', () => {
   const e = parseFormula('=MATCH($A6,$A$6:$A$43,1)', { extmap: {}, headers });
   assert.equal(e.op, 'unsupported');
   assert.match((e as { reason: string }).reason, /세 번째 인자/);
+  // 전체 리뷰 F1: 근사 조회는 **미구현 모드**다 — 부록 서식이 아니므로 관문에서 빠지지
+  // 않아야 한다. 같은 성격의 VLOOKUP(…,1) 과 같은 대우를 받는다.
+  assert.equal((e as { presentation?: true }).presentation, undefined);
 });
 
 // ── 범위 함수의 의미 (합성 격자) ─────────────────────────────────────────────

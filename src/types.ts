@@ -119,7 +119,10 @@ export type Expr =
   | { op: 'mod'; a: Expr; b: Expr }
   | { op: 'round'; inner: Expr; digits: Expr }
   | { op: 'averageifs'; q: Query }                    // long 테이블(oecd_obs) 대상
-  | { op: 'unsupported'; reason: string; formula: string };
+  // 전체 리뷰 F1: `presentation` 인지는 **던진 자리**가 정한다 — 예외 메시지에 함수
+  // 이름이 있는지로 되맞히면(옛 방식) 전혀 다른 이유로 깨진 칸이 조용히 관문의 분모에서
+  // 빠진다. parse.ts 의 `PresentationRefusal` 만 이 표식을 싣는다.
+  | { op: 'unsupported'; reason: string; formula: string; presentation?: true };
 
 /** 한 시트의 값 격자. 셀 참조를 푸는 데 쓴다. 'A14' → 값 */
 export type Grid = Record<string, string | number | null>;

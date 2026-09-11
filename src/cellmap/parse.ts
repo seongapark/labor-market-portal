@@ -3,6 +3,16 @@ import type { CellRange, Crit, Expr, GridQuery, GridRange, Headers, Query, Range
 
 export type ParseCtx = { extmap: Record<string, string>; headers: Headers };
 
+/** 전체 리뷰 F1: **표현(presentation) 거부** — 「부록·서식 칸이라 SQL 로 재구현하지
+    않기로 계획 단계에서 정한 것」을 거부하는 자리에서만 던진다. 옛 판정은 파서의 예외
+    **메시지**에 INDEX/MATCH/RANK 라는 글자가 있는지로 갈렸는데, 그 메시지들은 토큰 JSON
+    덤프·인자 수 불만을 꼬리로 달기 때문에 전혀 다른 실패(깨진 수식·2차원 INDEX·근사
+    조회)가 함수 이름을 품고 presentation 으로 삼켜졌다 — presentation 은 관문의 분모에서
+    빠지므로 그 칸이 조용히 관문을 벗어난다. 표식은 **던진 자리**가 붙인다.
+    (표식만으로 끝이 아니다: `isPresentation` 이 RULING 14 의 구조 판정
+    「외부 통합문서 참조가 없다」를 함께 요구한다.) */
+export class PresentationRefusal extends Error {}
+
 export function srcOf(filename: string): Src {
   if (filename.startsWith('KOSIS')) return 'kosis';
   if (filename.startsWith('OECD')) return 'oecd';
@@ -258,14 +268,16 @@ function rangeArg(toks: Token[], ctx: ParseCtx): RangeArg {
 }
 
 /** 범위여야 하는 인자. 시트를 한정한 INDEX/MATCH 범위는 **표현(presentation)** 이다 —
-    OECD 부록의 정렬 로직(실측 3,246건)이 전부 그 모양이고, 같은 지면 안에서 순위를
+    OECD 부록의 정렬 로직(실측 3,584건)이 전부 그 모양이고, 같은 지면 안에서 순위를
     세는 이 단위의 대상 28건은 전부 한정이 없다. 그 둘을 여기서 가른다.
-    (이유 문자열에 함수 이름이 남아야 compare.ts 의 presentation 판정이 계속 맞는다.) */
+    전체 리뷰 F1: 그 판정을 **여기서 표식으로 실어 보낸다** — 예외 메시지를 나중에
+    정규식으로 되맞히지 않는다. 범위를 아예 못 읽은 경우는 표현이 아니라 그냥 실패다. */
 function mustRange(fn: string, toks: Token[]): CellRange {
   const r = cellRangeOf(toks);
   if (!r) throw new Error(`${fn} 의 범위 인자를 못 읽었다: ${JSON.stringify(toks)}`);
   if (r.sheet !== undefined) {
-    throw new Error(`${fn} 범위가 다른 시트를 가리킨다 — 정렬·표시(표현) 로직이다: ${r.sheet}`);
+    throw new PresentationRefusal(
+      `${fn} 범위가 다른 시트를 가리킨다 — 정렬·표시(표현) 로직이다: ${r.sheet}`);
   }
   return r;
 }
@@ -639,6 +651,11 @@ function parseAtom(p: P): Expr {
       if (!args[1]) throw new Error('IFERROR 에 fallback 인자가 없다');
       return { op: 'iferror', inner: parseTokens(args[0], p.ctx), fallback: parseTokens(args[1], p.ctx) };
     }
+    // 전체 리뷰 F1: RANK 는 「못 다루는 함수」가 아니라 **구현하지 않기로 정한 것**이다 —
+    // 같은 지면 안의 순위를 표에 찍는 표시 로직(실측 1,548건)이고, 데이터가 아니다.
+    // 그래서 표식을 붙여 던진다. 사유 문자열은 예전과 한 글자도 다르지 않게 남긴다
+    // (물화된 cellmap 의 사유가 바뀌면 왕복 시험이 낡음으로 잡는다).
+    if (t.v === 'RANK') throw new PresentationRefusal('못 다루는 함수: ' + t.v);
     throw new Error('못 다루는 함수: ' + t.v);
   }
   throw new Error('못 다루는 토큰: ' + t.t);
@@ -655,6 +672,11 @@ export function parseFormula(formula: string, ctx: ParseCtx): Expr {
   try {
     return parseTokens(tokenize(formula), ctx);
   } catch (e) {
-    return { op: 'unsupported', reason: (e as Error).message, formula };
+    const reason = (e as Error).message;
+    // 전체 리뷰 F1: 표현 거부인지는 **던진 예외의 종류**로 전한다 — 사유 문자열을
+    // 나중에 정규식으로 되맞히지 않는다.
+    return e instanceof PresentationRefusal
+      ? { op: 'unsupported', reason, formula, presentation: true }
+      : { op: 'unsupported', reason, formula };
   }
 }
