@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, basename } from 'node:path';
 import { anchorCell, type AnchorCtx } from '../src/query/anchor.ts';
+import { tokenize } from '../src/cellmap/tokenize.ts';
 import { execute } from '../src/query/execute.ts';
 import type { Expr, Grid } from '../src/types.ts';
 
@@ -115,9 +116,12 @@ test('순환 수식은 던진다', () => {
 
 // ── 규칙 2: 외부통합문서 참조는 재귀 경계다 ───────────────────────────────────
 
-test('앵커가 아닌 외부통합문서 참조가 있으면 undefined 다 — DB 를 타지 않는다', () => {
-  // 실제 데이터에서 고른 SUMIFS 한 개. anchorCell 은 db 를 아예 받지 않으므로
-  // 여기서 undefined 가 나온다는 것이 곧 "DB 를 타지 않는다"의 증거다.
+// 리뷰 1차 [지적 2]: 이 시험의 옛 이름은 「규칙 2 가」 막는다고 읽혔지만, 규칙 2 를 지운
+// 뮤턴트에서도 통과한다 — 파서 장벽(PARSE_CTX 의 빈 extmap)이 똑같이 막기 때문이다.
+// 두 겹이 같은 값(undefined)을 내므로 반환값으로는 구별할 수 없다. 그래서 이름을 사실대로
+// 「앵커로 풀리지 않는다」로 바꾸고, 아래에 전 데이터 시험을 더했다.
+test('실제 SUMIFS 셀은 앵커로 풀리지 않는다 — anchorCell 은 db 를 아예 받지 않는다', () => {
+  // 실제 데이터에서 고른 SUMIFS 한 개.
   const dump = JSON.parse(readFileSync(join('data', 'formulas', 'part1_1.json'), 'utf8')) as FormulaDump;
   const found = Object.entries(dump.sheets)
     .flatMap(([sheet, cells]) => Object.entries(cells).map(([ref, f]) => ({ sheet, ref, f })))
@@ -125,6 +129,31 @@ test('앵커가 아닌 외부통합문서 참조가 있으면 undefined 다 — 
   assert.ok(found, '데이터에서 SUMIFS 수식을 못 찾았다');
   const ac = ctx(dump.sheets);
   assert.equal(anchorCell(ac, found!.sheet, found!.ref), undefined);
+});
+
+// 규칙 2 의 안전 성질을 좌표 하나가 아니라 전 데이터로 못박는다: 앵커 한 칸(바닥값)을
+// 뺀 **모든** 외부통합문서 참조 수식이 앵커로 풀리지 않아야 한다. 어느 겹(규칙 2 ·
+// 파서 장벽 · NO_DB)이 막는지는 묶지 않지만, 「연도 셀은 DB 를 타지 않는다」는 성질
+// 자체는 20,527건으로 묶는다 — 한 건이라도 풀리면 실패한다.
+test('외부참조를 품은 수식 20,527건 전부가 앵커로 풀리지 않는다 (DB 경계)', () => {
+  let ext = 0;
+  const leaked: string[] = [];
+  for (const { part, dump } of parts()) {
+    const ac = ctx(dump.sheets);
+    for (const [sheet, cells] of Object.entries(dump.sheets)) {
+      for (const [ref, formula] of Object.entries(cells)) {
+        let toks;
+        try { toks = tokenize(formula); } catch { continue; }
+        if (!toks.some((t) => t.t === 'ref' && t.ext !== null)) continue;
+        if (toks.length === 1) continue;            // 앵커 한 칸 자체는 바닥값이다
+        ext++;
+        const v = anchorCell(ac, sheet, ref);
+        if (v !== undefined && leaked.length < 5) leaked.push(`${part}!${sheet}!${ref} → ${JSON.stringify(v)}`);
+      }
+    }
+  }
+  assert.deepEqual(leaked, []);
+  assert.equal(ext, 20527);                          // 실측 규모 — 줄면 훑지 못한 것이다
 });
 
 test('앵커 이외의 외부참조는 시트 이름으로 가려낸다 (인덱스가 아니라)', () => {

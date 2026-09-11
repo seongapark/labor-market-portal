@@ -67,7 +67,15 @@ function evalFormula(ac: AnchorCtx, sheet: string, formula: string): string | nu
     return undefined;                      // 토큰화도 안 되면 계산 불가다
   }
   if (isAnchor(toks)) return ac.anchor;                                  // 규칙 1
-  if (toks.some((t) => t.t === 'ref' && t.ext !== null)) return undefined; // 규칙 2
+  // 규칙 2. 리뷰 1차 [지적 2]: 이 줄은 **지금의 PARSE_CTX 아래서는 중복이다** — extmap 이
+  // 비어 있어 외부참조를 품은 수식은 파싱 단계에서 어차피 unsupported 가 된다(실측: 이
+  // 줄을 지우고 전 데이터 20,527건을 돌려도 앵커로 풀리는 것 0건). 두 겹이 똑같이
+  // undefined 를 내므로 anchorCell 의 반환값만으로는 어느 겹이 막았는지 구별할 수 없고,
+  // 따라서 이 줄만 끄고 실패하는 시험은 만들 수 없다. 그래도 남겨 둔다: (1) 브리프가
+  // 명시한 경계이고, (2) PARSE_CTX 가 나중에 진짜 extmap 을 받게 되면 SUMIFS 가 파싱에
+  // 성공해 NO_DB 에 닿는다 — 이 줄이 그때의 유일한 방어선이다. 대신 「외부참조를 품은
+  // 수식은 하나도 앵커로 풀리지 않는다」를 전 데이터 시험(20,527건)으로 못박아 두었다.
+  if (toks.some((t) => t.t === 'ref' && t.ext !== null)) return undefined;
 
   const e = parseFormula(formula, PARSE_CTX);                            // 규칙 3
   if (e.op === 'unsupported') return undefined;
