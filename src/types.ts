@@ -12,13 +12,31 @@ export type Query = {
 };
 
 export type Crit =
-  | { kind: 'lit'; value: string }        // "계" 같은 리터럴
+  | { kind: 'lit'; value: string }        // "계" · ">0" · "<>포르투갈" 같은 리터럴
   | { kind: 'year'; ref: string }         // TEXT(C$6,"0") — 실행 시 ref 가 가리키는 셀에서 읽는다
-  | { kind: 'cell'; ref: string };        // $A14 · C$6 등
+  // $A14 · C$6 등. Task 9 단위 5: sheet 는 조건 참조가 시트를 한정한 경우다
+  // (p116_117!$B30, 실측 1,122건 — 전부 지금 지면과 같은 시트를 가리킨다). 없으면 지금 시트다.
+  | { kind: 'cell'; sheet?: string; ref: string };
+
+/** Task 9 단위 5: 별도데이터(etc)·패널(panel)은 `grid(src, sheet, r, c, v_num, v_txt)` 에
+    좌표로만 적재돼 있고 long 테이블이 없다. 헤더 행도 없다 — 사람이 웹 표를 붙여 만든
+    시트라서 1행이 인용 줄인 경우까지 있다. 그래서 **열 이름을 쓰지 않고 엑셀처럼 열
+    번호로 조회한다**. 이 데이터의 범위 참조는 전부 열 전체($B:$B)라 번호로 바로 옮겨진다.
+    열 번호는 `grid.c` 와 같은 1-based 다. */
+export type GridQuery = {
+  kind: 'grid';
+  src: Extract<Src, 'etc' | 'panel'>;
+  sheet: string;
+  /** SUMIFS 의 합계 열. COUNTIFS 는 세는 것이므로 없다(null). */
+  valueCol: number | null;
+  crits: { col: number; crit: Crit }[];
+};
 
 export type Expr =
-  | { op: 'sumifs'; q: Query }
-  | { op: 'countifs'; q: Query }
+  // Task 9 단위 5: long 테이블 질의(Query)와 격자 질의(GridQuery) 둘 다 온다.
+  // 집계 종류는 op 하나가 정한다 — GridQuery 에 agg 를 또 두면 두 곳이 어긋날 수 있다.
+  | { op: 'sumifs'; q: Query | GridQuery }
+  | { op: 'countifs'; q: Query | GridQuery }
   | { op: 'add'; args: Expr[] }
   | { op: 'sub'; a: Expr; b: Expr }
   | { op: 'div'; a: Expr; b: Expr }

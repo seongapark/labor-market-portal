@@ -1,5 +1,5 @@
 import { tokenize, type Token } from './tokenize.ts';
-import type { Crit, Expr, Headers, Query, Src } from '../types.ts';
+import type { Crit, Expr, GridQuery, Headers, Query, Src } from '../types.ts';
 
 export type ParseCtx = { extmap: Record<string, string>; headers: Headers };
 
@@ -22,6 +22,21 @@ function letterIndex(letter: string): number {
   let n = 0;
   for (const ch of letter) n = n * 26 + (ch.charCodeAt(0) - 64);
   return n - 1;             // A → 0
+}
+
+/** Task 9 단위 5: 열 문자 → **1-based 열 번호** ('A'→1 · 'C'→3 · 'P'→16 · 'AA'→27).
+    `grid.c` 가 1-based 다. */
+export function colNumber(letter: string): number {
+  return letterIndex(letter) + 1;
+}
+
+/** 열 **전체** 참조('$B:$B' · 'C:C')만 열 번호로 옮긴다. 부분 범위('$A$9:$E$25')를
+    조용히 첫 열로 뭉개면 행 범위를 무시한 틀린 답이 나오므로 던진다 — 별도데이터의
+    대상 1,917건은 실측으로 전부 열 전체다. */
+export function wholeColumn(a1: string): number {
+  const m = /^\$?([A-Z]{1,3}):\$?([A-Z]{1,3})$/.exec(a1);
+  if (!m || m[1] !== m[2]) throw new Error('열 전체 참조가 아니다: ' + a1);
+  return colNumber(m[1]);
 }
 
 export function colName(src: Src, sheet: string, a1: string, headers: Headers): string {
@@ -95,8 +110,12 @@ function toCrit(toks: Token[]): Crit {
     const t = toks[0];
     if (t.t === 'str') return { kind: 'lit', value: t.v };
     if (t.t === 'num') return { kind: 'lit', value: String(t.v) };
-    if (t.t === 'ref' && t.ext === null && t.sheet === null) {
-      return { kind: 'cell', ref: plainRef(t.a1) };
+    if (t.t === 'ref' && t.ext === null) {
+      // Task 9 단위 5: 시트를 한정한 조건 참조(p116_117!$B30, 실측 1,122건)도 받는다.
+      // 실측으로 그 시트는 전부 지금 지면 자신이다 — 그래도 이름을 버리지 않고 실어 보낸다.
+      return t.sheet === null
+        ? { kind: 'cell', ref: plainRef(t.a1) }
+        : { kind: 'cell', sheet: t.sheet, ref: plainRef(t.a1) };
     }
   }
   // RULING(9/10, 8195건 중 8150건 실측): TEXT(<셀 하나>,"0") — 연도 조건은 그 셀이
@@ -116,7 +135,7 @@ function toCrit(toks: Token[]): Crit {
   throw new Error('조건을 못 읽었다: ' + JSON.stringify(toks));
 }
 
-function ifsQuery(name: 'SUMIFS' | 'COUNTIFS', args: Token[][], ctx: ParseCtx): Query {
+function ifsQuery(name: 'SUMIFS' | 'COUNTIFS', args: Token[][], ctx: ParseCtx): Query | GridQuery {
   // SUMIFS(값범위, 조건범위, 조건, …)  /  COUNTIFS(조건범위, 조건, …)
   let src: Src | null = null;
   let sheet: string | null = null;
@@ -131,17 +150,30 @@ function ifsQuery(name: 'SUMIFS' | 'COUNTIFS', args: Token[][], ctx: ParseCtx): 
     return { src: srcOf(file), sheet: r.sheet, a1: r.a1 };
   };
 
-  if (name === 'SUMIFS') {
-    const v = refOf(args[0]);
-    src = v.src; sheet = v.sheet;
-    value = colName(src, sheet, v.a1, ctx.headers);
-    rest = args.slice(1);
-  } else {
-    const v = refOf(args[0]);
-    src = v.src; sheet = v.sheet;
-    value = colName(src, sheet, v.a1, ctx.headers);   // COUNTIFS 는 첫 범위가 곧 조건 범위다
-    rest = args;
+  const first = refOf(args[0]);
+  src = first.src; sheet = first.sheet;
+  // COUNTIFS 는 첫 범위가 곧 조건 범위이기도 하다 — SUMIFS 만 첫 범위를 값 범위로 뗀다.
+  rest = name === 'SUMIFS' ? args.slice(1) : args;
+
+  // Task 9 단위 5: etc·panel 은 long 테이블이 없다. 열 이름이 아니라 열 번호로 간다.
+  if (src === 'etc' || src === 'panel') {
+    const crits: { col: number; crit: Crit }[] = [];
+    for (let k = 0; k + 1 < rest.length; k += 2) {
+      const cr = refOf(rest[k]);
+      if (cr.src !== src || cr.sheet !== sheet) {
+        throw new Error(`한 ${name} 안에서 시트가 갈린다: ${cr.sheet} vs ${sheet}`);
+      }
+      crits.push({ col: wholeColumn(cr.a1), crit: toCrit(rest[k + 1]) });
+    }
+    if (!crits.length) throw new Error(`${name} 에 조건이 없다`);
+    return {
+      kind: 'grid', src, sheet,
+      valueCol: name === 'SUMIFS' ? wholeColumn(first.a1) : null,
+      crits,
+    };
   }
+
+  value = colName(src, sheet, first.a1, ctx.headers);
 
   const where: Record<string, Crit> = {};
   for (let k = 0; k + 1 < rest.length; k += 2) {

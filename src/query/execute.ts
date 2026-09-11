@@ -1,6 +1,6 @@
 import type { DatabaseSync } from 'node:sqlite';
 import { anchorCell, type AnchorCtx } from './anchor.ts';
-import type { Crit, Expr, Grid, Query } from '../types.ts';
+import type { Crit, Expr, Grid, GridQuery, Query } from '../types.ts';
 
 /** RULING 8: ExecCtx 는 파트 전체의 격자(시트명 → Grid)를 들고, 지금 계산 중인 시트를 함께 표시한다.
     booklet 페이지 간 셀 참조('p68'!$F$5)와 보조시트(_시계열) 참조가 실측으로 8%+6% 나와,
@@ -48,6 +48,80 @@ function gridCell(ctx: ExecCtx, sheet: string, ref: string): string | number | n
   return v === undefined ? null : v;
 }
 
+/** Task 9 단위 5: 격자 조건 하나를 SQL 조각으로. `alias` 는 조인 별칭이다.
+    엑셀 의미 세 가지를 지킨다:
+    - 문자 비교는 대소문자를 구분하지 않는다(RULING 13 — 빼먹으면 조용히 0 이 나온다).
+    - 조건값이 숫자로 읽히면 v_num 과도 맞춘다. 적재기가 엑셀 셀 타입을 그대로 옮겨
+      "202508" 같은 숫자꼴 문자열이 v_txt 에 남아 있기 때문에 양쪽을 다 본다.
+    - `<>` 는 **빈 칸에도 맞는다**. 격자에는 빈 칸의 행이 아예 없으므로(적재 때 버렸다)
+      LEFT JOIN 으로 붙이고 `alias.r IS NULL` 을 허용한다 — 그래서 negated 를 돌려준다.
+      숫자 칸(v_txt IS NULL)이 문자 조건과 "같지 않다"인 경우도 COALESCE 로 받는다. */
+function gridCritSql(alias: string, raw: string): { sql: string; args: (string | number)[]; negated: boolean } {
+  const m = /^(<=|>=|<>|<|>|=)\s*(.*)$/.exec(raw);
+  const op = m ? m[1] : '=';
+  const rhs = m ? m[2] : raw;
+  const num = rhs.trim() === '' ? NaN : Number(rhs);
+  const isNum = Number.isFinite(num);
+
+  const eqSql = isNum
+    ? `(${alias}.v_txt = ? COLLATE NOCASE OR ${alias}.v_num = ?)`
+    : `${alias}.v_txt = ? COLLATE NOCASE`;
+  const eqArgs: (string | number)[] = isNum ? [rhs, num] : [rhs];
+
+  if (op === '=') return { sql: eqSql, args: eqArgs, negated: false };
+  if (op === '<>') {
+    return { sql: `(${alias}.r IS NULL OR NOT COALESCE(${eqSql}, 0))`, args: eqArgs, negated: true };
+  }
+  if (isNum) return { sql: `${alias}.v_num ${op} ?`, args: [num], negated: false };
+  return { sql: `${alias}.v_txt ${op} ? COLLATE NOCASE`, args: [rhs], negated: false };
+}
+
+/** Task 9 단위 5: 별도데이터·패널의 SUMIFS/COUNTIFS — grid 자기조인.
+    조건 하나마다 (src, sheet, r) 가 같고 c 가 그 열인 행을 붙인다. grid 의 PK 가
+    (src, sheet, r, c) 라 조인은 전부 PK 점조회다(etc 는 시트 26개 · 43,981칸뿐이다).
+
+    기준 테이블(b):
+    - SUM: **값 열**이다. 조건에 맞는 행인데 값 칸이 비어 있으면 엑셀은 0 을 더하므로,
+      그 행이 빠져도 합은 같다. 문자 칸은 v_num 이 NULL 이라 SUM 이 무시한다 — 엑셀도
+      SUMIFS 에서 문자를 더하지 않는다.
+    - COUNT: **첫 긍정 조건의 열**이다. COUNTIFS 는 행을 세는 것이고, 긍정 조건에 맞는
+      행은 그 칸이 반드시 비어 있지 않으므로 그 열이 행 우주가 된다. 조건이 전부
+      부정형(`<>`)이면 행 우주를 알 수 없어 던진다 — 조용히 0 을 내지 않는다. */
+function runGridIfs(q: GridQuery, ctx: ExecCtx, agg: 'SUM' | 'COUNT'): number {
+  const parts = q.crits.map((c, i) => {
+    const { sql, args, negated } = gridCritSql(`k${i}`, critValue(c.crit, ctx));
+    return { alias: `k${i}`, col: c.col, sql, args, negated };
+  });
+
+  let baseCol: number;
+  if (agg === 'SUM') {
+    if (q.valueCol === null) throw new Error('SUMIFS 인데 합계 열이 없다');
+    baseCol = q.valueCol;
+  } else {
+    const positive = parts.find((p) => !p.negated);
+    if (!positive) throw new Error('COUNTIFS 조건이 전부 부정형이다 — 행 우주를 알 수 없다');
+    baseCol = positive.col;
+  }
+
+  const args: (string | number)[] = [];
+  const joins: string[] = [];
+  for (const p of parts) {
+    joins.push(`${p.negated ? 'LEFT JOIN' : 'JOIN'} grid ${p.alias}`
+      + ` ON ${p.alias}.src = b.src AND ${p.alias}.sheet = b.sheet`
+      + ` AND ${p.alias}.r = b.r AND ${p.alias}.c = ?`);
+    args.push(p.col);
+  }
+  const where = ['b.src = ?', 'b.sheet = ?', 'b.c = ?'];
+  args.push(q.src, q.sheet, baseCol);
+  for (const p of parts) { where.push(p.sql); args.push(...p.args); }
+
+  // 한 행도 없으면 SUMIFS 는 0 이다 (NULL 이 아니다) — COALESCE 가 그것이다.
+  const select = agg === 'SUM' ? 'COALESCE(SUM(b.v_num), 0)' : 'COUNT(*)';
+  const sql = `SELECT ${select} AS v FROM grid b ${joins.join(' ')} WHERE ${where.join(' AND ')}`;
+  const row = ctx.db.prepare(sql).get(...args) as { v: number } | undefined;
+  return row ? Number(row.v) : 0;
+}
+
 function critValue(c: Crit, ctx: ExecCtx): string {
   if (c.kind === 'year') {
     // FIX ROUND 1: TEXT(C$6,"0") 은 "C6 가 가리키는 값을 정수로" 다 — 연도는 c.ref 가
@@ -67,9 +141,10 @@ function critValue(c: Crit, ctx: ExecCtx): string {
     return typeof v === 'number' ? String(Math.round(v) === v ? Math.round(v) : v) : v.trim();
   }
   if (c.kind === 'lit') return c.value;
-  // Crit 의 cell 은 sheet 를 갖지 않는다 — SUMIFS/COUNTIFS 조건은 이 데이터에서 항상
-  // 지금 시트를 가리키기 때문이다 (RULING 8). ctx.grids[ctx.sheet] 에서 읽는다.
-  const v = gridCell(ctx, ctx.sheet, c.ref);
+  // Task 9 단위 5: 조건 참조가 시트를 한정한 경우(p116_117!$B30, 실측 1,122건)는 그
+  // 시트에서 읽는다 — 실측으로는 전부 지금 지면 자신이지만 이름이 있으면 그것을 따른다.
+  // 한정이 없으면 지금까지처럼 지금 시트다 (RULING 8).
+  const v = gridCell(ctx, c.sheet ?? ctx.sheet, c.ref);
   if (v === undefined || v === null) throw new Error(`격자에 ${c.ref} 가 없다`);
   // 연도 헤더가 숫자로 들어있는 경우 정수 문자열로 맞춘다
   return typeof v === 'number' ? String(Math.round(v) === v ? Math.round(v) : v) : String(v);
@@ -100,7 +175,10 @@ function critSql(col: string, raw: string): { sql: string; args: (string | numbe
       소문자 영어('value')가 섞여 있어 모든 식별자를 큰따옴표로 인용한다.
     - etc·panel → 아직 long 테이블이 없다 (grid 좌표로만 적재됨). 0 을 돌려주면 정당한 0 과
       구별할 수 없어 대조를 속이게 되므로, 던진다. 9단계가 이 소스들에 long 뷰를 만들 것이다. */
-function runIfs(q: Query, ctx: ExecCtx, agg: 'SUM' | 'COUNT'): number {
+function runIfs(q: Query | GridQuery, ctx: ExecCtx, agg: 'SUM' | 'COUNT'): number {
+  // Task 9 단위 5: 격자 질의는 열 번호로 grid 를 자기조인한다.
+  if ('kind' in q && q.kind === 'grid') return runGridIfs(q, ctx, agg);
+
   if (q.src === 'kosis') {
     const where: string[] = ['src = ?', 'table_id = ?'];
     const args: (string | number)[] = ['kosis', q.table];
