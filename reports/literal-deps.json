@@ -1,0 +1,1709 @@
+{
+ "summary": {
+  "verified": 29561,
+  "withLeaf": 3999,
+  "noLeaf": 25562,
+  "leaves": 247
+ },
+ "sheets": [
+  {
+   "page": "part1_1!p13",
+   "leaves": 7,
+   "users": 1074,
+   "cells": [
+    {
+     "ref": "B4",
+     "users": 20,
+     "v": 1970,
+     "t": "number"
+    },
+    {
+     "ref": "B5",
+     "users": 1009,
+     "v": 1970,
+     "t": "number"
+    },
+    {
+     "ref": "C32",
+     "users": 9,
+     "v": 2030,
+     "t": "number"
+    },
+    {
+     "ref": "D32",
+     "users": 9,
+     "v": 2040,
+     "t": "number"
+    },
+    {
+     "ref": "E32",
+     "users": 9,
+     "v": 2050,
+     "t": "number"
+    },
+    {
+     "ref": "F32",
+     "users": 9,
+     "v": 2060,
+     "t": "number"
+    },
+    {
+     "ref": "G32",
+     "users": 9,
+     "v": 2070,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part1_1!p8",
+   "leaves": 13,
+   "users": 701,
+   "cells": [
+    {
+     "ref": "B4",
+     "users": 20,
+     "v": 1970,
+     "t": "number"
+    },
+    {
+     "ref": "B5",
+     "users": 605,
+     "v": 1970,
+     "t": "number"
+    },
+    {
+     "ref": "B29",
+     "users": 16,
+     "v": 1970,
+     "t": "number"
+    },
+    {
+     "ref": "C29",
+     "users": 6,
+     "v": 1980,
+     "t": "number"
+    },
+    {
+     "ref": "D29",
+     "users": 6,
+     "v": 1990,
+     "t": "number"
+    },
+    {
+     "ref": "E29",
+     "users": 6,
+     "v": 2000,
+     "t": "number"
+    },
+    {
+     "ref": "F29",
+     "users": 6,
+     "v": 2010,
+     "t": "number"
+    },
+    {
+     "ref": "G29",
+     "users": 6,
+     "v": 2020,
+     "t": "number"
+    },
+    {
+     "ref": "I29",
+     "users": 6,
+     "v": 2030,
+     "t": "number"
+    },
+    {
+     "ref": "J29",
+     "users": 6,
+     "v": 2040,
+     "t": "number"
+    },
+    {
+     "ref": "K29",
+     "users": 6,
+     "v": 2050,
+     "t": "number"
+    },
+    {
+     "ref": "L29",
+     "users": 6,
+     "v": 2060,
+     "t": "number"
+    },
+    {
+     "ref": "M29",
+     "users": 6,
+     "v": 2070,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part1_1!p11",
+   "leaves": 3,
+   "users": 354,
+   "cells": [
+    {
+     "ref": "B4",
+     "users": 20,
+     "v": 1970,
+     "t": "number"
+    },
+    {
+     "ref": "B5",
+     "users": 304,
+     "v": 1970,
+     "t": "number"
+    },
+    {
+     "ref": "B23",
+     "users": 30,
+     "v": 1970,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part3!_시계열",
+   "leaves": 1,
+   "users": 350,
+   "cells": [
+    {
+     "ref": "B1",
+     "users": 350,
+     "v": 2025,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part1_1!p10",
+   "leaves": 11,
+   "users": 176,
+   "cells": [
+    {
+     "ref": "B5",
+     "users": 16,
+     "v": 1970,
+     "t": "number"
+    },
+    {
+     "ref": "C5",
+     "users": 16,
+     "v": 1980,
+     "t": "number"
+    },
+    {
+     "ref": "D5",
+     "users": 16,
+     "v": 1990,
+     "t": "number"
+    },
+    {
+     "ref": "E5",
+     "users": 16,
+     "v": 2000,
+     "t": "number"
+    },
+    {
+     "ref": "F5",
+     "users": 16,
+     "v": 2010,
+     "t": "number"
+    },
+    {
+     "ref": "G5",
+     "users": 16,
+     "v": 2020,
+     "t": "number"
+    },
+    {
+     "ref": "I5",
+     "users": 16,
+     "v": 2030,
+     "t": "number"
+    },
+    {
+     "ref": "J5",
+     "users": 16,
+     "v": 2040,
+     "t": "number"
+    },
+    {
+     "ref": "K5",
+     "users": 16,
+     "v": 2050,
+     "t": "number"
+    },
+    {
+     "ref": "L5",
+     "users": 16,
+     "v": 2060,
+     "t": "number"
+    },
+    {
+     "ref": "M5",
+     "users": 16,
+     "v": 2070,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part1_1!p9",
+   "leaves": 1,
+   "users": 167,
+   "cells": [
+    {
+     "ref": "B21",
+     "users": 167,
+     "v": 1970,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part2_2장년비정규직!p178",
+   "leaves": 16,
+   "users": 129,
+   "cells": [
+    {
+     "ref": "B5",
+     "users": 109,
+     "v": 1970,
+     "t": "number"
+    },
+    {
+     "ref": "D47",
+     "users": 2,
+     "v": 2018,
+     "t": "number"
+    },
+    {
+     "ref": "B47",
+     "users": 1,
+     "v": 2000,
+     "t": "number"
+    },
+    {
+     "ref": "F47",
+     "users": 1,
+     "v": 2025,
+     "t": "number"
+    },
+    {
+     "ref": "D48",
+     "users": 2,
+     "v": 1994,
+     "t": "number"
+    },
+    {
+     "ref": "B48",
+     "users": 1,
+     "v": 1970,
+     "t": "number"
+    },
+    {
+     "ref": "F48",
+     "users": 1,
+     "v": 2005,
+     "t": "number"
+    },
+    {
+     "ref": "D49",
+     "users": 2,
+     "v": 1975,
+     "t": "number"
+    },
+    {
+     "ref": "B49",
+     "users": 1,
+     "v": 1929,
+     "t": "number"
+    },
+    {
+     "ref": "F49",
+     "users": 1,
+     "v": 2026,
+     "t": "number"
+    },
+    {
+     "ref": "D50",
+     "users": 2,
+     "v": 2013,
+     "t": "number"
+    },
+    {
+     "ref": "B50",
+     "users": 1,
+     "v": 1942,
+     "t": "number"
+    },
+    {
+     "ref": "F50",
+     "users": 1,
+     "v": 2028,
+     "t": "number"
+    },
+    {
+     "ref": "D51",
+     "users": 2,
+     "v": 1990,
+     "t": "number"
+    },
+    {
+     "ref": "B51",
+     "users": 1,
+     "v": 1864,
+     "t": "number"
+    },
+    {
+     "ref": "F51",
+     "users": 1,
+     "v": 2019,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part1_8!p128",
+   "leaves": 10,
+   "users": 120,
+   "cells": [
+    {
+     "ref": "C4",
+     "users": 12,
+     "v": 2,
+     "t": "number"
+    },
+    {
+     "ref": "D4",
+     "users": 12,
+     "v": 3,
+     "t": "number"
+    },
+    {
+     "ref": "E4",
+     "users": 12,
+     "v": 4,
+     "t": "number"
+    },
+    {
+     "ref": "F4",
+     "users": 12,
+     "v": 5,
+     "t": "number"
+    },
+    {
+     "ref": "G4",
+     "users": 12,
+     "v": 6,
+     "t": "number"
+    },
+    {
+     "ref": "H4",
+     "users": 12,
+     "v": 7,
+     "t": "number"
+    },
+    {
+     "ref": "I4",
+     "users": 12,
+     "v": 8,
+     "t": "number"
+    },
+    {
+     "ref": "J4",
+     "users": 12,
+     "v": 9,
+     "t": "number"
+    },
+    {
+     "ref": "K4",
+     "users": 12,
+     "v": 10,
+     "t": "number"
+    },
+    {
+     "ref": "L4",
+     "users": 12,
+     "v": 11,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part1_8!p129",
+   "leaves": 11,
+   "users": 112,
+   "cells": [
+    {
+     "ref": "B6",
+     "users": 32,
+     "v": "총 계",
+     "t": "string"
+    },
+    {
+     "ref": "B8",
+     "users": 8,
+     "v": "5인 미만",
+     "t": "string"
+    },
+    {
+     "ref": "B9",
+     "users": 8,
+     "v": "5~9인",
+     "t": "string"
+    },
+    {
+     "ref": "B10",
+     "users": 8,
+     "v": "10~19인",
+     "t": "string"
+    },
+    {
+     "ref": "B11",
+     "users": 8,
+     "v": "20~29인",
+     "t": "string"
+    },
+    {
+     "ref": "B12",
+     "users": 8,
+     "v": "30~49인",
+     "t": "string"
+    },
+    {
+     "ref": "B13",
+     "users": 8,
+     "v": "50~99인",
+     "t": "string"
+    },
+    {
+     "ref": "B14",
+     "users": 8,
+     "v": "100~299인",
+     "t": "string"
+    },
+    {
+     "ref": "B16",
+     "users": 8,
+     "v": "300~499인",
+     "t": "string"
+    },
+    {
+     "ref": "B17",
+     "users": 8,
+     "v": "500~999인",
+     "t": "string"
+    },
+    {
+     "ref": "B18",
+     "users": 8,
+     "v": "1,000인 이상",
+     "t": "string"
+    }
+   ]
+  },
+  {
+   "page": "part2_1청년여성!p154",
+   "leaves": 1,
+   "users": 109,
+   "cells": [
+    {
+     "ref": "B5",
+     "users": 109,
+     "v": 1970,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part1_8!p130",
+   "leaves": 11,
+   "users": 108,
+   "cells": [
+    {
+     "ref": "B6",
+     "users": 28,
+     "v": "전 산업",
+     "t": "string"
+    },
+    {
+     "ref": "B7",
+     "users": 8,
+     "v": "광 업",
+     "t": "string"
+    },
+    {
+     "ref": "B8",
+     "users": 8,
+     "v": "제조업",
+     "t": "string"
+    },
+    {
+     "ref": "B9",
+     "users": 8,
+     "v": "건설업",
+     "t": "string"
+    },
+    {
+     "ref": "B10",
+     "users": 8,
+     "v": "전기가스\n수도업",
+     "t": "string"
+    },
+    {
+     "ref": "B11",
+     "users": 8,
+     "v": "운수창고\n통신업",
+     "t": "string"
+    },
+    {
+     "ref": "B12",
+     "users": 8,
+     "v": "임 업",
+     "t": "string"
+    },
+    {
+     "ref": "B13",
+     "users": 8,
+     "v": "어 업",
+     "t": "string"
+    },
+    {
+     "ref": "B14",
+     "users": 8,
+     "v": "농 업",
+     "t": "string"
+    },
+    {
+     "ref": "B15",
+     "users": 8,
+     "v": "금융 및\n보험업",
+     "t": "string"
+    },
+    {
+     "ref": "B16",
+     "users": 8,
+     "v": "기타의\n사업",
+     "t": "string"
+    }
+   ]
+  },
+  {
+   "page": "part1_5!p83",
+   "leaves": 35,
+   "users": 105,
+   "cells": [
+    {
+     "ref": "F24",
+     "users": 3,
+     "v": 1,
+     "t": "number"
+    },
+    {
+     "ref": "F25",
+     "users": 3,
+     "v": 2,
+     "t": "number"
+    },
+    {
+     "ref": "F26",
+     "users": 3,
+     "v": 3,
+     "t": "number"
+    },
+    {
+     "ref": "F27",
+     "users": 3,
+     "v": 4,
+     "t": "number"
+    },
+    {
+     "ref": "F28",
+     "users": 3,
+     "v": 5,
+     "t": "number"
+    },
+    {
+     "ref": "F29",
+     "users": 3,
+     "v": 6,
+     "t": "number"
+    },
+    {
+     "ref": "F30",
+     "users": 3,
+     "v": 7,
+     "t": "number"
+    },
+    {
+     "ref": "F31",
+     "users": 3,
+     "v": 8,
+     "t": "number"
+    },
+    {
+     "ref": "F32",
+     "users": 3,
+     "v": 9,
+     "t": "number"
+    },
+    {
+     "ref": "F33",
+     "users": 3,
+     "v": 10,
+     "t": "number"
+    },
+    {
+     "ref": "F34",
+     "users": 3,
+     "v": 11,
+     "t": "number"
+    },
+    {
+     "ref": "F35",
+     "users": 3,
+     "v": 12,
+     "t": "number"
+    },
+    {
+     "ref": "F36",
+     "users": 3,
+     "v": 13,
+     "t": "number"
+    },
+    {
+     "ref": "F37",
+     "users": 3,
+     "v": 14,
+     "t": "number"
+    },
+    {
+     "ref": "F38",
+     "users": 3,
+     "v": 15,
+     "t": "number"
+    },
+    {
+     "ref": "F39",
+     "users": 3,
+     "v": 16,
+     "t": "number"
+    },
+    {
+     "ref": "F40",
+     "users": 3,
+     "v": 17,
+     "t": "number"
+    },
+    {
+     "ref": "F41",
+     "users": 3,
+     "v": 18,
+     "t": "number"
+    },
+    {
+     "ref": "F42",
+     "users": 3,
+     "v": 19,
+     "t": "number"
+    },
+    {
+     "ref": "F43",
+     "users": 3,
+     "v": 20,
+     "t": "number"
+    },
+    {
+     "ref": "F44",
+     "users": 3,
+     "v": 21,
+     "t": "number"
+    },
+    {
+     "ref": "F45",
+     "users": 3,
+     "v": 22,
+     "t": "number"
+    },
+    {
+     "ref": "F46",
+     "users": 3,
+     "v": 23,
+     "t": "number"
+    },
+    {
+     "ref": "F47",
+     "users": 3,
+     "v": 24,
+     "t": "number"
+    },
+    {
+     "ref": "F48",
+     "users": 3,
+     "v": 25,
+     "t": "number"
+    },
+    {
+     "ref": "F49",
+     "users": 3,
+     "v": 26,
+     "t": "number"
+    },
+    {
+     "ref": "F50",
+     "users": 3,
+     "v": 27,
+     "t": "number"
+    },
+    {
+     "ref": "F51",
+     "users": 3,
+     "v": 28,
+     "t": "number"
+    },
+    {
+     "ref": "F52",
+     "users": 3,
+     "v": 29,
+     "t": "number"
+    },
+    {
+     "ref": "F53",
+     "users": 3,
+     "v": 30,
+     "t": "number"
+    },
+    {
+     "ref": "F54",
+     "users": 3,
+     "v": 31,
+     "t": "number"
+    },
+    {
+     "ref": "F55",
+     "users": 3,
+     "v": 32,
+     "t": "number"
+    },
+    {
+     "ref": "F56",
+     "users": 3,
+     "v": 33,
+     "t": "number"
+    },
+    {
+     "ref": "F57",
+     "users": 3,
+     "v": 34,
+     "t": "number"
+    },
+    {
+     "ref": "F58",
+     "users": 3,
+     "v": 35,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part1_1!p12",
+   "leaves": 1,
+   "users": 76,
+   "cells": [
+    {
+     "ref": "B20",
+     "users": 76,
+     "v": 1970,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part1_5!_시계열",
+   "leaves": 1,
+   "users": 74,
+   "cells": [
+    {
+     "ref": "B1",
+     "users": 74,
+     "v": 2025,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part1_8!p131",
+   "leaves": 4,
+   "users": 66,
+   "cells": [
+    {
+     "ref": "C5",
+     "users": 22,
+     "v": 2,
+     "t": "number"
+    },
+    {
+     "ref": "D5",
+     "users": 11,
+     "v": 3,
+     "t": "number"
+    },
+    {
+     "ref": "E5",
+     "users": 11,
+     "v": 4,
+     "t": "number"
+    },
+    {
+     "ref": "F5",
+     "users": 22,
+     "v": 5,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part1_9!p142",
+   "leaves": 17,
+   "users": 51,
+   "cells": [
+    {
+     "ref": "G33",
+     "users": 3,
+     "v": 1,
+     "t": "number"
+    },
+    {
+     "ref": "G34",
+     "users": 3,
+     "v": 2,
+     "t": "number"
+    },
+    {
+     "ref": "G35",
+     "users": 3,
+     "v": 3,
+     "t": "number"
+    },
+    {
+     "ref": "G36",
+     "users": 3,
+     "v": 4,
+     "t": "number"
+    },
+    {
+     "ref": "G37",
+     "users": 3,
+     "v": 5,
+     "t": "number"
+    },
+    {
+     "ref": "G38",
+     "users": 3,
+     "v": 6,
+     "t": "number"
+    },
+    {
+     "ref": "G39",
+     "users": 3,
+     "v": 7,
+     "t": "number"
+    },
+    {
+     "ref": "G40",
+     "users": 3,
+     "v": 8,
+     "t": "number"
+    },
+    {
+     "ref": "G41",
+     "users": 3,
+     "v": 9,
+     "t": "number"
+    },
+    {
+     "ref": "G42",
+     "users": 3,
+     "v": 10,
+     "t": "number"
+    },
+    {
+     "ref": "G43",
+     "users": 3,
+     "v": 11,
+     "t": "number"
+    },
+    {
+     "ref": "G44",
+     "users": 3,
+     "v": 12,
+     "t": "number"
+    },
+    {
+     "ref": "G45",
+     "users": 3,
+     "v": 13,
+     "t": "number"
+    },
+    {
+     "ref": "G46",
+     "users": 3,
+     "v": 14,
+     "t": "number"
+    },
+    {
+     "ref": "G47",
+     "users": 3,
+     "v": 15,
+     "t": "number"
+    },
+    {
+     "ref": "G48",
+     "users": 3,
+     "v": 16,
+     "t": "number"
+    },
+    {
+     "ref": "G49",
+     "users": 3,
+     "v": 17,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part1_3!p49",
+   "leaves": 3,
+   "users": 45,
+   "cells": [
+    {
+     "ref": "A8",
+     "users": 3,
+     "v": "A 농업 임업 및 어업(01~03)",
+     "t": "string"
+    },
+    {
+     "ref": "A9",
+     "users": 3,
+     "v": "* 광공업(BC)",
+     "t": "string"
+    },
+    {
+     "ref": "A10",
+     "users": 39,
+     "v": "* 사회간접자본 및 기타서비스업(D~U)",
+     "t": "string"
+    }
+   ]
+  },
+  {
+   "page": "part1_3!p50",
+   "leaves": 1,
+   "users": 36,
+   "cells": [
+    {
+     "ref": "J31",
+     "users": 36,
+     "v": "* 사회간접자본 및 기타서비스업(D~U)",
+     "t": "string"
+    }
+   ]
+  },
+  {
+   "page": "part1_5!p81",
+   "leaves": 34,
+   "users": 34,
+   "cells": [
+    {
+     "ref": "A30",
+     "users": 1,
+     "v": "2025직종_관리직(임원·부서장)",
+     "t": "string"
+    },
+    {
+     "ref": "A31",
+     "users": 1,
+     "v": "2025직종_경영·행정·사무직",
+     "t": "string"
+    },
+    {
+     "ref": "A32",
+     "users": 1,
+     "v": "2025직종_금융·보험직",
+     "t": "string"
+    },
+    {
+     "ref": "A33",
+     "users": 1,
+     "v": "2025직종_자연·생명과학 연구직",
+     "t": "string"
+    },
+    {
+     "ref": "A34",
+     "users": 1,
+     "v": "2025직종_정보통신 연구개발직 및 공학기술직",
+     "t": "string"
+    },
+    {
+     "ref": "A35",
+     "users": 1,
+     "v": "2025직종_건설·채굴 연구개발직 및 공학기술직",
+     "t": "string"
+    },
+    {
+     "ref": "A36",
+     "users": 1,
+     "v": "2025직종_제조 연구개발직 및 공학기술직",
+     "t": "string"
+    },
+    {
+     "ref": "A37",
+     "users": 1,
+     "v": "2025직종_교육직",
+     "t": "string"
+    },
+    {
+     "ref": "A38",
+     "users": 1,
+     "v": "2025직종_법률직",
+     "t": "string"
+    },
+    {
+     "ref": "A39",
+     "users": 1,
+     "v": "2025직종_사회복지·종교직",
+     "t": "string"
+    },
+    {
+     "ref": "A40",
+     "users": 1,
+     "v": "2025직종_경찰·소방·교도직",
+     "t": "string"
+    },
+    {
+     "ref": "A41",
+     "users": 1,
+     "v": "2025직종_보건·의료직",
+     "t": "string"
+    },
+    {
+     "ref": "A42",
+     "users": 1,
+     "v": "2025직종_예술·디자인·방송직",
+     "t": "string"
+    },
+    {
+     "ref": "A43",
+     "users": 1,
+     "v": "2025직종_스포츠·레크리에이션직",
+     "t": "string"
+    },
+    {
+     "ref": "A44",
+     "users": 1,
+     "v": "2025직종_미용·예식 및 반려동물 서비스직",
+     "t": "string"
+    },
+    {
+     "ref": "A45",
+     "users": 1,
+     "v": "2025직종_여행·숙박·오락 서비스직",
+     "t": "string"
+    },
+    {
+     "ref": "A46",
+     "users": 1,
+     "v": "2025직종_음식 서비스직",
+     "t": "string"
+    },
+    {
+     "ref": "A47",
+     "users": 1,
+     "v": "2025직종_경호·경비직",
+     "t": "string"
+    },
+    {
+     "ref": "A48",
+     "users": 1,
+     "v": "2025직종_돌봄 서비스직(간병·육아)",
+     "t": "string"
+    },
+    {
+     "ref": "A49",
+     "users": 1,
+     "v": "2025직종_청소 및 기타 개인서비스직",
+     "t": "string"
+    },
+    {
+     "ref": "A50",
+     "users": 1,
+     "v": "2025직종_영업·판매직",
+     "t": "string"
+    },
+    {
+     "ref": "A51",
+     "users": 1,
+     "v": "2025직종_운전·운송직",
+     "t": "string"
+    },
+    {
+     "ref": "A52",
+     "users": 1,
+     "v": "2025직종_건설·채굴직",
+     "t": "string"
+    },
+    {
+     "ref": "A53",
+     "users": 1,
+     "v": "2025직종_기계 설치·정비·생산직",
+     "t": "string"
+    },
+    {
+     "ref": "A54",
+     "users": 1,
+     "v": "2025직종_금속·재료 설치·정비·생산직(판금·단조·주조·용접·도장 등)",
+     "t": "string"
+    },
+    {
+     "ref": "A55",
+     "users": 1,
+     "v": "2025직종_전기·전자 설치·정비·생산직",
+     "t": "string"
+    },
+    {
+     "ref": "A56",
+     "users": 1,
+     "v": "2025직종_정보통신 설치·정비직",
+     "t": "string"
+    },
+    {
+     "ref": "A57",
+     "users": 1,
+     "v": "2025직종_화학·환경 설치·정비·생산직",
+     "t": "string"
+    },
+    {
+     "ref": "A58",
+     "users": 1,
+     "v": "2025직종_섬유·의복 생산직",
+     "t": "string"
+    },
+    {
+     "ref": "A59",
+     "users": 1,
+     "v": "2025직종_식품 가공·생산직",
+     "t": "string"
+    },
+    {
+     "ref": "A60",
+     "users": 1,
+     "v": "2025직종_인쇄·목재·공예 및 기타 설치·정비·생산직",
+     "t": "string"
+    },
+    {
+     "ref": "A61",
+     "users": 1,
+     "v": "2025직종_농림어업직",
+     "t": "string"
+    },
+    {
+     "ref": "A62",
+     "users": 1,
+     "v": "2025직종_분류불능",
+     "t": "string"
+    },
+    {
+     "ref": "A63",
+     "users": 1,
+     "v": "2025직종_제조 단순직",
+     "t": "string"
+    }
+   ]
+  },
+  {
+   "page": "part1_9!p140",
+   "leaves": 17,
+   "users": 34,
+   "cells": [
+    {
+     "ref": "E7",
+     "users": 2,
+     "v": 1,
+     "t": "number"
+    },
+    {
+     "ref": "E8",
+     "users": 2,
+     "v": 2,
+     "t": "number"
+    },
+    {
+     "ref": "E9",
+     "users": 2,
+     "v": 3,
+     "t": "number"
+    },
+    {
+     "ref": "E10",
+     "users": 2,
+     "v": 4,
+     "t": "number"
+    },
+    {
+     "ref": "E11",
+     "users": 2,
+     "v": 5,
+     "t": "number"
+    },
+    {
+     "ref": "E12",
+     "users": 2,
+     "v": 6,
+     "t": "number"
+    },
+    {
+     "ref": "E13",
+     "users": 2,
+     "v": 7,
+     "t": "number"
+    },
+    {
+     "ref": "E14",
+     "users": 2,
+     "v": 8,
+     "t": "number"
+    },
+    {
+     "ref": "E15",
+     "users": 2,
+     "v": 9,
+     "t": "number"
+    },
+    {
+     "ref": "E16",
+     "users": 2,
+     "v": 10,
+     "t": "number"
+    },
+    {
+     "ref": "E17",
+     "users": 2,
+     "v": 11,
+     "t": "number"
+    },
+    {
+     "ref": "E18",
+     "users": 2,
+     "v": 12,
+     "t": "number"
+    },
+    {
+     "ref": "E19",
+     "users": 2,
+     "v": 13,
+     "t": "number"
+    },
+    {
+     "ref": "E20",
+     "users": 2,
+     "v": 14,
+     "t": "number"
+    },
+    {
+     "ref": "E21",
+     "users": 2,
+     "v": 15,
+     "t": "number"
+    },
+    {
+     "ref": "E22",
+     "users": 2,
+     "v": 16,
+     "t": "number"
+    },
+    {
+     "ref": "E23",
+     "users": 2,
+     "v": 17,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part1_2!p23",
+   "leaves": 2,
+   "users": 22,
+   "cells": [
+    {
+     "ref": "C7",
+     "users": 11,
+     "v": 202401,
+     "t": "number"
+    },
+    {
+     "ref": "O7",
+     "users": 11,
+     "v": 202501,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part1_7!p118_119",
+   "leaves": 11,
+   "users": 22,
+   "cells": [
+    {
+     "ref": "B24",
+     "users": 2,
+     "v": 2015,
+     "t": "number"
+    },
+    {
+     "ref": "B25",
+     "users": 2,
+     "v": 2016,
+     "t": "number"
+    },
+    {
+     "ref": "B26",
+     "users": 2,
+     "v": 2017,
+     "t": "number"
+    },
+    {
+     "ref": "B27",
+     "users": 2,
+     "v": 2018,
+     "t": "number"
+    },
+    {
+     "ref": "B28",
+     "users": 2,
+     "v": 2019,
+     "t": "number"
+    },
+    {
+     "ref": "B29",
+     "users": 2,
+     "v": 2020,
+     "t": "number"
+    },
+    {
+     "ref": "B30",
+     "users": 2,
+     "v": 2021,
+     "t": "number"
+    },
+    {
+     "ref": "B31",
+     "users": 2,
+     "v": 2022,
+     "t": "number"
+    },
+    {
+     "ref": "B32",
+     "users": 2,
+     "v": 2023,
+     "t": "number"
+    },
+    {
+     "ref": "B33",
+     "users": 2,
+     "v": 2024,
+     "t": "number"
+    },
+    {
+     "ref": "B34",
+     "users": 2,
+     "v": 2025,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part1_7!p120_121",
+   "leaves": 11,
+   "users": 22,
+   "cells": [
+    {
+     "ref": "B28",
+     "users": 2,
+     "v": 2015,
+     "t": "number"
+    },
+    {
+     "ref": "B29",
+     "users": 2,
+     "v": 2016,
+     "t": "number"
+    },
+    {
+     "ref": "B30",
+     "users": 2,
+     "v": 2017,
+     "t": "number"
+    },
+    {
+     "ref": "B31",
+     "users": 2,
+     "v": 2018,
+     "t": "number"
+    },
+    {
+     "ref": "B32",
+     "users": 2,
+     "v": 2019,
+     "t": "number"
+    },
+    {
+     "ref": "B33",
+     "users": 2,
+     "v": 2020,
+     "t": "number"
+    },
+    {
+     "ref": "B34",
+     "users": 2,
+     "v": 2021,
+     "t": "number"
+    },
+    {
+     "ref": "B35",
+     "users": 2,
+     "v": 2022,
+     "t": "number"
+    },
+    {
+     "ref": "B36",
+     "users": 2,
+     "v": 2023,
+     "t": "number"
+    },
+    {
+     "ref": "B37",
+     "users": 2,
+     "v": 2024,
+     "t": "number"
+    },
+    {
+     "ref": "B38",
+     "users": 2,
+     "v": 2025,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part1_9!p145",
+   "leaves": 1,
+   "users": 17,
+   "cells": [
+    {
+     "ref": "F29",
+     "users": 17,
+     "v": "* 사업·개인·공공서비스 및 기타(EL~U)",
+     "t": "string"
+    }
+   ]
+  },
+  {
+   "page": "part1_5!p80",
+   "leaves": 15,
+   "users": 15,
+   "cells": [
+    {
+     "ref": "A30",
+     "users": 1,
+     "v": "2025직종_경영·행정·사무직",
+     "t": "string"
+    },
+    {
+     "ref": "A31",
+     "users": 1,
+     "v": "2025직종_자연·생명과학 연구직",
+     "t": "string"
+    },
+    {
+     "ref": "A32",
+     "users": 1,
+     "v": "2025직종_정보통신 연구개발직 및 공학기술직",
+     "t": "string"
+    },
+    {
+     "ref": "A33",
+     "users": 1,
+     "v": "2025직종_건설·채굴 연구개발직 및 공학기술직",
+     "t": "string"
+    },
+    {
+     "ref": "A34",
+     "users": 1,
+     "v": "2025직종_제조 연구개발직 및 공학기술직",
+     "t": "string"
+    },
+    {
+     "ref": "A35",
+     "users": 1,
+     "v": "2025직종_예술·디자인·방송직",
+     "t": "string"
+    },
+    {
+     "ref": "A36",
+     "users": 1,
+     "v": "2025직종_여행·숙박·오락 서비스직",
+     "t": "string"
+    },
+    {
+     "ref": "A37",
+     "users": 1,
+     "v": "2025직종_건설·채굴직",
+     "t": "string"
+    },
+    {
+     "ref": "A38",
+     "users": 1,
+     "v": "2025직종_기계 설치·정비·생산직",
+     "t": "string"
+    },
+    {
+     "ref": "A39",
+     "users": 1,
+     "v": "2025직종_금속·재료 설치·정비·생산직(판금·단조·주조·용접·도장 등)",
+     "t": "string"
+    },
+    {
+     "ref": "A40",
+     "users": 1,
+     "v": "2025직종_전기·전자 설치·정비·생산직",
+     "t": "string"
+    },
+    {
+     "ref": "A41",
+     "users": 1,
+     "v": "2025직종_화학·환경 설치·정비·생산직",
+     "t": "string"
+    },
+    {
+     "ref": "A42",
+     "users": 1,
+     "v": "2025직종_섬유·의복 생산직",
+     "t": "string"
+    },
+    {
+     "ref": "A43",
+     "users": 1,
+     "v": "2025직종_인쇄·목재·공예 및 기타 설치·정비·생산직",
+     "t": "string"
+    },
+    {
+     "ref": "A44",
+     "users": 1,
+     "v": "2025직종_농림어업직",
+     "t": "string"
+    }
+   ]
+  },
+  {
+   "page": "part1_6!p93",
+   "leaves": 1,
+   "users": 12,
+   "cells": [
+    {
+     "ref": "B17",
+     "users": 12,
+     "v": 2019,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part1_6!p94",
+   "leaves": 1,
+   "users": 12,
+   "cells": [
+    {
+     "ref": "B15",
+     "users": 12,
+     "v": 2019,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part2_1청년여성!p164",
+   "leaves": 1,
+   "users": 10,
+   "cells": [
+    {
+     "ref": "C5",
+     "users": 10,
+     "v": 1970,
+     "t": "number"
+    }
+   ]
+  },
+  {
+   "page": "part1_6!p89",
+   "leaves": 4,
+   "users": 4,
+   "cells": [
+    {
+     "ref": "F20",
+     "users": 1,
+     "v": "(증감률)",
+     "t": "string"
+    },
+    {
+     "ref": "H20",
+     "users": 1,
+     "v": "(증감률)",
+     "t": "string"
+    },
+    {
+     "ref": "J20",
+     "users": 1,
+     "v": "(증감률)",
+     "t": "string"
+    },
+    {
+     "ref": "L20",
+     "users": 1,
+     "v": "(증감률)",
+     "t": "string"
+    }
+   ]
+  },
+  {
+   "page": "part1_6!p87",
+   "leaves": 1,
+   "users": 1,
+   "cells": [
+    {
+     "ref": "A10",
+     "users": 1,
+     "v": "실질임금",
+     "t": "string"
+    }
+   ]
+  },
+  {
+   "page": "part1_6!p107 참고박스",
+   "leaves": 1,
+   "users": 1,
+   "cells": [
+    {
+     "ref": "D13",
+     "users": 1,
+     "v": "—",
+     "t": "string"
+    }
+   ]
+  }
+ ]
+}
