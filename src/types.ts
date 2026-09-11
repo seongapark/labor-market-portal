@@ -13,10 +13,17 @@ export type Query = {
 
 export type Crit =
   | { kind: 'lit'; value: string }        // "계" · ">0" · "<>포르투갈" 같은 리터럴
-  | { kind: 'year'; ref: string }         // TEXT(C$6,"0") — 실행 시 ref 가 가리키는 셀에서 읽는다
+  // TEXT(<식>,"0") — 실행 시 식을 앵커/격자로 풀어 정수 문자열로 만든다.
+  // Task 9 단위 8b: RULING 9 의 「단일 같은시트 셀」 제약을 풀었다 — 앵커로 풀 수 있는
+  // 표현식(`_시계열!$B$1-1`)도 받는다. 못 풀면 **던진다**(RULING 10, 예비값 금지).
+  | { kind: 'year'; e: Expr }
   // $A14 · C$6 등. Task 9 단위 5: sheet 는 조건 참조가 시트를 한정한 경우다
   // (p116_117!$B30, 실측 1,122건 — 전부 지금 지면과 같은 시트를 가리킨다). 없으면 지금 시트다.
-  | { kind: 'cell'; sheet?: string; ref: string };
+  | { kind: 'cell'; sheet?: string; ref: string }
+  // Task 9 단위 8b: 조건이 식으로 온다 — SUBSTITUTE 이스케이프(48건)와 문자 연결(5건).
+  // 실행 시 문자로 평가하고, 엑셀의 와일드카드 이스케이프(`~*`→`*`)를 되돌려 문자
+  // 그대로 맞힌다(단위 6 이 조회 바늘에서 내린 판단과 같은 규칙).
+  | { kind: 'expr'; e: Expr };
 
 /** Task 9 단위 5: 별도데이터(etc)·패널(panel)은 `grid(src, sheet, r, c, v_num, v_txt)` 에
     좌표로만 적재돼 있고 long 테이블이 없다. 헤더 행도 없다 — 사람이 웹 표를 붙여 만든

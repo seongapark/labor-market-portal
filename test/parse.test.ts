@@ -37,7 +37,7 @@ test('단일 SUMIFS 를 질의로 옮긴다', () => {
   assert.equal(q.src, 'kosis');
   assert.equal(q.table, 'DT_1DA7012S');
   assert.equal(q.value, 'DT');
-  assert.deepEqual(q.where.PRD_DE, { kind: 'year', ref: 'C6' });
+  assert.deepEqual(q.where.PRD_DE, { kind: 'year', e: { op: 'cell', ref: 'C6' } });
   assert.deepEqual(q.where.C1_NM, { kind: 'lit', value: '계' });
   assert.deepEqual(q.where.ITM_NM, { kind: 'lit', value: '취업자' });
 });
@@ -101,14 +101,28 @@ test('FIX ROUND 1: TEXT(셀,"0") 조건은 그 셀을 ref 로 지닌 year 가 �
   const e = parseFormula(
     '=SUMIFS([1]DT_1DA7012S!$C:$C,[1]DT_1DA7012S!$H:$H,TEXT($C$6,"0"))', ctx);
   const q = (e as { q: any }).q;
-  assert.deepEqual(q.where.PRD_DE, { kind: 'year', ref: 'C6' });
+  assert.deepEqual(q.where.PRD_DE, { kind: 'year', e: { op: 'cell', ref: 'C6' } });
 });
 
-test('FIX ROUND 1: TEXT() 인자가 셀 하나가 아니면 unsupported 로 남긴다', () => {
+// Task 9 단위 8b: 「셀 하나여야 한다」는 RULING 9 의 좁은 구현 제약을 풀었다 —
+// 실측 34건이 TEXT(_시계열!$B$1-1,"0") 이고 단위 8·10 의 anchorCell 이 그것을 계산한다.
+// 새 경계는 두 가지다: **형식이 정수("0")여야 하고**, 인자 식이 파싱돼야 한다.
+test('TEXT() 인자가 식이어도 year 조건이 된다 (형식이 정수일 때)', () => {
   const e = parseFormula(
     '=SUMIFS([1]DT_1DA7012S!$C:$C,[1]DT_1DA7012S!$H:$H,TEXT(C6+1,"0"))', ctx);
+  const q = (e as { q: any }).q;
+  assert.equal(q.where.PRD_DE.kind, 'year');
+  assert.deepEqual(q.where.PRD_DE.e, { op: 'add', args: [{ op: 'cell', ref: 'C6' }, { op: 'const', v: 1 }] });
+});
+
+test('TEXT() 형식이 정수가 아니거나 인자를 못 읽으면 unsupported 로 남긴다', () => {
+  const e = parseFormula(
+    '=SUMIFS([1]DT_1DA7012S!$C:$C,[1]DT_1DA7012S!$H:$H,TEXT(C6,"0.0"))', ctx);
   assert.equal(e.op, 'unsupported');
   assert.match((e as { reason: string }).reason, /TEXT/);
+  const e2 = parseFormula(
+    '=SUMIFS([1]DT_1DA7012S!$C:$C,[1]DT_1DA7012S!$H:$H,TEXT(SUMIF(A1:A9,">0"),"0"))', ctx);
+  assert.equal(e2.op, 'unsupported');
 });
 
 test('못 다루는 형태는 unsupported 로 이유를 남긴다', () => {

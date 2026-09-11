@@ -57,7 +57,10 @@ function gridCell(ctx: ExecCtx, sheet: string, ref: string): string | number | n
     - `<>` 는 **빈 칸에도 맞는다**. 격자에는 빈 칸의 행이 아예 없으므로(적재 때 버렸다)
       LEFT JOIN 으로 붙이고 `alias.r IS NULL` 을 허용한다 — 그래서 negated 를 돌려준다.
       숫자 칸(v_txt IS NULL)이 문자 조건과 "같지 않다"인 경우도 COALESCE 로 받는다. */
-function gridCritSql(alias: string, raw: string): { sql: string; args: (string | number)[]; negated: boolean } {
+function gridCritSql(alias: string, raw: string | null): { sql: string; args: (string | number)[]; negated: boolean } {
+  // RULING 18: 빈 조건은 빈 칸에만 맞는다. 격자에는 빈 칸의 행이 아예 없으므로
+  // (적재 때 버렸다) 아무것도 맞지 않는다 — 실측 대상에는 이 경우가 없다.
+  if (raw === null) return { sql: `${alias}.v_txt = ''`, args: [], negated: false };
   const m = /^(<=|>=|<>|<|>|=)\s*(.*)$/.exec(raw);
   const op = m ? m[1] : '=';
   const rhs = m ? m[2] : raw;
@@ -141,7 +144,7 @@ function gridOne(ctx: ExecCtx, src: string, sheet: string, r: number, c: number)
     실측 121건(HLOOKUP)이 전부 `SUBSTITUTE($B6,"~","~~")` 로 감싸여 있고, 격자에는
     `5~9인` 처럼 `~` 가 든 값이 있어서, 되돌리지 않으면 아무것도 못 찾는다.
     되돌릴 수 없는 진짜 와일드카드(`*`·`?`)가 오면 던진다 — 있는 척하지 않는다. */
-function literalNeedle(s: string): string {
+function unescapeWildcards(s: string): string {
   let out = '';
   for (let i = 0; i < s.length; i++) {
     const ch = s[i];
@@ -151,10 +154,17 @@ function literalNeedle(s: string): string {
       out += ch;                       // 이스케이프가 아닌 ~ 는 그대로 문자다
       continue;
     }
-    if (ch === '*' || ch === '?') {
-      throw new Error(`조회 찾을값에 와일드카드가 있다 — 지원하지 않는다: ${s}`);
-    }
     out += ch;
+  }
+  return out;
+}
+
+/** 조회(VLOOKUP/HLOOKUP)의 찾을값: 이스케이프를 되돌리고, **남은 진짜 와일드카드는
+    던진다** — 패턴이 다른 행을 맞히면 조용히 틀린 값을 내기 때문이다. */
+function literalNeedle(s: string): string {
+  const out = unescapeWildcards(s);
+  if (/[*?]/.test(out)) {
+    throw new Error(`조회 찾을값에 와일드카드가 있다 — 지원하지 않는다: ${s}`);
   }
   return out;
 }
@@ -332,7 +342,8 @@ function runLookup(e: Extract<Expr, { op: 'lookup' }>, ctx: ExecCtx): string | n
     : gridOne(ctx, src, sheet, r1! + idx - 1, hit.c);
 }
 
-function critValue(c: Crit, ctx: ExecCtx): string {
+/** 조건 값. `null` 은 **빈 조건**이다 (RULING 18, 아래 cell 분기 참고). */
+function critValue(c: Crit, ctx: ExecCtx): string | null {
   if (c.kind === 'year') {
     // FIX ROUND 1: TEXT(C$6,"0") 은 "C6 가 가리키는 값을 정수로" 다 — 연도는 c.ref 가
     // 가리키는 셀 그 자체에서 읽는다.
@@ -344,18 +355,47 @@ function critValue(c: Crit, ctx: ExecCtx): string {
     // RULING 11: gridCell 이 anchor 를 먼저 본다 — 연도 조건은 anchor 가 있으면 앵커에서
     // 계산된 값을 받고, 앵커로 못 구할 때만 격자로 떨어진다. 아래 문자열 변환은 그대로
     // 거치므로 SUMIFS 기준값의 모양(정수 문자열)은 변하지 않는다.
-    const v = gridCell(ctx, ctx.sheet, c.ref);
-    if (v === null) throw new Error(`연도 조건 셀이 격자에 없다: ${ctx.sheet}!${c.ref}`);
+    // Task 9 단위 8b: 조건이 단일 셀이 아니라 **식**이다(실측 34건이
+    // `TEXT(_시계열!$B$1-1,"0")`). execute 가 그 식의 셀 참조를 gridCell(=앵커 먼저)로
+    // 풀므로 규칙은 그대로다. 못 풀면(null) **던진다** — RULING 10 을 되돌리지 않는다.
+    const v = execute(c.e, ctx);
+    if (v === null) {
+      const where = c.e.op === 'cell'
+        ? `${c.e.sheet ?? ctx.sheet}!${c.e.ref}`
+        : `${ctx.sheet} (식 ${c.e.op})`;
+      throw new Error(`연도 조건 셀이 격자에 없다 — 앵커로도 못 풀었다: ${where}`);
+    }
     // prd_de·TIME_PERIOD 는 TEXT 열이다 — 숫자를 그대로 두면 "2025.0" 같은 꼴이
     // 되므로 정수 문자열로 맞추고, 이미 문자열이면 값은 손대지 않고 앞뒤 공백만 지운다.
     return typeof v === 'number' ? String(Math.round(v) === v ? Math.round(v) : v) : v.trim();
   }
   if (c.kind === 'lit') return c.value;
+  if (c.kind === 'expr') {
+    // Task 9 단위 8b: 식 조건 — SUBSTITUTE 이스케이프(48건)와 문자 연결(5건).
+    // 엑셀은 조건에서 `*`·`?` 를 와일드카드로 쓰고 `~` 로 이스케이프한다. 우리 등호는
+    // 이미 문자 그대로 맞히므로 **이스케이프를 되돌린다** — 단위 6 이 조회 바늘에서
+    // 내린 판단과 같은 규칙이다. 실측으로 p49 의 A 열에 진짜 `*`·`~` 가 들어 있다
+    // ("* 사회간접자본 및 기타서비스업(D~U)").
+    const s = textOf(execute(c.e, ctx));
+    if (s === null) throw new Error(`조건 식을 못 풀었다: ${ctx.sheet} (${c.e.op})`);
+    // 조회와 달리 **남은 와일드카드에는 던지지 않는다.** 실측 2건(`TEXT($A9,"@")` 로
+    // 이스케이프 없이 "* 광공업(BC)" 를 그대로 쓰는 p49!B9 등)이 있고, 그 조건 열에는
+    // " 광공업(BC)" 로 끝나는 값이 **하나뿐**이라 엑셀의 패턴 일치와 우리 등호의 문자
+    // 일치가 같은 행을 맞힌다(확정본 4322.1 로 확인). 우리 등호는 문자 그대로 맞힌다 —
+    // 패턴이 여러 행을 맞히는 자료가 들어오면 갈릴 수 있다(보고서에 남긴 기록).
+    return unescapeWildcards(s);
+  }
   // Task 9 단위 5: 조건 참조가 시트를 한정한 경우(p116_117!$B30, 실측 1,122건)는 그
   // 시트에서 읽는다 — 실측으로는 전부 지금 지면 자신이지만 이름이 있으면 그것을 따른다.
   // 한정이 없으면 지금까지처럼 지금 시트다 (RULING 8).
   const v = gridCell(ctx, c.sheet ?? ctx.sheet, c.ref);
-  if (v === undefined || v === null) throw new Error(`격자에 ${c.ref} 가 없다`);
+  // RULING 18 (Task 9 단위 8b): 조건 셀이 비어 있으면 **빈 조건**이다 — 던지지 않는다.
+  // 책자는 `SUMIFS(위칸)+SUMIFS(아래칸)` 으로 「두 구간을 더한 칸」과 「한 구간만 쓰는
+  // 칸」을 한 수식으로 처리하고, 한 구간만 쓰는 열은 위칸을 비워 둔다(p139 실측).
+  // 엑셀에서 빈 조건은 빈 칸에만 맞고, KOSIS 조건 열에는 빈 값이 없어 그 항이 0 이 된다.
+  // **연도 조건(위 year 분기)은 여전히 던진다** — 그쪽의 조용한 대체가 p42 의 불일치
+  // 68건을 만들었다. 두 갈래를 섞지 않는다.
+  if (v === null) return null;
   // 연도 헤더가 숫자로 들어있는 경우 정수 문자열로 맞춘다
   return typeof v === 'number' ? String(Math.round(v) === v ? Math.round(v) : v) : String(v);
 }
@@ -366,7 +406,10 @@ function critValue(c: Crit, ctx: ExecCtx): string {
     구별해 실측에서 2,100건의 불일치(들어오는 값이 전부 '-')를 냈다. 텍스트 기준에만
     COLLATE NOCASE 를 붙인다 — ASCII A~Z 만 접는 콜레이션이라 코드값(ASCII)에는
     맞고 한글 기준값에는 영향이 없다. 숫자 비교(CAST ... AS REAL)는 건드리지 않는다. */
-function critSql(col: string, raw: string): { sql: string; args: (string | number)[] } {
+function critSql(col: string, raw: string | null): { sql: string; args: (string | number)[] } {
+  // RULING 18: 빈 조건은 **빈 칸에만** 맞는다(엑셀). long 테이블의 조건 열에는 빈 값이
+  // 없으므로 맞는 행이 없고 그 SUMIFS 항이 0 이 된다 — 「모두 맞음」이 아니다.
+  if (raw === null) return { sql: `${col} = ''`, args: [] };
   const m = /^(<=|>=|<>|<|>)\s*(.+)$/.exec(raw);
   if (!m) return { sql: `${col} = ? COLLATE NOCASE`, args: [raw] };
   const op = m[1] === '<>' ? '!=' : m[1];

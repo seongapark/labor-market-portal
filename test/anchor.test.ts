@@ -360,7 +360,7 @@ test('연도 조건도 앵커에서 계산한다', () => {
     prepare: (_sql: string) => ({ get: (...args: unknown[]) => ({ v: args.includes('2025') ? 7 : 0 }) }),
   } as never;
   const e: Expr = { op: 'sumifs', q: { src: 'kosis', table: 'T', value: 'DT',
-    where: { PRD_DE: { kind: 'year', ref: 'C6' } } } };
+    where: { PRD_DE: { kind: 'year', e: { op: 'cell', ref: 'C6' } } } } };
   // 격자에는 1999 가 들어 있지만 앵커가 이긴다
   assert.equal(execute(e, { db, grids: { p1: grid }, sheet: 'p1', anchor: ac }), 7);
 });

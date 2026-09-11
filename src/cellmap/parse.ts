@@ -144,8 +144,11 @@ function textCallArgs(toks: Token[]): Token[][] {
   return args;
 }
 
-/** 조건 인자 하나를 Crit 으로 */
-function toCrit(toks: Token[]): Crit {
+/** 조건 인자 하나를 Crit 으로.
+    Task 9 단위 8b: 단일 토큰이 아닌 조건도 **식으로** 받는다 — SUBSTITUTE 이스케이프
+    (48건)와 문자 연결(5건), TEXT 의 앵커 표현식(34건)이 거기에 해당한다.
+    파싱할 수 없는 식은 여전히 던져 unsupported 로 남는다(추측하지 않는다). */
+function toCrit(toks: Token[], ctx: ParseCtx): Crit {
   if (toks.length === 1) {
     const t = toks[0];
     if (t.t === 'str') return { kind: 'lit', value: t.v };
@@ -158,21 +161,26 @@ function toCrit(toks: Token[]): Crit {
         : { kind: 'cell', sheet: t.sheet, ref: plainRef(t.a1) };
     }
   }
-  // RULING(9/10, 8195건 중 8150건 실측): TEXT(<셀 하나>,"0") — 연도 조건은 그 셀이
-  // 가리키는 값을 실행 시점에 읽는다. 셀 하나가 아닌 형태(45건, 실측)는 무엇을 읽어야
-  // 할지 알 수 없어 unsupported 로 남긴다 — 추측하지 않는다.
+  // RULING 9/10: TEXT(<식>,"0") — 연도 조건은 실행 시점에 그 식을 앵커/격자로 푼다.
+  // Task 9 단위 8b: 인자가 단일 셀이어야 한다는 제약을 풀었다(실측 34건이
+  // `TEXT(_시계열!$B$1-1,"0")` 이고, 단위 8·10 의 anchorCell 이 그것을 계산한다).
+  // 형식은 정수("0")만 받는다 — critValue 가 정수 문자열로 맞추기 때문이다.
   if (toks[0]?.t === 'fn' && toks[0].v === 'TEXT') {
     const args = textCallArgs(toks);
-    const first = args[0];
-    if (first && first.length === 1) {
-      const t = first[0];
-      if (t.t === 'ref' && t.ext === null && t.sheet === null) {
-        return { kind: 'year', ref: plainRef(t.a1) };
-      }
+    const fmt = args[1];
+    if (!(fmt?.length === 1 && fmt[0].t === 'str')) {
+      throw new Error('TEXT 조건의 형식 인자를 못 읽었다: ' + JSON.stringify(fmt));
     }
-    throw new Error('TEXT 조건의 인자가 단일 같은시트 셀 참조가 아니다: ' + JSON.stringify(toks));
+    if (!args[0]?.length) throw new Error('TEXT 조건에 인자가 없다');
+    // 실측 2건: TEXT($A8,"@") — "@" 는 엑셀의 **텍스트 서식**이라 「값을 문자로 그대로」
+    // 라는 뜻이다. 연도 조건이 아니므로 식 조건으로 보낸다(critValue 가 문자로 만든다).
+    if (fmt[0].v === '@') return { kind: 'expr', e: parseTokens(args[0], ctx) };
+    if (!/^[#,]*0$/.test(fmt[0].v)) {
+      throw new Error('TEXT 조건의 형식이 정수("0")도 텍스트("@")도 아니다: ' + JSON.stringify(fmt[0].v));
+    }
+    return { kind: 'year', e: parseTokens(args[0], ctx) };
   }
-  throw new Error('조건을 못 읽었다: ' + JSON.stringify(toks));
+  return { kind: 'expr', e: parseTokens(toks, ctx) };
 }
 
 function ifsQuery(name: 'SUMIFS' | 'COUNTIFS', args: Token[][], ctx: ParseCtx): Query | GridQuery {
@@ -203,7 +211,7 @@ function ifsQuery(name: 'SUMIFS' | 'COUNTIFS', args: Token[][], ctx: ParseCtx): 
       if (cr.src !== src || cr.sheet !== sheet) {
         throw new Error(`한 ${name} 안에서 시트가 갈린다: ${cr.sheet} vs ${sheet}`);
       }
-      crits.push({ col: wholeColumn(cr.a1), crit: toCrit(rest[k + 1]) });
+      crits.push({ col: wholeColumn(cr.a1), crit: toCrit(rest[k + 1], ctx) });
     }
     if (!crits.length) throw new Error(`${name} 에 조건이 없다`);
     return {
@@ -221,7 +229,7 @@ function ifsQuery(name: 'SUMIFS' | 'COUNTIFS', args: Token[][], ctx: ParseCtx): 
     if (cr.src !== src || cr.sheet !== sheet) {
       throw new Error(`한 ${name} 안에서 시트가 갈린다: ${cr.sheet} vs ${sheet}`);
     }
-    where[colName(src, sheet, cr.a1, ctx.headers)] = toCrit(rest[k + 1]);
+    where[colName(src, sheet, cr.a1, ctx.headers)] = toCrit(rest[k + 1], ctx);
   }
   return { src, table: sheet!, value, where };
 }

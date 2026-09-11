@@ -23,14 +23,14 @@ const grid: Grid = { A14: '취업자', B6: 2024, C6: 2025, M8: 60 };
 test('sumifs: 조건에 맞는 dt 를 합한다', () => {
   const db = fixture();
   const e: Expr = { op: 'sumifs', q: { src: 'kosis', table: 'T', value: 'DT',
-    where: { PRD_DE: { kind: 'year', ref: 'C6' }, ITM_NM: { kind: 'lit', value: '취업자' } } } };
+    where: { PRD_DE: { kind: 'year', e: { op: 'cell', ref: 'C6' } }, ITM_NM: { kind: 'lit', value: '취업자' } } } };
   assert.equal(execute(e, { db, grids: { p1: grid }, sheet: 'p1' }), 190);   // 120 + 70
 });
 
 test('sumifs: cell 조건은 격자에서 값을 읽는다', () => {
   const db = fixture();
   const e: Expr = { op: 'sumifs', q: { src: 'kosis', table: 'T', value: 'DT',
-    where: { PRD_DE: { kind: 'year', ref: 'C6' }, ITM_NM: { kind: 'cell', ref: 'A14' },
+    where: { PRD_DE: { kind: 'year', e: { op: 'cell', ref: 'C6' } }, ITM_NM: { kind: 'cell', ref: 'A14' },
              C1_NM: { kind: 'lit', value: '계' } } } };
   assert.equal(execute(e, { db, grids: { p1: grid }, sheet: 'p1' }), 120);
 });
@@ -52,7 +52,7 @@ test('countifs: ">0" 같은 비교 조건을 다룬다', () => {
 test('add · div · pct 를 계산한다 — % 는 분모에 붙는다', () => {
   const db = fixture();
   const one = (itm: string): Expr => ({ op: 'sumifs', q: { src: 'kosis', table: 'T', value: 'DT',
-    where: { PRD_DE: { kind: 'year', ref: 'C6' }, ITM_NM: { kind: 'lit', value: itm },
+    where: { PRD_DE: { kind: 'year', e: { op: 'cell', ref: 'C6' } }, ITM_NM: { kind: 'lit', value: itm },
              C1_NM: { kind: 'lit', value: '계' } } } });
   // 엑셀 =M8/(취업자+실업자)% → 60 / ((120+5)/100) = 48. 이것이 백분율이다.
   // RULING 1: % 는 ÷100 이다 (×100 이 아니다) — 이 기대값을 바꾸면 안 된다.
@@ -79,7 +79,7 @@ test('zeroDash: 0 이 아니면 값을 낸다', () => {
   const db = fixture();
   const e: Expr = { op: 'zeroDash', inner: { op: 'sumifs',
     q: { src: 'kosis', table: 'T', value: 'DT',
-         where: { PRD_DE: { kind: 'year', ref: 'C6' }, ITM_NM: { kind: 'lit', value: '실업자' } } } } };
+         where: { PRD_DE: { kind: 'year', e: { op: 'cell', ref: 'C6' } }, ITM_NM: { kind: 'lit', value: '실업자' } } } } };
   assert.equal(execute(e, { db, grids: { p1: grid }, sheet: 'p1' }), 5);
 });
 
@@ -136,7 +136,7 @@ test('cell: 셀이 없으면 던지지 않고 null 이다', () => {
 test('FIX ROUND 1: 연도 조건은 자신이 가리키는 셀에서 읽는다 — 열마다 다른 연도가 다른 값을 낸다', () => {
   const db = fixture();
   const sumOf = (yearRef: string): Expr => ({ op: 'sumifs', q: { src: 'kosis', table: 'T', value: 'DT',
-    where: { PRD_DE: { kind: 'year', ref: yearRef }, ITM_NM: { kind: 'lit', value: '취업자' },
+    where: { PRD_DE: { kind: 'year', e: { op: 'cell', ref: yearRef } }, ITM_NM: { kind: 'lit', value: '취업자' },
              C1_NM: { kind: 'lit', value: '계' } } } });
   const ctx = { db, grids: { p1: grid }, sheet: 'p1' };
   assert.equal(execute(sumOf('B6'), ctx), 100);   // B6 → 2024 의 취업자 계
@@ -149,7 +149,7 @@ test('FIX ROUND 1: 연도 조건은 자신이 가리키는 셀에서 읽는다 �
 test('RULING 10: 연도 조건 셀이 격자에 없으면 대체하지 않고 던진다', () => {
   const db = fixture();
   const e: Expr = { op: 'sumifs', q: { src: 'kosis', table: 'T', value: 'DT',
-    where: { PRD_DE: { kind: 'year', ref: 'Z99' }, ITM_NM: { kind: 'lit', value: '실업자' } } } };
+    where: { PRD_DE: { kind: 'year', e: { op: 'cell', ref: 'Z99' } }, ITM_NM: { kind: 'lit', value: '실업자' } } } };
   assert.throws(
     () => execute(e, { db, grids: { p1: grid }, sheet: 'p1' }),
     (err: unknown) => {
