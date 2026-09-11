@@ -7,40 +7,33 @@
  * **cellmap 경로로만 돌린다** — 수식 파일을 읽지 않는다. 그리고 **관문이 통과하지
  * 않으면 쓰지 않는다**: 실패한 관문의 스냅샷은 기준이 될 수 없다.
  */
-import { readFileSync, readdirSync, writeFileSync, existsSync, statSync } from 'node:fs';
-import { join, basename } from 'node:path';
+import { writeFileSync, statSync } from 'node:fs';
+import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { openDb, dataFingerprint } from '../src/db/load.ts';
-import { verifyCellMap, applyKnownDivergences,
-         type CellResult, type OracleDump, type KnownDivergence } from '../src/verify/compare.ts';
-import { summarize } from './verify-all.ts';
-import type { CellMap } from '../src/types.ts';
+import { runGate } from './verify-all.ts';
 
 const dataDir = 'data';
-const anchor = Number(process.env.BASE_YEAR ?? '2025');
+// 전체 리뷰 F7: 관문과 **같은 함수**(runGate)로 돈다. 예전에는 이 스크립트가 cellmap
+// 순회를 따로 구현했는데, 그러면 기준을 쓰는 쪽과 검사하는 쪽이 두 구현이 된다.
+const run = runGate({ dataDir, source: 'cellmap', year: process.env.BASE_YEAR ?? '2025' });
+const { rows, stale, summary: s, anchor } = run;
 const db = openDb(join(dataDir, 'obs.sqlite'));
-const known = existsSync(join(dataDir, 'known-divergences.json'))
-  ? (JSON.parse(readFileSync(join(dataDir, 'known-divergences.json'), 'utf8')) as KnownDivergence[])
-  : [];
-
-const rows: CellResult[] = [];
-for (const f of readdirSync(join(dataDir, 'cellmap'))) {
-  if (!f.endsWith('.json')) continue;
-  const part = basename(f, '.json');
-  const map = JSON.parse(readFileSync(join(dataDir, 'cellmap', f), 'utf8')) as CellMap;
-  const op = join(dataDir, 'oracle', f);
-  if (!existsSync(op)) { console.log('확정본 없음, 건너뜀:', part); continue; }
-  const oracle = JSON.parse(readFileSync(op, 'utf8')) as OracleDump;
-  rows.push(...applyKnownDivergences(
-    verifyCellMap(part, map, oracle, db, anchor), known.filter((k) => k.part === part)).rows);
-}
-const stale = applyKnownDivergences(rows, known).stale;
-const s = summarize(rows, stale.length);
 
 if (!s.gatePassed) {
   console.error('관문이 통과하지 않았다 — 스냅샷을 쓰지 않는다.');
   console.error(JSON.stringify(s.byVerdict));
   for (const x of stale) console.error('묵은 면제:', x.why);
+  process.exit(1);
+}
+// F7 의 톱니(ratchet): 기준을 **줄이는** 방향으로는 다시 쓰지 않는다. 스냅샷이 하한의
+// 출처이므로, 이것을 막지 않으면 관문의 하한이 조용히 내려간다. 스냅샷이 아직 없는
+// 최초 생성은 하한이 없으므로 통과시킨다(그 사유만 걸러낸다).
+const blocking = run.violations.filter((w) => !w.includes('하한을 읽을 수 없다'));
+if (blocking.length) {
+  console.error('대조 규모가 기존 스냅샷의 하한보다 작다 — 스냅샷을 쓰지 않는다.');
+  console.error('기준을 정말로 줄여야 한다면 사람이 판단해 data/gate-snapshot.json 을 먼저 지운다.');
+  for (const w of blocking) console.error('  ' + w);
   process.exit(1);
 }
 
