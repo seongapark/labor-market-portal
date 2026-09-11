@@ -100,6 +100,21 @@ nav{background:var(--card); border:1px solid var(--line); border-radius:10px; bo
            vertical-align:-1px}
 .cnote{margin-top:6px; font-size:10.5px; color:var(--muted); line-height:1.45}
 .nochart{padding:12px 18px; font-size:12px; color:var(--muted)}
+/* 표는 접어 둔다 — 기본은 그래프만. 펼치면 확인 (사용자 결정) */
+.tsec{border-top:1px solid var(--line2)}
+.ttog{width:100%; display:flex; align-items:center; gap:8px; padding:11px 18px; background:none;
+      border:0; cursor:pointer; font:inherit; font-size:12.5px; font-weight:500; color:var(--ink2)}
+.ttog:hover{background:var(--paper)}
+.ttog .caret{width:9px}
+.tsec.open .ttog .caret{transform:rotate(90deg)}
+.ttog .cnt{margin-left:auto; font-size:11px; color:var(--muted); font-variant-numeric:tabular-nums}
+.tsec>.tw{display:none}
+.tsec.open>.tw{display:block}
+.rvtog{display:flex; align-items:center; gap:6px; border:1px solid var(--line); border-radius:8px;
+       padding:7px 11px; background:var(--paper); cursor:pointer; font:inherit; font-size:11.5px;
+       color:var(--ink2)}
+.rvtog[aria-pressed="true"]{background:var(--ok-bg); border-color:transparent; color:var(--ok); font-weight:600}
+.rvtog input{margin:0; accent-color:var(--ok)}
 .tw{overflow:auto; max-height:72vh}
 table{border-collapse:separate; border-spacing:0; font-size:12.5px; width:max-content; min-width:100%}
 td{border-right:1px solid var(--line2); border-bottom:1px solid var(--line2); padding:4px 9px;
@@ -134,7 +149,12 @@ footer a{color:var(--down)}
     <h1>노동시장 지표 포털</h1>
     <p>「통계로 보는 우리나라 노동시장의 모습」 — 발간본 수치를 원자료에서 다시 계산해 전건 대조</p>
   </div>
-  <div class="asof" id="asof"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+    <button type="button" class="rvtog" id="rv" aria-pressed="false" title="모든 지면에서 표를 펼친 상태로 둡니다">
+      <input type="checkbox" id="rvchk" tabindex="-1" aria-hidden="true"> 검수 모드 — 표 펼침
+    </button>
+    <div class="asof" id="asof"></div>
+  </div>
 </div></header>
 
 <main>
@@ -347,7 +367,15 @@ function show(i) {
     + (p.cells.length ? '<span class="chip">' + rs.length + '행 × ' + cs.length + '열</span>' : '')
     + '</div></div>'
     + (p.charts && p.charts.length ? '<div class="charts' + (p.charts.length > 1 ? ' two' : '') + '" id="charts"></div>' : '')
-    + (p.cells.length ? '<div class="tw"><table><tbody>' + body + '</tbody></table></div>' : '');
+    + (p.cells.length
+        ? '<div class="tsec' + (review ? ' open' : '') + '" id="tsec">'
+          + '<button type="button" class="ttog" id="ttog" aria-expanded="' + (review ? 'true' : 'false') + '">'
+          + '<svg class="caret" viewBox="0 0 10 10" aria-hidden="true">'
+          + '<path d="M3 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>'
+          + '<span>표로 보기</span>'
+          + '<span class="cnt">' + rs.length + '행 × ' + cs.length + '열</span></button>'
+          + '<div class="tw"><table><tbody>' + body + '</tbody></table></div></div>'
+        : '');
 
   if (p.charts && p.charts.length && window.LMPChart) {
     var host = document.getElementById('charts');
@@ -362,9 +390,33 @@ function show(i) {
     });
   }
 
+  var tsec = document.getElementById('tsec');
+  if (tsec) {
+    document.getElementById('ttog').addEventListener('click', function () {
+      var open = tsec.classList.toggle('open');
+      document.getElementById('ttog').setAttribute('aria-expanded', String(open));
+    });
+  }
+
   openFor(i); mark(i);
   try { localStorage.setItem('lmp.page', String(i)); } catch (e) {}
 }
+
+/* 검수 모드 — 켜면 모든 지면에서 표가 펼쳐진 채로 열린다 (사용자 결정) */
+var review = false;
+try { review = localStorage.getItem('lmp.review') === '1'; } catch (e) {}
+function applyReview() {
+  var b = document.getElementById('rv');
+  b.setAttribute('aria-pressed', String(review));
+  document.getElementById('rvchk').checked = review;
+  try { localStorage.setItem('lmp.review', review ? '1' : '0'); } catch (e) {}
+}
+document.getElementById('rv').addEventListener('click', function () {
+  review = !review;
+  applyReview();
+  if (cur >= 0) show(cur);
+});
+applyReview();
 </script>
 </body>
 </html>

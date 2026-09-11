@@ -38,6 +38,9 @@ data/raw/*
 #   작업본 엑셀뿐이다.
 !data/toc.json
 !data/charts.json
+# pdf-pages.json(465KB) 은 발간 편집본 PDF 에서 읽은 **인쇄된** 표·헤드라인·자료·단위다.
+#   엑셀의 참고용 칸과 인쇄본을 가르는 유일한 기준이고, PDF 만이 원천이다.
+!data/pdf-pages.json
 __pycache__/
 
 .dev.vars*

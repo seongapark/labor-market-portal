@@ -181,6 +181,91 @@ function buildCharts(part, sheet) {
   return out;
 }
 
+/** 표에 넣을 열을 정한다 — 통합문서가 「희소 라벨 행」으로 선언한 경우만.
+ *
+ *  사용자: 「1년 단위는 그래프를 그리기 위함이었고, 10년 단위는 책자에 표를 넣기 위함.
+ *          10년단위 표만 표시해도 충분」
+ *
+ *  판정 근거는 **차트가 범주로 쓰는 가로 한 줄 범위**다. 그 행이 규칙적 간격으로 희소하면
+ *  (p8 4행 = 5칸마다 21개 = 1970..2070) 그것이 표의 시점이고, 조밀한 데이터 행은 그래프용이다.
+ *
+ *  실측으로 걸러낸 오작동 셋 — 조건을 이렇게 좁힌 이유다:
+ *    · p11·p13 은 범주 행이 **희소한 하나뿐**이다. 「범주 행 2개 이상」을 요구하면 빠진다.
+ *    · p16·p83 은 범주가 **세로 범위**($A$62:$A$78)다. 거기서 행 번호를 뽑으면 여러 행이
+ *      나와 희소 패턴으로 오인된다 → 가로 한 줄 범위만 본다.
+ *    · 간격 1칸은 연속이라 희소가 아니다 → step > 1 을 요구한다.
+ *  하나라도 어긋나면 null 을 돌려 표를 그대로 둔다. */
+function tableCols(part, sheet, specs) {
+  if (!specs) return null;
+
+  /* 1) 차트가 범주로 쓰는 **가로 한 줄** 범위의 행을 모은다 */
+  const labelRows = new Set();
+  for (const sp of specs) {
+    for (const g of sp.groups || []) {
+      for (const se of g.series || []) {
+        if (!se.cat) continue;
+        const cells = expandRef(se.cat, sheet).map((x) => parseRef(x.ref)).filter(Boolean);
+        if (cells.length < 3) continue;
+        const rows = new Set(cells.map((c) => c.r));
+        if (rows.size === 1) labelRows.add([...rows][0]);   // 가로 한 줄만
+      }
+    }
+  }
+  if (!labelRows.size) return null;
+
+  const map = fullMap(part, sheet);
+  const filledOf = (r) => {
+    const cols = [];
+    for (const [ref, v] of Object.entries(map)) {
+      const pos = parseRef(ref);
+      if (!pos || pos.r !== r || pos.c < 2) continue;
+      if (v !== null && v !== undefined && v !== '') cols.push(pos.c);
+    }
+    return cols.sort((a, b) => a - b);
+  };
+
+  /* 2) 간격이 일정하고 1보다 큰 라벨 행을 찾는다 */
+  let sparse = null;
+  for (const r of labelRows) {
+    const cols = filledOf(r);
+    if (cols.length < 3) continue;
+    const gaps = new Set(cols.slice(1).map((c, k) => c - cols[k]));
+    if (gaps.size !== 1) continue;
+    const step = [...gaps][0];
+    if (step <= 1) continue;
+    if (!sparse || cols.length < sparse.cols.length) sparse = { r, cols, step };
+  }
+  if (!sparse) return null;
+
+  /* 3) 실제 데이터 행이 훨씬 조밀해야 한다 — 그래야 「그래프용 조밀 행」이 있다는 뜻 */
+  const dataRows = new Set();
+  for (const ref of Object.keys(map)) {
+    const pos = parseRef(ref);
+    if (pos && pos.r > 3 && pos.r !== sparse.r) dataRows.add(pos.r);
+  }
+  let densest = 0, denseRow = null;
+  for (const r of dataRows) {
+    const n = filledOf(r).length;
+    if (n > densest) { densest = n; denseRow = r; }
+  }
+  if (densest < sparse.cols.length * 3) return null;
+
+  /* 4) 희소 라벨 행이 조밀 구간을 끝까지 덮어야 한다 (중간만 찍힌 주석 행 배제) */
+  const denseCols = filledOf(denseRow);
+  if (!denseCols.length) return null;
+  const covers = sparse.cols[0] <= denseCols[0] + sparse.step
+    && sparse.cols[sparse.cols.length - 1] >= denseCols[denseCols.length - 1] - sparse.step;
+  if (!covers) return null;
+
+  /* 조밀 「라벨」 행(연도가 매년 적힌 행)만 표에서 뺀다. 데이터 행은 남긴다. */
+  const dropRows = new Set();
+  for (const r of labelRows) if (r !== sparse.r) dropRows.add(r);
+
+  const keep = new Set(sparse.cols);
+  keep.add(1);                                      // 항목명 열(A)은 남긴다
+  return { keep, dropRows, sparseRow: sparse.r, step: sparse.step, n: sparse.cols.length };
+}
+
 const pages = [];
 for (const t of toc.pages) {
   const pageKey = t.file && t.sheet ? `${t.file}!${t.sheet}` : null;
@@ -188,11 +273,17 @@ for (const t of toc.pages) {
   const comp = (pageKey && computed[pageKey]) || {};
   const src = (pageKey && srcOf.get(pageKey)) || { org: '', stat: '' };
 
+  const specs = pageKey ? chartDefs.parts?.[t.file]?.[t.sheet] : null;
+  const thin = pageKey ? tableCols(t.file, t.sheet, specs) : null;
+
   const cells = [];
   let verified = 0, exemptN = 0;
   for (const ref of new Set([...Object.keys(oc), ...Object.keys(comp)])) {
     const pos = parseRef(ref);
     if (!pos || pos.r <= 3) continue;          // 1~3행은 제목·출처 메타. 머리로 따로 쓴다
+    // 희소 라벨 행이 선언된 지면은 그 시점만 표에 넣는다 (그래프는 전체를 그대로 쓴다)
+    if (thin && !thin.keep.has(pos.c)) continue;
+    if (thin && thin.dropRows.has(pos.r)) continue;  // 매년 라벨 행은 표에서 뺀다
     const hasComp = ref in comp;
     const ex = exempt.has(`${pageKey}!${ref}`);
     if (hasComp && !ex) verified++;
@@ -210,6 +301,7 @@ for (const t of toc.pages) {
     page: t.page, part: t.part, chapter: t.chapter, section: t.section,
     title: t.title, sheet: t.sheet, org: src.org, stat: src.stat,
     verified, exempt: exemptN,
+    thin: thin ? { step: thin.step, n: thin.n, sparseRow: thin.sparseRow } : null,
     charts: pageKey ? buildCharts(t.file, t.sheet) : [],
     cells,
   });
@@ -249,5 +341,11 @@ const kinds = {};
 for (const p of bySheet.values()) for (const c of p.charts) for (const g of c.groups) kinds[g.kind] = (kinds[g.kind] || 0) + 1;
 console.log('  ' + Object.entries(kinds).sort((a, b) => b[1] - a[1]).map(([k, v]) => k + ' ' + v).join(' · '));
 console.log('번들 ' + (readFileSync(OUT).length / 1024 / 1024).toFixed(2) + ' MB → ' + OUT);
+const thinned = [...bySheet.values()].filter((p) => p.thin);
+if (thinned.length) {
+  console.log('표를 희소 라벨 행으로 줄인 지면 ' + thinned.length + '개:');
+  thinned.forEach((p) => console.log('  p' + p.page + '  ' + p.thin.step + '칸 간격 · 시점 '
+    + p.thin.n + '개 (라벨 행 ' + p.thin.sparseRow + ')  ' + p.title));
+}
 const noData = pages.filter((p) => !p.cells.length);
 if (noData.length) console.log('수치 없는 지면 ' + noData.length + '개: ' + noData.map((p) => 'p' + p.page).join(' '));
