@@ -112,6 +112,16 @@ export type Expr =
   | { op: 'rangecount'; preds: RangePred[] }
   | { op: 'index'; range: CellRange; n: Expr }
   | { op: 'match'; needle: Expr; range: CellRange }   // 세 번째 인자 0(정확히 일치)만
+  // Task 9 단위 13 — OECD 부록의 **정렬 관용구**. 세 연산 모두 지면 격자 위에서만 돈다
+  // (자료를 타지 않는다). 파서는 이 셋을 **계산 모드에서만** 낸다(`ParseCtx.compute`) —
+  // 판정 경로에 들어가면 presentation 3,364칸이 재파싱되어 판정 범주가 무너진다.
+  /** RANK(x, 범위) — 내림차순(엑셀 기본). 같은 값은 같은 순위. 범위에 x 가 없으면 #N/A. */
+  | { op: 'rank'; x: Expr; range: CellRange }
+  /** COUNTIF(범위, 조건) — 단일 조건. 조건은 실행 시 값으로 평가된다(엑셀처럼 `">5"`
+      같은 문자열이면 비교 조건이 되고, 숫자면 같은 값을 센다). */
+  | { op: 'countif'; range: CellRange; crit: Expr }
+  /** ROW(참조) — `r` 이 있으면 그 참조의 행, 없으면 **자기 행**(`ExecCtx.ref`). */
+  | { op: 'row'; r?: number }
   | { op: 'n'; inner: Expr }                          // N(x) — 수치면 그대로, 아니면 0
   | { op: 'len'; inner: Expr }
   | { op: 'find'; needle: Expr; inside: Expr }        // 1-based. 못 찾으면 #VALUE!
@@ -134,7 +144,14 @@ export type Grid = Record<string, string | number | null>;
 export type CellSpec =
   | { kind: 'expr'; e: Expr }
   | { kind: 'unsupported'; reason: string }
-  | { kind: 'presentation'; reason: string };
+  // Task 9 단위 13: presentation 은 **kind 와 reason 을 그대로 지키면서** 계산용 식을
+  // 함께 싣는다. 두 경로가 갈리는 지점이 바로 이 한 필드다:
+  //   - 관문(`verifyCellMap`)은 `kind !== 'expr'` 로 빠지므로 `e` 를 **보지 않는다**
+  //     (presentation 3,364칸은 계속 대조 분모 밖이다 — RULING 14 는 그대로다).
+  //   - 계산기(`compute-values.mjs`)는 `e` 가 있으면 평가한다 — OECD 부록은 값 크기로
+  //     정렬된 표이고, 정렬 결과를 동결하면 원데이터가 바뀌어도 순서가 얼어붙는다.
+  // `e` 가 없는 presentation 도 있을 수 있다(계산 모드로도 파싱 못한 것). 그건 사유만 남는다.
+  | { kind: 'presentation'; reason: string; e?: Expr };
 
 /** part 하나의 물화된 cellmap. 보조시트(`_`)도 담는다 — 앵커 사슬과 지면 간 참조가
     거기 있고, 그것까지 담아야 엑셀 없이 연도를 옮길 수 있다. */

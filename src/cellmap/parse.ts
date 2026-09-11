@@ -1,7 +1,18 @@
 import { tokenize, type Token } from './tokenize.ts';
 import type { CellRange, Crit, Expr, GridQuery, GridRange, Headers, Query, RangeArg, RangePred, Src } from '../types.ts';
 
-export type ParseCtx = { extmap: Record<string, string>; headers: Headers };
+export type ParseCtx = {
+  extmap: Record<string, string>;
+  headers: Headers;
+  /** Task 9 단위 13: **계산 경로 전용 모드.** 켜면 OECD 부록의 정렬 수식(시트 수식어
+      붙은 INDEX/MATCH · RANK · COUNTIF · ROW)이 식으로 파싱된다.
+      **판정 경로(관문)는 절대 켜지 않는다** — 켜는 순간 부록 3,364칸이 재파싱되어
+      presentation 이 118 로 붕괴한다(1,860칸은 완전 평가되어 범주를 벗어나고, 1,386칸은
+      `isPresentation` 이 모르는 ROW 사유로 떨어진다). 관문 수치가 「좋아진 것처럼」
+      보이면서 판정 범주가 무너지는 조용한 퇴행이다. `specOf` 만 이 모드를 켜고, 그
+      결과는 `kind:'presentation'` 항목의 `e` 로만 들어간다. */
+  compute?: boolean;
+};
 
 /** 전체 리뷰 F1: **표현(presentation) 거부** — 「부록·서식 칸이라 SQL 로 재구현하지
     않기로 계획 단계에서 정한 것」을 거부하는 자리에서만 던진다. 옛 판정은 파서의 예외
@@ -272,10 +283,13 @@ function rangeArg(toks: Token[], ctx: ParseCtx): RangeArg {
     세는 이 단위의 대상 28건은 전부 한정이 없다. 그 둘을 여기서 가른다.
     전체 리뷰 F1: 그 판정을 **여기서 표식으로 실어 보낸다** — 예외 메시지를 나중에
     정규식으로 되맞히지 않는다. 범위를 아예 못 읽은 경우는 표현이 아니라 그냥 실패다. */
-function mustRange(fn: string, toks: Token[]): CellRange {
+function mustRange(fn: string, toks: Token[], ctx: ParseCtx): CellRange {
   const r = cellRangeOf(toks);
   if (!r) throw new Error(`${fn} 의 범위 인자를 못 읽었다: ${JSON.stringify(toks)}`);
-  if (r.sheet !== undefined) {
+  // Task 9 단위 13: 이 거부는 **판정 경로에서만** 산다. 계산 경로(`ctx.compute`)는 같은
+  // 범위를 그대로 읽는다 — 지면 격자는 시트명으로 이미 나뉘어 있어 실행기가 다룰 수 있고,
+  // OECD 부록의 정렬을 계산하려면 반드시 필요하다. 관문 쪽 거부를 지우면 안 된다.
+  if (r.sheet !== undefined && !ctx.compute) {
     throw new PresentationRefusal(
       `${fn} 범위가 다른 시트를 가리킨다 — 정렬·표시(표현) 로직이다: ${r.sheet}`);
   }
@@ -572,7 +586,7 @@ function parseAtom(p: P): Expr {
       // INDEX(범위, n) — 한 줄(한 열 또는 한 행) 범위의 n번째 칸. 2차원은 다루지 않는다.
       const args = argTokens(p);
       if (args.length !== 2) throw new Error(`INDEX 인자가 2개가 아니다 (${args.length}개)`);
-      return { op: 'index', range: mustRange('INDEX', args[0]), n: parseTokens(args[1], p.ctx) };
+      return { op: 'index', range: mustRange('INDEX', args[0], p.ctx), n: parseTokens(args[1], p.ctx) };
     }
     if (t.v === 'MATCH') {
       const args = argTokens(p);
@@ -581,7 +595,7 @@ function parseAtom(p: P): Expr {
       if (!(mode.length === 1 && mode[0].t === 'num' && mode[0].v === 0)) {
         throw new Error(`MATCH 의 세 번째 인자가 0(정확히 일치)이 아니다: ${JSON.stringify(mode)}`);
       }
-      return { op: 'match', needle: parseTokens(args[0], p.ctx), range: mustRange('MATCH', args[1]) };
+      return { op: 'match', needle: parseTokens(args[0], p.ctx), range: mustRange('MATCH', args[1], p.ctx) };
     }
     if (t.v === 'SUMPRODUCT') {
       // 실측 28건이 한 모양이다: SUMPRODUCT(--ISNUMBER(범위), --(범위<>"문자")).
@@ -650,6 +664,41 @@ function parseAtom(p: P): Expr {
       const args = argTokens(p);
       if (!args[1]) throw new Error('IFERROR 에 fallback 인자가 없다');
       return { op: 'iferror', inner: parseTokens(args[0], p.ctx), fallback: parseTokens(args[1], p.ctx) };
+    }
+    // Task 9 단위 13: **계산 경로 전용 함수들.** 판정 경로에서는 이 블록을 건너뛰고
+    // 아래의 기존 거부로 그대로 떨어진다 — 관문이 보는 것은 한 글자도 달라지지 않는다.
+    if (p.ctx.compute) {
+      if (t.v === 'RANK') {
+        // RANK(x, 범위[, 순서]) — 순서는 실측상 전부 생략(=내림차순)이다. 0 은 「내림차순」을
+        // 명시한 것이라 같은 뜻으로 받고, 1(오름차순)은 구현하지 않는다: 없는 뜻을 만들지 않는다.
+        const args = argTokens(p);
+        if (args.length !== 2 && args.length !== 3) {
+          throw new Error(`RANK 인자가 2개도 3개도 아니다 (${args.length}개)`);
+        }
+        const ord = args[2];
+        if (ord && !(ord.length === 1 && ord[0].t === 'num' && ord[0].v === 0)) {
+          throw new Error(`RANK 의 세 번째 인자가 0(내림차순)이 아니다: ${JSON.stringify(ord)}`);
+        }
+        return { op: 'rank', x: parseTokens(args[0], p.ctx), range: mustRange('RANK', args[1], p.ctx) };
+      }
+      if (t.v === 'COUNTIF') {
+        // COUNTIF(범위, 조건) — 조건 하나. 정렬 관용구의 범위는 `$C$3:C10` 처럼 **자기 행까지
+        // 자라는 부분 범위**이고, 그것이 동순위를 1,2,3… 으로 펼치는 핵심이다.
+        const args = argTokens(p);
+        if (args.length !== 2) throw new Error(`COUNTIF 인자가 2개가 아니다 (${args.length}개)`);
+        return { op: 'countif', range: mustRange('COUNTIF', args[0], p.ctx),
+                 crit: parseTokens(args[1], p.ctx) };
+      }
+      if (t.v === 'ROW') {
+        const args = argTokens(p);
+        if (args.length === 0) return { op: 'row' };        // 자기 행 (실측 1,386건)
+        if (args.length !== 1) throw new Error(`ROW 인자가 0개도 1개도 아니다 (${args.length}개)`);
+        const a = args[0];
+        if (!(a.length === 1 && a[0].t === 'ref' && a[0].ext === null)) {
+          throw new Error('ROW 인자가 같은 통합문서 참조가 아니다: ' + JSON.stringify(a));
+        }
+        return { op: 'row', r: cellCoord(a[0].a1).r };      // 범위면 첫 행 (엑셀)
+      }
     }
     // 전체 리뷰 F1: RANK 는 「못 다루는 함수」가 아니라 **구현하지 않기로 정한 것**이다 —
     // 같은 지면 안의 순위를 표에 찍는 표시 로직(실측 1,548건)이고, 데이터가 아니다.

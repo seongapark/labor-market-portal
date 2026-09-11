@@ -40,13 +40,24 @@ export function isPresentation(formula: string, e: Extract<Expr, { op: 'unsuppor
   return !toks.some((t) => t.t === 'ref' && t.ext !== null);
 }
 
-/** 수식 하나 → 명세 하나. 수식 문자열은 버린다(unsupported 의 formula 필드까지). */
+/** 수식 하나 → 명세 하나. 수식 문자열은 버린다(unsupported 의 formula 필드까지).
+ *
+ *  Task 9 단위 13: **판정은 언제나 판정 경로의 파싱 결과가 한다.** `kind` 도 `reason` 도
+ *  아래 첫 파싱에서만 나온다 — 계산 모드가 성공했다고 해서 presentation 이 expr 이 되지
+ *  않는다. 계산 모드는 오직 `e` 를 **덧붙일 뿐**이고, 관문은 `kind !== 'expr'` 로 빠지므로
+ *  그 필드를 보지 않는다. 이것이 이 단위가 두 경로를 가르는 방식이다.
+ *
+ *  `unsupported` 에는 붙이지 않는다. 그것은 「아직 못 하는 것」(관문의 빚)이고, 계산
+ *  경로가 조용히 값을 내면 그 빚이 보이지 않게 된다. presentation 만 「구현하지 않기로
+ *  정했지만 계산은 해야 하는 것」이다. */
 export function specOf(formula: string, ctx: { extmap: Record<string, string>; headers: Headers }): CellSpec {
   const e = parseFormula(formula, ctx);
   if (e.op === 'unsupported') {
-    return isPresentation(formula, e)
+    if (!isPresentation(formula, e)) return { kind: 'unsupported', reason: e.reason };
+    const ce = parseFormula(formula, { ...ctx, compute: true });
+    return ce.op === 'unsupported'
       ? { kind: 'presentation', reason: e.reason }
-      : { kind: 'unsupported', reason: e.reason };
+      : { kind: 'presentation', reason: e.reason, e: ce };
   }
   return { kind: 'expr', e };
 }

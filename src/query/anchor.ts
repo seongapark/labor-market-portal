@@ -161,6 +161,12 @@ export function touchesData(e: Expr): boolean {
     case 'find': return touchesData(e.needle) || touchesData(e.inside);
     case 'index': return touchesData(e.n);
     case 'match': return touchesData(e.needle);
+    // Task 9 단위 13: 정렬 관용구는 지면 격자 위에서만 돈다 — 자료를 타지 않는다.
+    // (실제로는 `evalSpec` 이 `kind !== 'expr'` 에서 먼저 끊어 앵커 계산에 오지 않는다:
+    //  이 연산들은 presentation 명세의 `e` 안에만 있다. 그래도 빠짐없이 훑는다.)
+    case 'rank': return touchesData(e.x);
+    case 'countif': return touchesData(e.crit);
+    case 'row': return false;
     case 'agg': return e.args.some((a) => 'expr' in a && touchesData(a.expr));
     case 'rangecount':
       return e.preds.some((p) => p.kind === 'crit' && touchesData(p.crit));

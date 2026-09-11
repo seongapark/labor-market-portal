@@ -17,6 +17,10 @@ import type { CellRange, Crit, Expr, Grid, GridQuery, Query, RangeArg, RangePred
 export type ExecCtx = {
   db: DatabaseSync; grids: Record<string, Grid>; sheet: string;
   anchor?: AnchorCtx;
+  /** Task 9 단위 13: 지금 계산 중인 **셀 좌표**('A6'). `ROW()`(인자 없는 자기 행)만
+      쓴다 — OECD 부록의 정렬 수식 1,386건이 `MATCH(ROW()-5, …)` 로 자기 행을 정렬
+      순번으로 쓴다. 없으면 `ROW()` 는 **던진다**(0 으로 뭉개면 표 전체가 한 줄씩 밀린다). */
+  ref?: string;
 };
 
 /** jsonl 키 → obs 열 (parse 가 내는 이름은 대문자 헤더 이름이다) */
@@ -278,6 +282,23 @@ function matchCrit(v: string | number | null, raw: string): boolean {
     case '>=': return a >= b;
   }
   return false;
+}
+
+/** Task 9 단위 13: 셀 값이 숫자 조건값과 같은가. 숫자꼴 문자열도 숫자로 읽는다 —
+    격자에 "2025" 가 문자로 남아 있을 수 있다(`cellEquals` 와 같은 관용).
+
+    **비교는 정확히 한다(허용오차 없다).** 정렬 관용구
+    (`RANK(x,R)+COUNTIF(부분R,x)-1`)는 **자기 자신을 세는 것**에 기대고 있어 「같은 값을
+    같다고 못 보면」 순위가 통째로 1 밀리는데, 실측상 그 위험이 없다: 비교하는 두 쪽이
+    **같은 격자 칸 하나**다(`RANK(C3,$C$3:$C$41)` · `COUNTIF($C$3:C3,C3)` — x 도 조건도
+    C3 이고 범위 안의 그 칸도 C3 이다). 그래서 부동소수 꼬리가 끼어들 자리가 없다.
+    반대로 허용오차를 두면 **엑셀이 만들지 않는 동순위**를 우리가 만들어 내게 된다 —
+    `matchCrit` 의 15자리 맞춤은 조건이 `">"&값` 으로 **문자로 변환**될 때의 이야기이고,
+    여기서는 그 변환이 일어나지 않는다. */
+function numEquals(v: string | number | null, n: number): boolean {
+  const x = typeof v === 'number' ? v
+    : (typeof v === 'string' && v.trim() !== '' ? Number(v.trim()) : NaN);
+  return Number.isFinite(x) && x === n;
 }
 
 /** 위치를 맞춰 「모든 술어를 만족하는 칸 수」를 센다.
@@ -737,6 +758,39 @@ export function execute(e: Expr, ctx: ExecCtx): number | string | null {
         if (cellEquals(vals[i], raw)) return i + 1;     // 1-based
       }
       return null;                                      // #N/A
+    }
+    // Task 9 단위 13 — 정렬 관용구 (계산 경로 전용 연산)
+    case 'rank': {
+      // 엑셀 RANK 의 기본은 **내림차순**이고, 같은 값은 같은 순위다(1,1,3). 문자·빈 칸은
+      // 순위에서 빠진다. 범위에 그 값이 없으면 #N/A 다 — 가까운 순위를 만들어내지 않는다.
+      const x = numOrErr(execute(e.x, ctx));
+      if (x === null) return null;
+      const nums: number[] = [];
+      for (const v of rangeValues(e.range, ctx)) {
+        if (typeof v === 'number' && Number.isFinite(v)) nums.push(v);
+      }
+      if (!nums.includes(x)) return null;                   // #N/A
+      return 1 + nums.filter((v) => v > x).length;
+    }
+    case 'countif': {
+      const raw = execute(e.crit, ctx);
+      if (raw === null) return null;                        // 조건 자체가 오류다
+      const vals = rangeValues(e.range, ctx);
+      // 조건이 숫자면 **같은 값**을 센다(15자리). 문자면 엑셀 조건 문자열로 읽는다 —
+      // 엑셀도 조건 셀에 ">5" 가 들어 있으면 그것을 비교 조건으로 해석한다.
+      return typeof raw === 'number'
+        ? vals.filter((v) => numEquals(v, raw)).length
+        : vals.filter((v) => matchCrit(v, raw)).length;
+    }
+    case 'row': {
+      if (e.r !== undefined) return e.r;
+      // 인자 없는 ROW() 는 자기 행이다. 좌표를 모르면 **던진다** — 0 이나 null 로 뭉개면
+      // MATCH(ROW()-5, …) 가 조용히 다른 줄을 맞혀 표 전체가 밀린다(RULING 7 의 태도).
+      const m = ctx.ref === undefined ? null : /^\$?[A-Z]{1,3}\$?(\d+)$/.exec(ctx.ref);
+      if (!m) {
+        throw new Error(`ROW() 의 자기 행을 알 수 없다 — ExecCtx.ref 가 ${JSON.stringify(ctx.ref)} 다`);
+      }
+      return Number(m[1]);
     }
     case 'n': {
       const v = execute(e.inner, ctx);
