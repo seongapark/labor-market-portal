@@ -131,8 +131,14 @@ export function verifyPart(
     throw new Error(`기준연도(앵커)를 정수로 못 읽었다: ${JSON.stringify(year)}`);
   }
   // Task 9 단위 11 (물화): 수식을 그때그때 파싱하는 것이 아니라, **cellmap 을 만들어
-  // 그것을 실행한다.** 물화 경로와 수식 경로가 같은 코드를 타므로 두 경로의 결과가
-  // 어긋날 수 없다 — 왕복 시험이 뜻을 갖는 이유다.
+  // 그것을 실행한다.**
+  // 전체 리뷰 F4-b: 예전 주석은 「두 경로가 같은 코드를 타므로 왕복 시험이 뜻을 갖는다」고
+  // 적었는데 인과가 뒤집혀 있었다 — 이 함수가 `verifyCellMap` 에 위임하므로, 같은
+  // **입력**을 주면 두 결과는 논리적으로 같다. 왕복 시험이 뜻을 갖는 이유는 다른 데 있다:
+  // `test/materialize.test.ts` 가 비교하는 cellmap 은 **커밋된 `data/cellmap/*.json`
+  // 을 디스크에서 읽은 것**이라, 그 시험이 지는 주장은 「저장소의 물화물이 지금 수식에서
+  // 만든 것과 같다(최신이다)」다. 관문의 진짜 주장은 이제 verify-all 의 기본 경로
+  // 자체가 진다(F4).
   return verifyCellMap(part, buildCellMap(part, formulas, headers), oracle, db, anchor);
 }
 

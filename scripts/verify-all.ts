@@ -2,10 +2,10 @@ import { readFileSync, readdirSync, writeFileSync, existsSync, mkdirSync } from 
 import { join, basename } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { openDb, loadAll } from '../src/db/load.ts';
-import { verifyPart, applyKnownDivergences,
+import { verifyPart, verifyCellMap, applyKnownDivergences,
          type CellResult, type FormulaDump, type OracleDump,
          type KnownDivergence, type StaleDivergence } from '../src/verify/compare.ts';
-import type { Headers } from '../src/types.ts';
+import type { CellMap, Headers } from '../src/types.ts';
 
 export type Summary = {
   total: number;
@@ -73,40 +73,88 @@ export function summarize(rows: CellResult[], stale = 0): Summary {
   };
 }
 
-function main() {
+/** 관문이 무엇을 읽고 돌 것인가.
+    전체 리뷰 F4: **기본은 `cellmap` 이다.** 단위 11 까지 출하 진입점(`npm run verify`)은
+    `data/formulas/` 와 `data/raw/headers.json` 을 읽어 매번 cellmap 을 다시 만들었고,
+    물화물(`data/cellmap/*.json`)은 시험과 스냅샷 생성기만 읽었다 — 「그 다음부터 관문은
+    수식도 헤더도 읽지 않는다」는 서술이 출하 경로에 대해서는 거짓이었다. 이제 관문이
+    물화물을 탄다. 수식 경로는 `--from-formulas` 로 남겨 두 경로를 계속 대조할 수 있다. */
+export type GateSource = 'cellmap' | 'formulas';
+
+export type GateOpts = {
+  dataDir?: string;
+  source?: GateSource;
+  /** 기준연도(=앵커). 기본은 BASE_YEAR 또는 2025. */
+  year?: string;
+  /** 파일 읽기·목록 주입 — 시험이 「무엇을 열었는가」를 감시하고 part 를 좁히는 자리다.
+      주석으로 「읽지 않는다」고 주장하지 않기 위해 존재한다. */
+  readFile?: (path: string) => string;
+  readDir?: (path: string) => string[];
+  exists?: (path: string) => boolean;
+  log?: (line: string) => void;
+};
+
+export type GateRun = {
+  source: GateSource;
+  year: string;
+  anchor: number;
+  /** 실제로 대조한 part (확정본이 없어 건너뛴 것은 제외) */
+  parts: string[];
+  skipped: string[];
+  rows: CellResult[];
+  stale: StaleDivergence[];
+  known: KnownDivergence[];
+  exempt: CellResult[];
+  summary: Summary;
+};
+
+export function runGate(opts: GateOpts = {}): GateRun {
   // Task 9 단위 10: BASE_YEAR 는 이제 **앵커**다(리뷰 지적 6 — 단위 8 이후 이 값을 읽는
   // 곳이 없어 거짓 손잡이였다). 관문의 전제는 인쇄된 값의 재현이므로 기본값 2025 로
   // 돌린다. 2025 가 아닌 값으로 돌리면 앵커를 주입하는 part(part1_5·part3)에서 RULING 17
   // 단정이 던져 즉시 멈춘다 — 「확정본과 대조한다」와 「다른 연도로 계산한다」는 동시에
   // 성립할 수 없기 때문이다. 다른 연도를 계산해 보려면 관문이 아니라 anchorCell 을 쓴다.
-  const YEAR = process.env.BASE_YEAR ?? '2025';
-  const dataDir = 'data';
-  const headers = JSON.parse(
-    readFileSync(join(dataDir, 'raw', 'headers.json'), 'utf8')) as Headers;
+  const YEAR = opts.year ?? process.env.BASE_YEAR ?? '2025';
+  const dataDir = opts.dataDir ?? 'data';
+  const source: GateSource = opts.source ?? 'cellmap';
+  const readFile = opts.readFile ?? ((p: string) => readFileSync(p, 'utf8'));
+  const readDir = opts.readDir ?? ((p: string) => readdirSync(p));
+  const exists = opts.exists ?? ((p: string) => existsSync(p));
+  const log = opts.log ?? ((line: string) => console.log(line));
+  const anchor = Number(YEAR);
 
   const dbFile = join(dataDir, 'obs.sqlite');
-  const fresh = !existsSync(dbFile);
+  const fresh = !exists(dbFile);
   const db = openDb(dbFile);
   if (fresh) {
-    console.log('적재:', loadAll(db, join(dataDir, 'raw')));
+    log('적재: ' + JSON.stringify(loadAll(db, join(dataDir, 'raw'))));
   }
+
+  // 수식 경로에서만 헤더 매핑이 필요하다 — 물화된 cellmap 에는 열 이름이 이미 해석돼 있다.
+  const headers = source === 'formulas'
+    ? (JSON.parse(readFile(join(dataDir, 'raw', 'headers.json'))) as Headers) : null;
 
   // Task 9 단위 9: 사용자가 「인쇄본이 틀렸다」고 판정한 칸의 면제 목록.
   // 좌표만이 아니라 확정본 값과 계산값을 둘 다 적어 두고, 둘 다 그대로일 때만 면제한다.
   const knownFile = join(dataDir, 'known-divergences.json');
-  const known = existsSync(knownFile)
-    ? (JSON.parse(readFileSync(knownFile, 'utf8')) as KnownDivergence[]) : [];
+  const known = exists(knownFile)
+    ? (JSON.parse(readFile(knownFile)) as KnownDivergence[]) : [];
 
+  const srcDir = join(dataDir, source === 'cellmap' ? 'cellmap' : 'formulas');
   const rows: CellResult[] = [];
-  for (const f of readdirSync(join(dataDir, 'formulas'))) {
+  const parts: string[] = [];
+  const skipped: string[] = [];
+  for (const f of readDir(srcDir)) {
     if (!f.endsWith('.json')) continue;
     const part = basename(f, '.json');
-    const formulas = JSON.parse(
-      readFileSync(join(dataDir, 'formulas', f), 'utf8')) as FormulaDump;
     const op = join(dataDir, 'oracle', f);
-    if (!existsSync(op)) { console.log('확정본 없음, 건너뜀:', part); continue; }
-    const oracle = JSON.parse(readFileSync(op, 'utf8')) as OracleDump;
-    const r = verifyPart(part, formulas, oracle, db, headers, YEAR);
+    if (!exists(op)) { log('확정본 없음, 건너뜀: ' + part); skipped.push(part); continue; }
+    const oracle = JSON.parse(readFile(op)) as OracleDump;
+    const r = source === 'cellmap'
+      ? verifyCellMap(part, JSON.parse(readFile(join(srcDir, f))) as CellMap, oracle, db, anchor)
+      : verifyPart(part, JSON.parse(readFile(join(srcDir, f))) as FormulaDump,
+                   oracle, db, headers!, YEAR);
+    parts.push(part);
     // 면제는 part 별로 먼저 적용한다 — 아래 진행 표시가 최종 판정과 어긋나지 않게.
     // 묵음 검사는 전체를 모은 뒤 한 번 더 돌린다(건너뛴 part 의 항목도 잡으려면 전역이어야 한다).
     const rr = applyKnownDivergences(r, known.filter((k) => k.part === part)).rows;
@@ -115,13 +163,22 @@ function main() {
     const partCol = part.padEnd(20);
     const compCol = String(s.comparable).padStart(5);
     const matchCol = String(s.byVerdict.match ?? 0).padStart(5);
-    console.log(`  ${partCol} 대조 ${compCol} · 일치 ${matchCol} (${(s.rate * 100).toFixed(2)}%)`);
+    log(`  ${partCol} 대조 ${compCol} · 일치 ${matchCol} (${(s.rate * 100).toFixed(2)}%)`);
   }
 
   // Task 9 단위 9: 면제를 적용한다. 차이가 그대로인 칸만 known-divergence 가 되고,
   // 묵은 항목(이제 일치하거나 값이 달라진 것)은 경고로 찍고 관문을 실패시킨다.
   const stale: StaleDivergence[] = applyKnownDivergences(rows, known).stale;
   const exempt = rows.filter((r) => r.verdict === 'known-divergence');
+  return { source, year: YEAR, anchor, parts, skipped, rows, stale, known, exempt,
+           summary: summarize(rows, stale.length) };
+}
+
+function main() {
+  // 전체 리뷰 F4: 기본은 물화물(cellmap)이다. 수식 경로는 플래그로 남는다.
+  const source: GateSource = process.argv.includes('--from-formulas') ? 'formulas' : 'cellmap';
+  const run = runGate({ source });
+  const { rows, stale, known, exempt, year: YEAR } = run;
   if (exempt.length) {
     console.log('\n면제(known-divergence) %d건 — 사용자 판정으로 대조에서 뺀다:', exempt.length);
     for (const r of exempt) {
@@ -135,14 +192,20 @@ function main() {
     }
   }
 
-  const s = summarize(rows, stale.length);
+  const s = run.summary;
   mkdirSync('reports', { recursive: true });
 
+  const sourceNote = run.source === 'cellmap'
+    ? '물화된 cellmap(`data/cellmap/*.json`) + 확정본 + obs.sqlite — **수식 파일도 헤더 매핑도 읽지 않는다**'
+    : '수식 덤프(`data/formulas/*.json`) + `headers.json` + 확정본 + obs.sqlite (`--from-formulas`)';
   const lines: string[] = [
     '# 전건 대조 리포트',
     '',
     `기준연도 ${YEAR} · 생성 ${new Date().toISOString().slice(0, 10)}`,
     '',
+    `읽은 것: ${sourceNote}`,
+    '',
+    `- 대조한 파트 **${run.parts.length}**${run.skipped.length ? ` · 건너뛴 파트 ${run.skipped.length}` : ''}`,
     `- 수식 좌표 **${s.total}**`,
     `- 대조 가능 **${s.comparable}** (확정본에 값이 있고 파싱된 것)`,
     `- 일치 **${s.byVerdict.match ?? 0}** · 불일치 **${s.byVerdict.mismatch ?? 0}** · 실행오류 **${s.byVerdict.error ?? 0}**`,

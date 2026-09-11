@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { summarize } from '../scripts/verify-all.ts';
+import { readFileSync, readdirSync } from 'node:fs';
+import { summarize, runGate } from '../scripts/verify-all.ts';
 import type { CellResult } from '../src/verify/compare.ts';
 
 const rows: CellResult[] = [
@@ -84,4 +85,49 @@ test('summarize: mismatch·error 0 에 unsupported 1 이면 gatePassed=false, �
   const withPresentation = [...cleanRows, presentationRow];
   assert.equal(summarize(withUnsupported).gatePassed, false);
   assert.equal(summarize(withPresentation).gatePassed, true);
+});
+
+// ── 전체 리뷰 F4 — 물화물이 **출하 경로**를 탄다 ────────────────────────────
+// 단위 11 까지 `npm run verify` 는 `data/formulas/` 와 `data/raw/headers.json` 을 읽어
+// cellmap 을 매번 다시 만들었고, `data/cellmap/*.json` 은 시험과 스냅샷 생성기만 읽었다.
+// 그래서 「그 다음부터 관문은 수식도 헤더도 읽지 않는다」는 서술이 **출하 진입점에
+// 대해서는 거짓**이었다. 이 시험은 그 주장을 주석이 아니라 **읽은 파일 목록**으로 짓는다.
+
+test('관문의 기본 경로는 cellmap 이다 — data/formulas 도 headers.json 도 열지 않는다', () => {
+  const opened: string[] = [];
+  const run = runGate({
+    readFile: (p) => { opened.push(p); return readFileSync(p, 'utf8'); },
+    readDir: (p) => { opened.push(p); return readdirSync(p); },
+    log: () => {},
+  });
+  // 감시한 자리가 관문이 파일을 읽는 자리 전부다(DB 는 node:sqlite 가 직접 연다).
+  assert.deepEqual(opened.filter((p) => /formulas|headers\.json/.test(p)), [],
+    '기본 경로가 수식·헤더 파일을 열었다');
+  assert.ok(opened.some((p) => /cellmap/.test(p)), 'cellmap 을 읽지 않았다');
+  assert.ok(opened.some((p) => /oracle/.test(p)), '확정본을 읽지 않았다');
+  // 그리고 그 경로만으로 관문 수치가 그대로 나온다
+  const s = run.summary;
+  assert.equal(s.byVerdict.match, 29558);
+  assert.equal(s.byVerdict.mismatch ?? 0, 0);
+  assert.equal(s.byVerdict.error ?? 0, 0);
+  assert.equal(s.byVerdict.unsupported ?? 0, 0);
+  assert.equal(s.byVerdict.presentation, 3364);
+  assert.equal(s.byVerdict['known-divergence'], 3);
+  assert.equal(s.byVerdict['no-oracle'] ?? 0, 0);
+  assert.equal(s.comparable, 29561);
+  assert.equal(run.stale.length, 0);
+  assert.equal(run.skipped.length, 0);
+  assert.equal((s.rate * 100).toFixed(3), '99.990');
+  assert.equal(s.gatePassed, true);
+});
+
+test('--from-formulas 경로가 살아 있고 cellmap 경로와 셀 단위로 같다', () => {
+  // part 하나로 좁혀 두 경로를 같은 자리에서 비교한다(readDir 주입 — 생산 경로에는
+  // part 를 좁히는 손잡이가 없다). 전건 왕복은 materialize.test.ts 가 계속 맡는다.
+  const only = (p: string) => readdirSync(p).filter((f) => f === 'part1_2.json');
+  const a = runGate({ source: 'cellmap', readDir: only, log: () => {} });
+  const b = runGate({ source: 'formulas', readDir: only, log: () => {} });
+  assert.equal(a.parts.length, 1);
+  assert.equal(b.parts.length, 1);
+  assert.deepEqual(b.rows, a.rows, '수식 경로와 cellmap 경로의 결과가 다르다');
 });
