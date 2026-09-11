@@ -103,10 +103,17 @@ function asFiniteNumber(v: unknown, grouped = false): number | null {
 // 전 데이터에 18건 있고(part1_7!p124!D6·F6 등, 지금은 VLOOKUP 미지원으로 대조되지
 // 않는다), 다음 단위가 VLOOKUP 을 구현하면 구분자를 떨어뜨린 계산값이 조용히 통과하게
 // 된다. 인자 이름이 곧 방향이다 — 호출부는 sameValue(오라클, 계산값) 이다.
+// 전체 리뷰 F8: **양쪽이 문자열이면 문자열로 비교한다.** 옛 비교기는 둘 다 숫자로
+// 읽히면 숫자로 봤고(`sameValue('5.40','5.4') === true`), `TEXT()` 의 결과는 문자열이므로
+// **자릿수 회귀가 보이지 않았다**: `textFormat` 이 `"0.000"` 을 잘못 읽어 "5.400" 을 내도
+// 확정본 "5.40" 과 통과한다. 이 경로로 통과한 칸은 오늘 0건(리뷰어 측정)이라 관문 수치는
+// 움직이지 않는다 — 잠재 구멍을 닫는 것이다. 숫자↔문자 교차(실측 1,001건)와 구분자
+// 완화(비대칭, 커밋 2d461d2)는 **건드리지 않는다.**
 export function sameValue(expected: unknown, got: unknown): boolean {
   if (expected === null || got === null || expected === undefined || got === undefined) {
     return expected === got;
   }
+  if (typeof expected === 'string' && typeof got === 'string') return expected === got;
   const x = asFiniteNumber(expected);
   const y = asFiniteNumber(got, typeof expected === 'number');
   if (x !== null && y !== null) {

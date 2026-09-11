@@ -238,3 +238,21 @@ test('verifyPart: year 인자가 앵커의 출처다 — BASE_YEAR 가 실제로
   assert.deepEqual(got('2024'), { C6: 2024, B7: 99 });   // 앵커가 따라 움직인다
   assert.throws(() => got('올해'), /기준연도\(앵커\)를 정수로 못 읽었다/);
 });
+
+// ── 전체 리뷰 F8 — 문자열끼리는 문자열로 비교한다 ───────────────────────────
+// 옛 비교기는 양쪽이 문자열이어도 둘 다 숫자로 읽히면 같다고 봤다. `TEXT()` 의 결과는
+// 문자열이므로 그 여유가 **자릿수 회귀를 가렸다**: 서식을 잘못 읽어 "5.400" 을 내도
+// 확정본 "5.40" 과 통과한다. 이 경로로 통과한 칸은 오늘 0건이라 관문 수치는 불변이다.
+test('F8: 양쪽이 문자열이면 문자열로 비교한다 (TEXT 자릿수 회귀가 보인다)', () => {
+  assert.equal(sameValue('5.40', '5.4'), false);
+  assert.equal(sameValue('5.40', '5.40'), true);
+  assert.equal(sameValue('1e3', '1000'), false);
+  assert.equal(sameValue('0.0', '0'), false);
+  assert.equal(sameValue(' 5.4', '5.4'), false);
+  // 숫자↔문자 교차(실측 1,001건)와 한 방향 구분자 완화는 그대로여야 한다
+  assert.equal(sameValue(84, '84.0'), true);
+  assert.equal(sameValue(211983, '211,983'), true);
+  assert.equal(sameValue('294,525', 294525), false);
+  // 부동소수 잡음 여유(1e-9 상대오차)도 그대로다
+  assert.equal(sameValue(5.980774247610614, 5.9807742476106145), true);
+});
