@@ -202,10 +202,12 @@ test('VLOOKUP 네 번째 인자가 1(근사)이면 unsupported 로 남는다', (
   assert.match((e as { reason: string }).reason, /네 번째 인자/);
 });
 
-test('같은 통합문서 안에서 찾는 VLOOKUP 은 아직 unsupported 다 (단위 7 소관)', () => {
+// 단위 7 에서 이 갈래가 열렸다 — 같은 통합문서 범위는 지면 격자(ctx.grids)에서 찾는다.
+// 그 자리의 옛 단정(「아직 unsupported」)을 사실대로 바꿔 둔다.
+test('같은 통합문서 안에서 찾는 VLOOKUP 은 지면 격자 범위가 된다 (단위 7)', () => {
   const e = parseFormula('=VLOOKUP(F24,$A$24:$D$58,3,0)', { extmap: {}, headers });
-  assert.equal(e.op, 'unsupported');
-  assert.match((e as { reason: string }).reason, /외부 사각범위/);
+  assert.equal(e.op, 'lookup');
+  assert.deepEqual((e as { range: unknown }).range, { r1: 24, c1: 1, r2: 58, c2: 4 });
 });
 
 test('LEFT · RIGHT · SUBSTITUTE 는 문자로 다룬다', () => {

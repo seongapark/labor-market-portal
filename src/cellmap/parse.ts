@@ -1,5 +1,5 @@
 import { tokenize, type Token } from './tokenize.ts';
-import type { Crit, Expr, GridQuery, GridRange, Headers, Query, Src } from '../types.ts';
+import type { CellRange, Crit, Expr, GridQuery, GridRange, Headers, Query, RangeArg, RangePred, Src } from '../types.ts';
 
 export type ParseCtx = { extmap: Record<string, string>; headers: Headers };
 
@@ -37,6 +37,19 @@ export function wholeColumn(a1: string): number {
   const m = /^\$?([A-Z]{1,3}):\$?([A-Z]{1,3})$/.exec(a1);
   if (!m || m[1] !== m[2]) throw new Error('열 전체 참조가 아니다: ' + a1);
   return colNumber(m[1]);
+}
+
+/** Task 9 단위 7: 1-based 열 번호 → 열 문자 (1→'A' · 27→'AA' · 102→'CX').
+    범위를 셀 좌표로 펼칠 때 쓴다. */
+export function colLetters(n: number): string {
+  let out = '';
+  let k = n;
+  while (k > 0) {
+    const rem = (k - 1) % 26;
+    out = String.fromCharCode(65 + rem) + out;
+    k = Math.floor((k - 1) / 26);
+  }
+  return out;
 }
 
 export function colName(src: Src, sheet: string, a1: string, headers: Headers): string {
@@ -213,6 +226,42 @@ function ifsQuery(name: 'SUMIFS' | 'COUNTIFS', args: Token[][], ctx: ParseCtx): 
   return { src, table: sheet!, value, where };
 }
 
+/** Task 9 단위 7: 같은 통합문서의 사각 범위 토큰 → `CellRange`. 범위가 아니면 null.
+    `B6:CX6` 처럼 2자리 열 문자도 받는다(102칸). */
+function cellRangeOf(toks: Token[]): CellRange | null {
+  if (toks.length !== 1) return null;
+  const t = toks[0];
+  if (t.t !== 'ref' || t.ext !== null || !t.a1.includes(':')) return null;
+  const m = /^\$?([A-Z]{1,3})\$?(\d+):\$?([A-Z]{1,3})\$?(\d+)$/.exec(t.a1);
+  if (!m) return null;                       // 열 전체($A:$A) 등은 여기서 다루지 않는다
+  const [ra, rb] = [Number(m[2]), Number(m[4])];
+  const [ca, cb] = [colNumber(m[1]), colNumber(m[3])];
+  const range: CellRange = {
+    r1: Math.min(ra, rb), r2: Math.max(ra, rb),
+    c1: Math.min(ca, cb), c2: Math.max(ca, cb),
+  };
+  return t.sheet === null ? range : { sheet: t.sheet, ...range };
+}
+
+/** 범위 인자 하나 — 범위면 범위로, 아니면 식으로 */
+function rangeArg(toks: Token[], ctx: ParseCtx): RangeArg {
+  const r = cellRangeOf(toks);
+  return r ? { range: r } : { expr: parseTokens(toks, ctx) };
+}
+
+/** 범위여야 하는 인자. 시트를 한정한 INDEX/MATCH 범위는 **표현(presentation)** 이다 —
+    OECD 부록의 정렬 로직(실측 3,246건)이 전부 그 모양이고, 같은 지면 안에서 순위를
+    세는 이 단위의 대상 28건은 전부 한정이 없다. 그 둘을 여기서 가른다.
+    (이유 문자열에 함수 이름이 남아야 compare.ts 의 presentation 판정이 계속 맞는다.) */
+function mustRange(fn: string, toks: Token[]): CellRange {
+  const r = cellRangeOf(toks);
+  if (!r) throw new Error(`${fn} 의 범위 인자를 못 읽었다: ${JSON.stringify(toks)}`);
+  if (r.sheet !== undefined) {
+    throw new Error(`${fn} 범위가 다른 시트를 가리킨다 — 정렬·표시(표현) 로직이다: ${r.sheet}`);
+  }
+  return r;
+}
+
 /** Task 9 단위 6: 외부참조 토큰 → 격자 원천. kosis·oecd 는 좌표로 적재된 적이 없어
     (long 테이블만 있다) 여기서 사유를 바꿔 남긴다 — 없는 좌표를 추측하지 않는다. */
 function gridSrc(t: Extract<Token, { t: 'ref' }>, ctx: ParseCtx): { src: 'etc' | 'panel'; sheet: string } {
@@ -229,13 +278,65 @@ function gridSrc(t: Extract<Token, { t: 'ref' }>, ctx: ParseCtx): { src: 'etc' |
 /** 조회 함수의 두 번째 인자 — **외부** 사각범위만 받는다.
     같은 통합문서 안에서 찾는 VLOOKUP(실측 182건)은 확정본 격자를 훑어야 하는 다른
     문제라 여기서 던진다(단위 7 소관). */
-function lookupRange(toks: Token[], ctx: ParseCtx): GridRange {
+function lookupRange(toks: Token[], ctx: ParseCtx): GridRange | CellRange {
   const r = toks.find((t) => t.t === 'ref') as Extract<Token, { t: 'ref' }> | undefined;
-  if (!r || r.ext === null || toks.length !== 1) {
-    throw new Error('조회 범위가 외부 사각범위가 아니다: ' + JSON.stringify(toks));
+  if (!r || toks.length !== 1) {
+    throw new Error('조회 범위가 사각범위가 아니다: ' + JSON.stringify(toks));
+  }
+  // Task 9 단위 7: 같은 통합문서 범위(실측 182건, 그 중 18건은 다른 시트)는 지면
+  // 격자에서 찾는다. 시트 한정을 그대로 실어 보낸다 — 지금 지면만 보면 18건이 틀린다.
+  if (r.ext === null) {
+    const cr = cellRangeOf(toks);
+    if (!cr) throw new Error('조회 범위가 사각범위가 아니다: ' + r.a1);
+    return cr;
   }
   const g = gridSrc(r, ctx);
   return { ...g, ...rangeCoord(r.a1) };
+}
+
+/** Task 9 단위 7: 지면 격자를 세는 COUNTIFS — 조건 범위마다 술어 하나.
+    조건은 `">0"` 같은 문자열이기도 하고 `">"&INDEX(…)` 처럼 실행 시 계산되는 식이기도
+    하다(실측 28건이 후자다). 그래서 Crit 이 아니라 Expr 로 들고 간다. */
+function rangeCountifs(args: Token[][], ctx: ParseCtx): Expr {
+  if (args.length < 2 || args.length % 2 !== 0) {
+    throw new Error(`COUNTIFS 인자 수가 짝이 아니다 (${args.length}개)`);
+  }
+  const preds: RangePred[] = [];
+  for (let k = 0; k + 1 < args.length; k += 2) {
+    const r = cellRangeOf(args[k]);
+    if (!r) throw new Error('COUNTIFS 조건 범위가 사각범위가 아니다: ' + JSON.stringify(args[k]));
+    preds.push({ kind: 'crit', range: r, crit: parseTokens(args[k + 1], ctx) });
+  }
+  return { op: 'rangecount', preds };
+}
+
+/** SUMPRODUCT 의 한 인자 `--ISNUMBER(범위)` 또는 `--(범위<>"문자")` → 술어 하나.
+    실측 28건이 이 두 모양뿐이다. 다른 모양은 던져서 unsupported 로 남긴다. */
+function sumproductPred(toks: Token[], ctx: ParseCtx): RangePred {
+  // 앞의 `--`(단항 부정 2회 = 논리→0/1)를 벗긴다
+  let i = 0;
+  while (i < toks.length && toks[i].t === 'op' && (toks[i] as { v: string }).v === '-') i++;
+  if (i !== 2) throw new Error('SUMPRODUCT 인자가 -- 로 시작하지 않는다: ' + JSON.stringify(toks));
+  const rest = toks.slice(i);
+  if (rest[0]?.t === 'fn' && rest[0].v === 'ISNUMBER') {
+    const inner = rest.slice(2, rest.length - 1);       // fn, lp … rp
+    const r = cellRangeOf(inner);
+    if (!r) throw new Error('SUMPRODUCT 의 ISNUMBER 인자가 범위가 아니다: ' + JSON.stringify(inner));
+    return { kind: 'isnumber', range: r };
+  }
+  // (범위<>"문자")
+  if (rest[0]?.t === 'lp' && rest[rest.length - 1]?.t === 'rp') {
+    const inner = rest.slice(1, rest.length - 1);
+    const opAt = inner.findIndex((x) => x.t === 'op' && x.v === '<>');
+    if (opAt > 0) {
+      const r = cellRangeOf(inner.slice(0, opAt));
+      if (r) {
+        return { kind: 'crit', range: r,
+                 crit: { op: 'concat', args: [{ op: 'str', v: '<>' }, parseTokens(inner.slice(opAt + 1), ctx)] } };
+      }
+    }
+  }
+  throw new Error('SUMPRODUCT 인자 모양을 모른다: ' + JSON.stringify(toks));
 }
 
 const CMP_REL: Record<string, 'eq' | 'ne' | 'lt' | 'lte' | 'gt' | 'gte'> = {
@@ -369,6 +470,12 @@ function parseAtom(p: P): Expr {
   if (t.t === 'fn') {
     if (t.v === 'SUMIFS' || t.v === 'COUNTIFS') {
       const args = argTokens(p);
+      // Task 9 단위 7: 첫 범위가 같은 통합문서면 지면 격자를 세는 COUNTIFS 다
+      // (실측 28건, part3 의 순위 계산). 외부 데이터를 타는 것과 셈이 전혀 다르다.
+      const firstRef = args[0]?.find((x) => x.t === 'ref') as Extract<Token, { t: 'ref' }> | undefined;
+      if (t.v === 'COUNTIFS' && firstRef && firstRef.ext === null) {
+        return rangeCountifs(args, p.ctx);
+      }
       const q = ifsQuery(t.v, args, p.ctx);
       return t.v === 'SUMIFS' ? { op: 'sumifs', q } : { op: 'countifs', q };
     }
@@ -433,6 +540,68 @@ function parseAtom(p: P): Expr {
         range: lookupRange(args[1], p.ctx),
         index: parseTokens(args[2], p.ctx),      // 실측 164건이 셀 참조(C$4)다 — 상수 가정 금지
       };
+    }
+    // Task 9 단위 7: 지면 범위 집계. SUM(C22) 처럼 값 하나로 오는 것도 있다(실측 2건).
+    if (t.v === 'SUM' || t.v === 'MAX' || t.v === 'COUNTA') {
+      const args = argTokens(p);
+      if (!args.length) throw new Error(`${t.v} 에 인자가 없다`);
+      const fn = t.v === 'SUM' ? 'sum' : t.v === 'MAX' ? 'max' : 'counta';
+      return { op: 'agg', fn, args: args.map((a) => rangeArg(a, p.ctx)) };
+    }
+    if (t.v === 'INDEX') {
+      // INDEX(범위, n) — 한 줄(한 열 또는 한 행) 범위의 n번째 칸. 2차원은 다루지 않는다.
+      const args = argTokens(p);
+      if (args.length !== 2) throw new Error(`INDEX 인자가 2개가 아니다 (${args.length}개)`);
+      return { op: 'index', range: mustRange('INDEX', args[0]), n: parseTokens(args[1], p.ctx) };
+    }
+    if (t.v === 'MATCH') {
+      const args = argTokens(p);
+      if (args.length !== 3) throw new Error(`MATCH 인자가 3개가 아니다 (${args.length}개)`);
+      const mode = args[2];
+      if (!(mode.length === 1 && mode[0].t === 'num' && mode[0].v === 0)) {
+        throw new Error(`MATCH 의 세 번째 인자가 0(정확히 일치)이 아니다: ${JSON.stringify(mode)}`);
+      }
+      return { op: 'match', needle: parseTokens(args[0], p.ctx), range: mustRange('MATCH', args[1]) };
+    }
+    if (t.v === 'SUMPRODUCT') {
+      // 실측 28건이 한 모양이다: SUMPRODUCT(--ISNUMBER(범위), --(범위<>"문자")).
+      // 일반 배열 수식 엔진을 만들지 않는다 — 다른 모양이 오면 unsupported 로 남긴다.
+      const args = argTokens(p);
+      if (args.length !== 2) throw new Error(`SUMPRODUCT 인자가 2개가 아니다 (${args.length}개)`);
+      return { op: 'rangecount', preds: args.map((a) => sumproductPred(a, p.ctx)) };
+    }
+    if (t.v === 'N') {
+      const args = argTokens(p);
+      if (args.length !== 1) throw new Error('N 인자가 1개가 아니다');
+      return { op: 'n', inner: parseTokens(args[0], p.ctx) };
+    }
+    if (t.v === 'LEN') {
+      const args = argTokens(p);
+      if (args.length !== 1) throw new Error('LEN 인자가 1개가 아니다');
+      return { op: 'len', inner: parseTokens(args[0], p.ctx) };
+    }
+    if (t.v === 'FIND') {
+      const args = argTokens(p);
+      if (args.length !== 2) throw new Error(`FIND 인자가 2개가 아니다 (${args.length}개)`);
+      return { op: 'find', needle: parseTokens(args[0], p.ctx), inside: parseTokens(args[1], p.ctx) };
+    }
+    if (t.v === 'QUOTIENT' || t.v === 'MOD') {
+      const args = argTokens(p);
+      if (args.length !== 2) throw new Error(`${t.v} 인자가 2개가 아니다`);
+      return { op: t.v === 'QUOTIENT' ? 'quotient' : 'mod',
+               a: parseTokens(args[0], p.ctx), b: parseTokens(args[1], p.ctx) };
+    }
+    if (t.v === 'ROUND') {
+      const args = argTokens(p);
+      if (args.length !== 2) throw new Error('ROUND 인자가 2개가 아니다');
+      return { op: 'round', inner: parseTokens(args[0], p.ctx), digits: parseTokens(args[1], p.ctx) };
+    }
+    if (t.v === 'AVERAGEIFS') {
+      // 인자 배치가 SUMIFS 와 같다(평균범위, 조건범위, 조건, …). long 테이블만 받는다.
+      const args = argTokens(p);
+      const q = ifsQuery('SUMIFS', args, p.ctx);
+      if ('kind' in q) throw new Error('격자 대상 AVERAGEIFS 는 이 데이터에 없다');
+      return { op: 'averageifs', q };
     }
     if (t.v === 'SUBSTITUTE') {
       const args = argTokens(p);

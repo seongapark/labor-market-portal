@@ -41,6 +41,19 @@ export type GridRange = {
   r1: number | null; r2: number | null;
 };
 
+/** Task 9 단위 7: **지면 격자 위**의 사각 범위(같은 통합문서). `sheet` 가 없으면 지금
+    시트다. 값은 DB 도 grid 도 아니라 `ExecCtx.grids`(+`anchorCell`)에서 읽는다 —
+    이미 계산된 칸들을 범위로 묶는 것이 이 단위의 전부다. */
+export type CellRange = { sheet?: string; r1: number; c1: number; r2: number; c2: number };
+
+/** SUM(A1:A3) 처럼 범위로 오거나 SUM(C22) 처럼 값 하나로 온다 */
+export type RangeArg = { range: CellRange } | { expr: Expr };
+
+/** 위치를 맞춰 세는 술어. 범위 대상 COUNTIFS 와 (측정된 한 모양의) SUMPRODUCT 가 쓴다. */
+export type RangePred =
+  | { kind: 'isnumber'; range: CellRange }
+  | { kind: 'crit'; range: CellRange; crit: Expr };   // 조건은 실행 시 문자열로 평가된다
+
 export type Expr =
   // Task 9 단위 5: long 테이블 질의(Query)와 격자 질의(GridQuery) 둘 다 온다.
   // 집계 종류는 op 하나가 정한다 — GridQuery 에 agg 를 또 두면 두 곳이 어긋날 수 있다.
@@ -80,10 +93,25 @@ export type Expr =
   /** 격자의 한 칸. 빈 칸은 0 이다(엑셀에서 빈 칸 참조는 0). */
   | { op: 'gridcell'; src: Extract<Src, 'etc' | 'panel'>; sheet: string; r: number; c: number }
   /** VLOOKUP(dir 'v')·HLOOKUP(dir 'h') — 정확히 일치(네 번째 인자 0)만. 못 찾으면 #N/A(null) */
-  | { op: 'lookup'; dir: 'v' | 'h'; needle: Expr; range: GridRange; index: Expr }
+  // Task 9 단위 7: 범위가 `CellRange` 면 외부 데이터가 아니라 지면 격자에서 찾는다.
+  | { op: 'lookup'; dir: 'v' | 'h'; needle: Expr; range: GridRange | CellRange; index: Expr }
   | { op: 'substitute'; inner: Expr; find: Expr; replace: Expr }
   | { op: 'left'; inner: Expr; n: Expr }
   | { op: 'right'; inner: Expr; n: Expr }
+  // Task 9 단위 7 — 지면 내부 범위 함수
+  | { op: 'agg'; fn: 'sum' | 'max' | 'counta'; args: RangeArg[] }
+  /** 위치를 맞춰 「모든 술어를 만족하는 칸 수」를 센다 — 범위 대상 COUNTIFS 와
+      측정된 한 모양의 SUMPRODUCT(--ISNUMBER(범위),--(범위<>"문자")) 가 같은 셈이다. */
+  | { op: 'rangecount'; preds: RangePred[] }
+  | { op: 'index'; range: CellRange; n: Expr }
+  | { op: 'match'; needle: Expr; range: CellRange }   // 세 번째 인자 0(정확히 일치)만
+  | { op: 'n'; inner: Expr }                          // N(x) — 수치면 그대로, 아니면 0
+  | { op: 'len'; inner: Expr }
+  | { op: 'find'; needle: Expr; inside: Expr }        // 1-based. 못 찾으면 #VALUE!
+  | { op: 'quotient'; a: Expr; b: Expr }
+  | { op: 'mod'; a: Expr; b: Expr }
+  | { op: 'round'; inner: Expr; digits: Expr }
+  | { op: 'averageifs'; q: Query }                    // long 테이블(oecd_obs) 대상
   | { op: 'unsupported'; reason: string; formula: string };
 
 /** 한 시트의 값 격자. 셀 참조를 푸는 데 쓴다. 'A14' → 값 */

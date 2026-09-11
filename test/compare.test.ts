@@ -94,9 +94,10 @@ test('verifyPart: 파싱 못한 수식은 unsupported 로 이유가 남는다', 
   const headers: Headers = { kosis: {}, oecd: {}, etc: {}, panel: {} };
   // INDEX/MATCH/RANK 가 아닌 함수를 써야 한다 — 그 셋은 이제 외부참조가 없으면
   // presentation 으로 갈라진다(아래 별도 테스트). 여기서는 그 분류와 무관한
-  // "그냥 못 다루는 함수"를 확인한다.
+  // "그냥 못 다루는 함수"를 확인한다. (단위 7 이 VLOOKUP 을 지원하게 되어
+  // 예시를 아직 구현하지 않은 함수로 바꿨다.)
   const formulas = { extmap: {},
-    sheets: { p1: { A1: '=VLOOKUP(A2,B1:C10,2,0)' } } };
+    sheets: { p1: { A1: '=SUMIF(A2:A9,">0",B2:B9)' } } };
   const res = verifyPart('partX', formulas, { p1: { A1: 5 } }, db, headers, '2025');
   assert.equal(res[0].verdict, 'unsupported');
   assert.ok(res[0].reason && res[0].reason.length > 0);

@@ -1,6 +1,7 @@
 import type { DatabaseSync } from 'node:sqlite';
 import { anchorCell, type AnchorCtx } from './anchor.ts';
-import type { Crit, Expr, Grid, GridQuery, Query } from '../types.ts';
+import { colLetters } from '../cellmap/parse.ts';
+import type { CellRange, Crit, Expr, Grid, GridQuery, Query, RangeArg, RangePred } from '../types.ts';
 
 /** RULING 8: ExecCtx 는 파트 전체의 격자(시트명 → Grid)를 들고, 지금 계산 중인 시트를 함께 표시한다.
     booklet 페이지 간 셀 참조('p68'!$F$5)와 보조시트(_시계열) 참조가 실측으로 8%+6% 나와,
@@ -87,7 +88,7 @@ function gridCritSql(alias: string, raw: string): { sql: string; args: (string |
     - COUNT: **첫 긍정 조건의 열**이다. COUNTIFS 는 행을 세는 것이고, 긍정 조건에 맞는
       행은 그 칸이 반드시 비어 있지 않으므로 그 열이 행 우주가 된다. 조건이 전부
       부정형(`<>`)이면 행 우주를 알 수 없어 던진다 — 조용히 0 을 내지 않는다. */
-function runGridIfs(q: GridQuery, ctx: ExecCtx, agg: 'SUM' | 'COUNT'): number {
+function runGridIfs(q: GridQuery, ctx: ExecCtx, agg: 'SUM' | 'COUNT' | 'AVG'): number {
   const parts = q.crits.map((c, i) => {
     const { sql, args, negated } = gridCritSql(`k${i}`, critValue(c.crit, ctx));
     return { alias: `k${i}`, col: c.col, sql, args, negated };
@@ -158,6 +159,136 @@ function literalNeedle(s: string): string {
   return out;
 }
 
+/** Task 9 단위 7: 지면 격자 범위를 셀 값 목록으로 펼친다. 값은 지금 쓰는 셀 해석
+    경로(anchorCell → grids)를 그대로 탄다 — DB 도 grid 도 타지 않는다.
+    행 우선으로 훑으므로 한 열·한 행 범위는 순서가 그대로 위치 번호가 된다. */
+const RANGE_CAP = 50_000;
+
+function rangeValues(range: CellRange, ctx: ExecCtx): (string | number | null)[] {
+  const rows = range.r2 - range.r1 + 1;
+  const cols = range.c2 - range.c1 + 1;
+  if (rows * cols > RANGE_CAP) {
+    throw new Error(`범위가 너무 크다 (${rows}×${cols}) — 수식을 잘못 읽은 것이다`);
+  }
+  const sheet = range.sheet ?? ctx.sheet;
+  const out: (string | number | null)[] = [];
+  for (let r = range.r1; r <= range.r2; r++) {
+    for (let c = range.c1; c <= range.c2; c++) {
+      out.push(gridCell(ctx, sheet, `${colLetters(c)}${r}`));
+    }
+  }
+  return out;
+}
+
+/** 범위 인자(범위 또는 식) → 값 목록 */
+function argValues(a: RangeArg, ctx: ExecCtx): (string | number | null)[] {
+  return 'range' in a ? rangeValues(a.range, ctx) : [execute(a.expr, ctx)];
+}
+
+/** 셀 값 하나가 조건값과 같은가 — 엑셀처럼 문자는 대소문자를 구별하지 않고,
+    숫자와 숫자꼴 문자열은 같다고 본다(격자에 "2025" 가 문자로 남아 있을 수 있다). */
+function cellEquals(v: string | number | null, needle: string | number): boolean {
+  if (v === null) return false;
+  if (typeof v === 'number' && typeof needle === 'number') return v === needle;
+  const vs = String(v).trim(), ns = String(needle).trim();
+  if (vs.toUpperCase() === ns.toUpperCase()) return true;
+  const vn = Number(vs), nn = Number(ns);
+  return vs !== '' && ns !== '' && Number.isFinite(vn) && Number.isFinite(nn) && vn === nn;
+}
+
+/** 엑셀 조건 문자열(">0" · "<>OECD" · "계")을 셀 값 하나에 적용한다.
+    `<>` 는 **빈 칸에도 맞는다**(엑셀). 그 밖의 조건은 빈 칸에 맞지 않는다. */
+function matchCrit(v: string | number | null, raw: string): boolean {
+  const m = /^(<=|>=|<>|<|>|=)\s*(.*)$/.exec(raw);
+  const op = m ? m[1] : '=';
+  const rhs = m ? m[2] : raw;
+  const num = rhs.trim() === '' ? NaN : Number(rhs);
+  if (op === '=') return cellEquals(v, rhs);
+  if (op === '<>') return !cellEquals(v, rhs);
+  if (v === null) return false;                 // 빈 칸은 비교 조건에 맞지 않는다
+  // 엑셀은 **같은 종류끼리만** 비교한다: ">10" 은 숫자 칸만 보고(문자 'OECD' 는 세지
+  // 않는다), ">가" 는 문자 칸만 본다. 종류를 섞어 문자열로 비교하면 'OECD' > '10' 이
+  // 참이 되어 순위가 조용히 틀린다(실측으로 part3!p215!I8 이 30 대신 31 이 됐다).
+  const vs = typeof v === 'number' ? '' : String(v).trim();
+  const vn = typeof v === 'number' ? v : (vs === '' ? NaN : Number(vs));
+  if (Number.isFinite(num)) {
+    if (!Number.isFinite(vn)) return false;
+    // 양쪽을 **유효자릿수 15** 로 맞춰 비교한다. 엑셀의 정밀도가 15자리이고, 무엇보다
+    // 조건이 `">"&값` 처럼 숫자를 문자로 바꿔 만들어질 때 그 변환이 15자리라서다.
+    // 맞추지 않으면 x > text(x) 가 참이 되어 자기 자신을 세고 순위가 1 밀린다
+    // (실측: part3!p215!I8 이 확정본 30 대신 31 이 나왔다).
+    const a = Number(vn.toPrecision(15)), b = Number(num.toPrecision(15));
+    switch (op) {
+      case '<': return a < b;
+      case '<=': return a <= b;
+      case '>': return a > b;
+      case '>=': return a >= b;
+    }
+  }
+  if (typeof v === 'number') return false;
+  const a = vs.toUpperCase(), b = rhs.trim().toUpperCase();
+  switch (op) {
+    case '<': return a < b;
+    case '<=': return a <= b;
+    case '>': return a > b;
+    case '>=': return a >= b;
+  }
+  return false;
+}
+
+/** 위치를 맞춰 「모든 술어를 만족하는 칸 수」를 센다.
+    범위 크기가 다르면 던진다 — 엑셀도 #VALUE! 이고, 조용히 짧은 쪽에 맞추면 틀린 수를 센다. */
+function runRangeCount(preds: RangePred[], ctx: ExecCtx): number | null {
+  if (!preds.length) return null;
+  const cols: { vals: (string | number | null)[]; test: (v: string | number | null) => boolean }[] = [];
+  for (const p of preds) {
+    const vals = rangeValues(p.range, ctx);
+    if (p.kind === 'isnumber') {
+      cols.push({ vals, test: (v) => typeof v === 'number' && Number.isFinite(v) });
+    } else {
+      const raw = textOf(execute(p.crit, ctx));
+      if (raw === null) return null;                  // 조건 자체가 오류다
+      cols.push({ vals, test: (v) => matchCrit(v, raw) });
+    }
+  }
+  const n = cols[0].vals.length;
+  for (const c of cols) {
+    if (c.vals.length !== n) {
+      throw new Error(`범위 크기가 다르다 (${cols.map((x) => x.vals.length).join(' vs ')})`);
+    }
+  }
+  let count = 0;
+  for (let i = 0; i < n; i++) {
+    if (cols.every((c) => c.test(c.vals[i]))) count++;
+  }
+  return count;
+}
+
+/** Task 9 단위 7: 지면 격자(=이미 계산된 칸들) 안에서 찾는 VLOOKUP/HLOOKUP.
+    찾은 칸이 비어 있으면 0 이다(엑셀). 못 찾으면 #N/A(null) — 둘은 다르다. */
+function lookupInCells(
+  dir: 'v' | 'h', needle: string | number, range: CellRange, idx: number, ctx: ExecCtx,
+): string | number | null {
+  const sheet = range.sheet ?? ctx.sheet;
+  const at = (c: number, r: number) => gridCell(ctx, sheet, `${colLetters(c)}${r}`);
+  if (dir === 'v') {
+    for (let r = range.r1; r <= range.r2; r++) {
+      if (!cellEquals(at(range.c1, r), needle)) continue;
+      const c = range.c1 + idx - 1;
+      if (c > range.c2) return null;                   // #REF!
+      return at(c, r) ?? 0;
+    }
+    return null;
+  }
+  for (let c = range.c1; c <= range.c2; c++) {
+    if (!cellEquals(at(c, range.r1), needle)) continue;
+    const r = range.r1 + idx - 1;
+    if (r > range.r2) return null;
+    return at(c, r) ?? 0;
+  }
+  return null;
+}
+
 /** VLOOKUP/HLOOKUP — 정확히 일치(네 번째 인자 0)만. 못 찾으면 #N/A(null)다. */
 function runLookup(e: Extract<Expr, { op: 'lookup' }>, ctx: ExecCtx): string | number | null {
   const raw = execute(e.needle, ctx);
@@ -166,6 +297,9 @@ function runLookup(e: Extract<Expr, { op: 'lookup' }>, ctx: ExecCtx): string | n
   if (idx === null || !Number.isInteger(idx) || idx < 1) return null;
 
   const needle = typeof raw === 'number' ? raw : literalNeedle(raw);
+  // Task 9 단위 7: 같은 통합문서 범위는 지면 격자에서 찾는다 (DB 를 타지 않는다)
+  if (!('src' in e.range)) return lookupInCells(e.dir, needle, e.range, idx, ctx);
+
   const eqSql = typeof needle === 'number'
     ? '(k.v_num = ? OR k.v_txt = ? COLLATE NOCASE)'
     : '(k.v_txt = ? COLLATE NOCASE OR k.v_num = ?)';
@@ -244,6 +378,20 @@ function critSql(col: string, raw: string): { sql: string; args: (string | numbe
   return { sql: `${col} ${op} ? COLLATE NOCASE`, args: [rhs] };
 }
 
+/** Task 9 단위 7: 집계 SQL 조각. AVERAGEIFS 는 **합÷개수가 아니다** — SQL 의 AVG 가
+    엑셀처럼 빈 칸·문자 칸을 분모에서 빼 준다(NULL 은 세지 않는다). 한 행도 없으면
+    AVG 는 NULL 이고 그것이 엑셀의 #DIV/0! 다 — 0 으로 만들지 않는다. */
+function aggSql(agg: 'SUM' | 'COUNT' | 'AVG', target: string): string {
+  if (agg === 'SUM') return `COALESCE(SUM(${target}), 0)`;
+  if (agg === 'COUNT') return `COUNT(${target})`;
+  return `AVG(${target})`;
+}
+
+function aggValue(agg: 'SUM' | 'COUNT' | 'AVG', row: { v: number | null } | undefined): number | null {
+  if (agg === 'AVG') return row && row.v !== null ? Number(row.v) : null;   // #DIV/0!
+  return row && row.v !== null ? Number(row.v) : 0;
+}
+
 /** RULING 7: 소스마다 열 이름 체계가 달라 테이블이 나뉜다.
     - kosis → obs. 헤더 이름을 COL 로 스네이크케이스 열에 매핑하고, obs 가 src 열을 갖고
       있으므로 src = 'kosis' 도 함께 건다.
@@ -251,7 +399,7 @@ function critSql(col: string, raw: string): { sql: string; args: (string | numbe
       소문자 영어('value')가 섞여 있어 모든 식별자를 큰따옴표로 인용한다.
     - etc·panel → 아직 long 테이블이 없다 (grid 좌표로만 적재됨). 0 을 돌려주면 정당한 0 과
       구별할 수 없어 대조를 속이게 되므로, 던진다. 9단계가 이 소스들에 long 뷰를 만들 것이다. */
-function runIfs(q: Query | GridQuery, ctx: ExecCtx, agg: 'SUM' | 'COUNT'): number {
+function runIfs(q: Query | GridQuery, ctx: ExecCtx, agg: 'SUM' | 'COUNT' | 'AVG'): number | null {
   // Task 9 단위 5: 격자 질의는 열 번호로 grid 를 자기조인한다.
   if ('kind' in q && q.kind === 'grid') return runGridIfs(q, ctx, agg);
 
@@ -265,11 +413,9 @@ function runIfs(q: Query | GridQuery, ctx: ExecCtx, agg: 'SUM' | 'COUNT'): numbe
       args.push(...a);
     }
     const target = dbCol(q.value);
-    const sql = agg === 'SUM'
-      ? `SELECT COALESCE(SUM(${target}), 0) AS v FROM obs WHERE ${where.join(' AND ')}`
-      : `SELECT COUNT(${target}) AS v FROM obs WHERE ${where.join(' AND ')}`;
-    const row = ctx.db.prepare(sql).get(...args) as { v: number } | undefined;
-    return row ? Number(row.v) : 0;
+    const sql = `SELECT ${aggSql(agg, target)} AS v FROM obs WHERE ${where.join(' AND ')}`;
+    const row = ctx.db.prepare(sql).get(...args) as { v: number | null } | undefined;
+    return aggValue(agg, row);
   }
 
   if (q.src === 'oecd') {
@@ -282,11 +428,9 @@ function runIfs(q: Query | GridQuery, ctx: ExecCtx, agg: 'SUM' | 'COUNT'): numbe
       args.push(...a);
     }
     const target = `"${q.value}"`;
-    const sql = agg === 'SUM'
-      ? `SELECT COALESCE(SUM(${target}), 0) AS v FROM oecd_obs WHERE ${where.join(' AND ')}`
-      : `SELECT COUNT(${target}) AS v FROM oecd_obs WHERE ${where.join(' AND ')}`;
-    const row = ctx.db.prepare(sql).get(...args) as { v: number } | undefined;
-    return row ? Number(row.v) : 0;
+    const sql = `SELECT ${aggSql(agg, target)} AS v FROM oecd_obs WHERE ${where.join(' AND ')}`;
+    const row = ctx.db.prepare(sql).get(...args) as { v: number | null } | undefined;
+    return aggValue(agg, row);
   }
 
   throw new Error(`실행 불가: src '${q.src}' 는 long 테이블이 없다 (grid 좌표만 적재됨)`);
@@ -472,6 +616,65 @@ export function execute(e: Expr, ctx: ExecCtx): number | string | null {
       if (s === null || n === null || n < 0) return null;
       return e.op === 'left' ? s.slice(0, n) : (n === 0 ? '' : s.slice(-n));
     }
+    // Task 9 단위 7 — 지면 내부 범위 함수
+    case 'agg': {
+      const vals: (string | number | null)[] = [];
+      for (const a of e.args) vals.push(...argValues(a, ctx));
+      const nums = vals.filter((v): v is number => typeof v === 'number' && Number.isFinite(v));
+      if (e.fn === 'sum') return nums.reduce((a, b) => a + b, 0);
+      if (e.fn === 'max') return nums.length ? Math.max(...nums) : 0;
+      // COUNTA — 비어 있지 않은 칸 수. 빈 문자열은 세지 않는다.
+      return vals.filter((v) => v !== null && v !== '').length;
+    }
+    case 'rangecount': return runRangeCount(e.preds, ctx);
+    case 'index': {
+      const n = numOrErr(execute(e.n, ctx));
+      if (n === null || !Number.isInteger(n) || n < 1) return null;
+      const vals = rangeValues(e.range, ctx);
+      if (n > vals.length) return null;                 // #REF!
+      return vals[n - 1] ?? 0;                          // 빈 칸은 0 (엑셀)
+    }
+    case 'match': {
+      const raw = execute(e.needle, ctx);
+      if (raw === null) return null;
+      const vals = rangeValues(e.range, ctx);
+      for (let i = 0; i < vals.length; i++) {
+        if (cellEquals(vals[i], raw)) return i + 1;     // 1-based
+      }
+      return null;                                      // #N/A
+    }
+    case 'n': {
+      const v = execute(e.inner, ctx);
+      return typeof v === 'number' && Number.isFinite(v) ? v : 0;
+    }
+    case 'len': {
+      const s = textOf(execute(e.inner, ctx));
+      return s === null ? null : s.length;
+    }
+    case 'find': {
+      const needle = textOf(execute(e.needle, ctx));
+      const inside = textOf(execute(e.inside, ctx));
+      if (needle === null || inside === null) return null;
+      const i = inside.indexOf(needle);
+      return i < 0 ? null : i + 1;                      // 못 찾으면 #VALUE!
+    }
+    case 'quotient': case 'mod': {
+      const a = numOrErr(execute(e.a, ctx));
+      const b = numOrErr(execute(e.b, ctx));
+      if (a === null || b === null || b === 0) return null;   // #DIV/0!
+      if (e.op === 'quotient') return Math.trunc(a / b);
+      return a - b * Math.floor(a / b);                 // 엑셀 MOD 는 나누는 수의 부호를 따른다
+    }
+    case 'round': {
+      const v = numOrErr(execute(e.inner, ctx));
+      const d = numOrErr(execute(e.digits, ctx));
+      if (v === null || d === null) return null;
+      // 사사오입 — TEXT 와 같은 규칙(0.5 는 항상 0 에서 먼 쪽)
+      const f = 10 ** d;
+      const n15 = Number((v * f).toPrecision(15));
+      return Math.sign(n15) * Math.round(Math.abs(n15)) / f;
+    }
+    case 'averageifs': return runIfs(e.q, ctx, 'AVG');
     case 'unsupported': return null;
   }
 }
