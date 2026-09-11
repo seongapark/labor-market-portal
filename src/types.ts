@@ -32,6 +32,15 @@ export type GridQuery = {
   crits: { col: number; crit: Crit }[];
 };
 
+/** Task 9 단위 6: 격자 위의 사각 범위. VLOOKUP/HLOOKUP 이 찾는 판이다.
+    `r1`·`r2` 가 null 이면 열 전체 참조('$A:$B')다 — 행 제한이 없다. */
+export type GridRange = {
+  src: Extract<Src, 'etc' | 'panel'>;
+  sheet: string;
+  c1: number; c2: number;
+  r1: number | null; r2: number | null;
+};
+
 export type Expr =
   // Task 9 단위 5: long 테이블 질의(Query)와 격자 질의(GridQuery) 둘 다 온다.
   // 집계 종류는 op 하나가 정한다 — GridQuery 에 agg 를 또 두면 두 곳이 어긋날 수 있다.
@@ -65,6 +74,16 @@ export type Expr =
   // Task 9 단위 8: 문자열 이어붙이기 a&b — 지면의 연도 씨앗셀이 이 모양이다
   // (=(_시계열!$B$1-3)&"년" → "2022년"). 결과는 언제나 문자열이다.
   | { op: 'concat'; args: Expr[] }
+  // Task 9 단위 6 — 같은 grid 표를 다른 모양으로 읽는 갈래들
+  /** '[N]0_수집현황'!$A$1 — 지면에 앵커가 직접 놓인 셀(실측 1건: part1_4(1)!p67!B1) */
+  | { op: 'anchor' }
+  /** 격자의 한 칸. 빈 칸은 0 이다(엑셀에서 빈 칸 참조는 0). */
+  | { op: 'gridcell'; src: Extract<Src, 'etc' | 'panel'>; sheet: string; r: number; c: number }
+  /** VLOOKUP(dir 'v')·HLOOKUP(dir 'h') — 정확히 일치(네 번째 인자 0)만. 못 찾으면 #N/A(null) */
+  | { op: 'lookup'; dir: 'v' | 'h'; needle: Expr; range: GridRange; index: Expr }
+  | { op: 'substitute'; inner: Expr; find: Expr; replace: Expr }
+  | { op: 'left'; inner: Expr; n: Expr }
+  | { op: 'right'; inner: Expr; n: Expr }
   | { op: 'unsupported'; reason: string; formula: string };
 
 /** 한 시트의 값 격자. 셀 참조를 푸는 데 쓴다. 'A14' → 값 */

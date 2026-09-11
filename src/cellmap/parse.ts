@@ -1,5 +1,5 @@
 import { tokenize, type Token } from './tokenize.ts';
-import type { Crit, Expr, GridQuery, Headers, Query, Src } from '../types.ts';
+import type { Crit, Expr, GridQuery, GridRange, Headers, Query, Src } from '../types.ts';
 
 export type ParseCtx = { extmap: Record<string, string>; headers: Headers };
 
@@ -51,6 +51,33 @@ export function colName(src: Src, sheet: string, a1: string, headers: Headers): 
 /** 절대참조 기호를 벗긴 셀 좌표 */
 function plainRef(a1: string): string {
   return a1.replace(/\$/g, '');
+}
+
+/** Task 9 단위 8 의 앵커 자리 — 통합문서마다 외부참조 인덱스가 다르므로(`[1]` 이기도
+    `[2]` 이기도 하다) **시트 이름과 좌표로** 가려낸다. Task 9 단위 10 에서 anchor.ts 가
+    쓰던 것을 여기로 옮겼다: 「무엇이 앵커 참조인가」는 수식 문법의 문제이고, 이렇게
+    두면 parse.ts → anchor.ts 방향의 순환 import 가 생기지 않는다. */
+export const ANCHOR_REF = { sheet: '0_수집현황', cell: 'A1' } as const;
+
+export function isAnchorRef(t: Token): boolean {
+  return t.t === 'ref' && t.ext !== null
+    && t.sheet === ANCHOR_REF.sheet && plainRef(t.a1) === ANCHOR_REF.cell;
+}
+
+/** 'A5' · '$A$5' → {r,c}. 범위면 **첫 칸**을 낸다 (엑셀 암시적 교차) */
+function cellCoord(a1: string): { r: number; c: number } {
+  const m = /^\$?([A-Z]{1,3})\$?(\d+)/.exec(a1);
+  if (!m) throw new Error('격자 좌표를 못 읽었다 (행 번호가 없다): ' + a1);
+  return { r: Number(m[2]), c: colNumber(m[1]) };
+}
+
+/** '$T$7:$AD$39' → 사각범위 · '$A:$B' → 열 전체(행 제한 없음) */
+function rangeCoord(a1: string): { c1: number; c2: number; r1: number | null; r2: number | null } {
+  const full = /^\$?([A-Z]{1,3}):\$?([A-Z]{1,3})$/.exec(a1);
+  if (full) return { c1: colNumber(full[1]), c2: colNumber(full[2]), r1: null, r2: null };
+  const box = /^\$?([A-Z]{1,3})\$?(\d+):\$?([A-Z]{1,3})\$?(\d+)$/.exec(a1);
+  if (!box) throw new Error('사각범위를 못 읽었다: ' + a1);
+  return { c1: colNumber(box[1]), c2: colNumber(box[3]), r1: Number(box[2]), r2: Number(box[4]) };
 }
 
 type P = { toks: Token[]; i: number; ctx: ParseCtx };
@@ -186,6 +213,31 @@ function ifsQuery(name: 'SUMIFS' | 'COUNTIFS', args: Token[][], ctx: ParseCtx): 
   return { src, table: sheet!, value, where };
 }
 
+/** Task 9 단위 6: 외부참조 토큰 → 격자 원천. kosis·oecd 는 좌표로 적재된 적이 없어
+    (long 테이블만 있다) 여기서 사유를 바꿔 남긴다 — 없는 좌표를 추측하지 않는다. */
+function gridSrc(t: Extract<Token, { t: 'ref' }>, ctx: ParseCtx): { src: 'etc' | 'panel'; sheet: string } {
+  const file = ctx.extmap[String(t.ext)];
+  if (!file) throw new Error(`extmap 에 ${t.ext} 번이 없다`);
+  const src = srcOf(file);
+  if (src !== 'etc' && src !== 'panel') {
+    throw new Error(`격자가 없는 원천의 좌표 참조다: ${src} ${t.sheet}!${t.a1}`);
+  }
+  if (!t.sheet) throw new Error('외부 좌표 참조에 시트가 없다: ' + t.a1);
+  return { src, sheet: t.sheet };
+}
+
+/** 조회 함수의 두 번째 인자 — **외부** 사각범위만 받는다.
+    같은 통합문서 안에서 찾는 VLOOKUP(실측 182건)은 확정본 격자를 훑어야 하는 다른
+    문제라 여기서 던진다(단위 7 소관). */
+function lookupRange(toks: Token[], ctx: ParseCtx): GridRange {
+  const r = toks.find((t) => t.t === 'ref') as Extract<Token, { t: 'ref' }> | undefined;
+  if (!r || r.ext === null || toks.length !== 1) {
+    throw new Error('조회 범위가 외부 사각범위가 아니다: ' + JSON.stringify(toks));
+  }
+  const g = gridSrc(r, ctx);
+  return { ...g, ...rangeCoord(r.a1) };
+}
+
 const CMP_REL: Record<string, 'eq' | 'ne' | 'lt' | 'lte' | 'gt' | 'gte'> = {
   '=': 'eq', '<>': 'ne', '<': 'lt', '<=': 'lte', '>': 'gt', '>=': 'gte',
 };
@@ -307,7 +359,12 @@ function parseAtom(p: P): Expr {
         ? { op: 'cell', ref: plainRef(t.a1) }
         : { op: 'cell', sheet: t.sheet, ref: plainRef(t.a1) };
     }
-    throw new Error('산술에 외부통합문서 참조가 왔다: ' + t.a1);
+    // Task 9 단위 6: 외부통합문서의 **좌표 한 칸**은 grid 에서 읽는다(실측 439건).
+    // 앵커 한 칸은 단위 8 의 바닥값이다.
+    if (isAnchorRef(t)) return { op: 'anchor' };
+    const g = gridSrc(t, p.ctx);
+    const { r, c } = cellCoord(t.a1);      // 범위면 첫 칸 (엑셀 암시적 교차, 실측 28건)
+    return { op: 'gridcell', src: g.src, sheet: g.sheet, r, c };
   }
   if (t.t === 'fn') {
     if (t.v === 'SUMIFS' || t.v === 'COUNTIFS') {
@@ -358,6 +415,44 @@ function parseAtom(p: P): Expr {
       // 흘려보냈다 — "69.3%" 가 num() 에서 0 이 됐다. 이제 실제로 파싱하는 연산으로 남긴다.
       const args = argTokens(p);
       return { op: 'numbervalue', inner: parseTokens(args[0], p.ctx) };
+    }
+    if (t.v === 'VLOOKUP' || t.v === 'HLOOKUP') {
+      // Task 9 단위 6: VLOOKUP(찾을값, 외부사각범위, 열인덱스, 0)
+      const args = argTokens(p);
+      if (args.length !== 4) throw new Error(`${t.v} 인자가 4개가 아니다 (${args.length}개)`);
+      const mode = args[3];
+      // 네 번째 인자는 실측상 전부 0(정확히 일치)이다. 1(근사 조회)은 정렬 전제가 달라
+      // 구현하지 않는다 — 있는 척하지 않고 사유에 남긴다.
+      if (!(mode.length === 1 && mode[0].t === 'num' && mode[0].v === 0)) {
+        throw new Error(`${t.v} 의 네 번째 인자가 0(정확히 일치)이 아니다: ${JSON.stringify(mode)}`);
+      }
+      return {
+        op: 'lookup',
+        dir: t.v === 'VLOOKUP' ? 'v' : 'h',
+        needle: parseTokens(args[0], p.ctx),
+        range: lookupRange(args[1], p.ctx),
+        index: parseTokens(args[2], p.ctx),      // 실측 164건이 셀 참조(C$4)다 — 상수 가정 금지
+      };
+    }
+    if (t.v === 'SUBSTITUTE') {
+      const args = argTokens(p);
+      // 네 번째 인자(instance_num)는 이 데이터에 없다 — 오면 추측하지 않는다.
+      if (args.length !== 3) throw new Error(`SUBSTITUTE 인자가 3개가 아니다 (${args.length}개)`);
+      return {
+        op: 'substitute',
+        inner: parseTokens(args[0], p.ctx),
+        find: parseTokens(args[1], p.ctx),
+        replace: parseTokens(args[2], p.ctx),
+      };
+    }
+    if (t.v === 'LEFT' || t.v === 'RIGHT') {
+      const args = argTokens(p);
+      if (args.length !== 2) throw new Error(`${t.v} 인자가 2개가 아니다 (${args.length}개)`);
+      return {
+        op: t.v === 'LEFT' ? 'left' : 'right',
+        inner: parseTokens(args[0], p.ctx),
+        n: parseTokens(args[1], p.ctx),
+      };
     }
     if (t.v === 'IFERROR') {
       // Task 9 단위 3: 예전에는 껍데기만 벗기고 fallback 을 버렸다 — 잘못됐다.

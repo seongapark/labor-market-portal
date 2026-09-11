@@ -122,6 +122,82 @@ function runGridIfs(q: GridQuery, ctx: ExecCtx, agg: 'SUM' | 'COUNT'): number {
   return row ? Number(row.v) : 0;
 }
 
+/** Task 9 단위 6: 격자의 한 칸. 수치면 v_num, 아니면 v_txt.
+    **없는 칸은 0 이다** — 엑셀에서 빈 칸을 참조하면 0 이다. 추측이 아니라 실측이다:
+    `=[1]청년패널!A11:B11` 28건의 확정본이 그 칸이 비었을 때 정확히 0 이었다.
+    (조회에서 「못 찾은 것」은 이것과 다르다 — 그건 #N/A 로 null 이다.) */
+function gridOne(ctx: ExecCtx, src: string, sheet: string, r: number, c: number): string | number {
+  const row = ctx.db.prepare(
+    'SELECT v_num, v_txt FROM grid WHERE src = ? AND sheet = ? AND r = ? AND c = ?',
+  ).get(src, sheet, r, c) as { v_num: number | null; v_txt: string | null } | undefined;
+  if (!row) return 0;
+  if (row.v_num !== null) return row.v_num;
+  return row.v_txt ?? 0;
+}
+
+/** 엑셀 조회의 찾을값은 와일드카드 패턴이다: `~` 가 `*`·`?`·`~` 를 이스케이프한다.
+    우리는 와일드카드를 구현하지 않으므로 **이스케이프를 되돌려 문자 그대로** 찾는다 —
+    실측 121건(HLOOKUP)이 전부 `SUBSTITUTE($B6,"~","~~")` 로 감싸여 있고, 격자에는
+    `5~9인` 처럼 `~` 가 든 값이 있어서, 되돌리지 않으면 아무것도 못 찾는다.
+    되돌릴 수 없는 진짜 와일드카드(`*`·`?`)가 오면 던진다 — 있는 척하지 않는다. */
+function literalNeedle(s: string): string {
+  let out = '';
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (ch === '~') {
+      const next = s[i + 1];
+      if (next === '~' || next === '*' || next === '?') { out += next; i++; continue; }
+      out += ch;                       // 이스케이프가 아닌 ~ 는 그대로 문자다
+      continue;
+    }
+    if (ch === '*' || ch === '?') {
+      throw new Error(`조회 찾을값에 와일드카드가 있다 — 지원하지 않는다: ${s}`);
+    }
+    out += ch;
+  }
+  return out;
+}
+
+/** VLOOKUP/HLOOKUP — 정확히 일치(네 번째 인자 0)만. 못 찾으면 #N/A(null)다. */
+function runLookup(e: Extract<Expr, { op: 'lookup' }>, ctx: ExecCtx): string | number | null {
+  const raw = execute(e.needle, ctx);
+  if (raw === null) return null;                        // 찾을값이 이미 오류다
+  const idx = numOrErr(execute(e.index, ctx));
+  if (idx === null || !Number.isInteger(idx) || idx < 1) return null;
+
+  const needle = typeof raw === 'number' ? raw : literalNeedle(raw);
+  const eqSql = typeof needle === 'number'
+    ? '(k.v_num = ? OR k.v_txt = ? COLLATE NOCASE)'
+    : '(k.v_txt = ? COLLATE NOCASE OR k.v_num = ?)';
+  const eqArgs: (string | number)[] = typeof needle === 'number'
+    ? [needle, String(needle)]
+    : [needle, Number(needle)];        // 숫자꼴 문자열이 v_num 으로 들어간 칸도 맞춘다
+
+  const { src, sheet, c1, c2, r1, r2 } = e.range;
+  const args: (string | number)[] = [src, sheet];
+  const where = ['k.src = ?', 'k.sheet = ?'];
+  if (e.dir === 'v') {
+    where.push('k.c = ?'); args.push(c1);                          // 첫 열에서 찾는다
+    if (r1 !== null) { where.push('k.r >= ?'); args.push(r1); }
+    if (r2 !== null) { where.push('k.r <= ?'); args.push(r2); }
+  } else {
+    if (r1 === null) throw new Error('HLOOKUP 범위에 행 번호가 없다');
+    where.push('k.r = ?'); args.push(r1);                          // 첫 행에서 찾는다
+    where.push('k.c >= ?'); args.push(c1);
+    where.push('k.c <= ?'); args.push(c2);
+  }
+  where.push(eqSql); args.push(...eqArgs);
+  const order = e.dir === 'v' ? 'k.r' : 'k.c';
+  const hit = ctx.db.prepare(
+    `SELECT k.r AS r, k.c AS c FROM grid k WHERE ${where.join(' AND ')} ORDER BY ${order} LIMIT 1`,
+  ).get(...args) as { r: number; c: number } | undefined;
+  if (!hit) return null;                                // #N/A — 0 이 아니다
+
+  return e.dir === 'v'
+    ? gridOne(ctx, src, sheet, hit.r, c1 + idx - 1)
+    : gridOne(ctx, src, sheet, r1! + idx - 1, hit.c);
+}
+
 function critValue(c: Crit, ctx: ExecCtx): string {
   if (c.kind === 'year') {
     // FIX ROUND 1: TEXT(C$6,"0") 은 "C6 가 가리키는 값을 정수로" 다 — 연도는 c.ref 가
@@ -378,6 +454,23 @@ export function execute(e: Expr, ctx: ExecCtx): number | string | null {
       // null 로 낸다) — fallback 을 실행한다. null 이 아니면 inner 값을 그대로 낸다.
       const v = execute(e.inner, ctx);
       return v === null ? execute(e.fallback, ctx) : v;
+    }
+    // Task 9 단위 6
+    case 'anchor': return ctx.anchor ? ctx.anchor.anchor : null;
+    case 'gridcell': return gridOne(ctx, e.src, e.sheet, e.r, e.c);
+    case 'lookup': return runLookup(e, ctx);
+    case 'substitute': {
+      const s = textOf(execute(e.inner, ctx));
+      const find = textOf(execute(e.find, ctx));
+      const rep = textOf(execute(e.replace, ctx));
+      if (s === null || find === null || rep === null) return null;
+      return find === '' ? s : s.split(find).join(rep);
+    }
+    case 'left': case 'right': {
+      const s = textOf(execute(e.inner, ctx));
+      const n = numOrErr(execute(e.n, ctx));
+      if (s === null || n === null || n < 0) return null;
+      return e.op === 'left' ? s.slice(0, n) : (n === 0 ? '' : s.slice(-n));
     }
     case 'unsupported': return null;
   }

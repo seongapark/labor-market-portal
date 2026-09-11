@@ -1,5 +1,5 @@
 import type { DatabaseSync } from 'node:sqlite';
-import { parseFormula, type ParseCtx } from '../cellmap/parse.ts';
+import { parseFormula, isAnchorRef, ANCHOR_REF, type ParseCtx } from '../cellmap/parse.ts';
 import { tokenize } from '../cellmap/tokenize.ts';
 import { execute } from './execute.ts';
 import type { Grid } from '../types.ts';
@@ -23,9 +23,10 @@ export type AnchorCtx = {
 };
 
 /** 앵커 셀은 통합문서마다 외부참조 인덱스가 다르다([1] 이기도 [2] 이기도 하다 — extmap
-    이 part 별인 이유가 그것이다). 그래서 인덱스가 아니라 **시트 이름과 좌표로** 가려낸다. */
-const ANCHOR_SHEET = '0_수집현황';
-const ANCHOR_CELL = 'A1';
+    이 part 별인 이유가 그것이다). 그래서 인덱스가 아니라 **시트 이름과 좌표로** 가려낸다.
+    Task 9 단위 6: 그 판정(`isAnchorRef`)은 수식 문법의 문제라 parse.ts 로 옮겼다 —
+    지면에 앵커가 직접 놓인 셀도 같은 규칙으로 읽어야 하기 때문이다. */
+const ANCHOR_SHEET = ANCHOR_REF.sheet;
 
 /** 앵커로 못 푸는 셀을 참조했다는 신호. 이 셀은 통째로 「계산 불가」다.
     0 이나 null 로 뭉개면 =B4+5 가 5 가 되어 조용히 틀린 값이 나온다. */
@@ -58,9 +59,7 @@ function plainRef(a1: string): string {
 
 /** 수식 전체가 앵커 한 칸인가 — 사슬의 유일한 바닥값 */
 function isAnchor(toks: ReturnType<typeof tokenize>): boolean {
-  if (toks.length !== 1) return false;
-  const t = toks[0];
-  return t.t === 'ref' && t.ext !== null && t.sheet === ANCHOR_SHEET && plainRef(t.a1) === ANCHOR_CELL;
+  return toks.length === 1 && isAnchorRef(toks[0]);
 }
 
 /** RULING 17: 앵커 자리 — 13개 part 전부 `_시계열!B1` 이다(실측). 앵커 수식이 있는
