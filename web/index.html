@@ -364,6 +364,7 @@ function show(i) {
     + '</div>'
     + '<div class="chips">'
     + '<span class="chip">' + p.page + '쪽</span>'
+    + (p.unit ? '<span class="chip">단위 ' + esc(p.unit) + '</span>' : '')
     + (p.tableState === 'printed'
         ? '<span class="chip ok">인쇄본 표 ' + p.verified.toLocaleString('ko-KR') + '칸</span>'
         : p.tableState === 'unverified'

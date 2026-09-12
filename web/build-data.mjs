@@ -33,7 +33,14 @@ const chartDefs = JSON.parse(readFileSync(ROOT + 'data/charts.json', 'utf8'));
    엑셀에는 참고용·작업용 칸이 많아 그대로 그리면 쓰레기가 섞인다(실측: 엑셀 수치칸
    22,920 중 인쇄된 것은 4,766 = 20.8%). **확인되지 않은 표는 보여주지 않는다.** */
 const tableSpec = JSON.parse(readFileSync(ROOT + 'data/table-spec.json', 'utf8'));
-const pdfPages = JSON.parse(readFileSync(ROOT + 'data/pdf-pages.json', 'utf8'));
+const pdfPagesRaw = JSON.parse(readFileSync(ROOT + 'data/pdf-pages.json', 'utf8'));
+const pdfPages = pdfPagesRaw;
+const unitOf = new Map();
+for (const p of pdfPagesRaw.pages) {
+  const txt = [...(p.source || []), ...(p.unit || [])].join(' ');
+  const m = /\(?\s*단위\s*[:：]\s*([^)\]]+?)\s*\)/.exec(txt);
+  if (m) unitOf.set(String(p.page), m[1].trim());
+}
 const pdfHasTable = new Set(pdfPages.pages.filter((p) => (p.tables || []).some((t) => {
   const flat = t.rows.flat().map((c) => String(c).trim()).filter(Boolean);
   if (flat.length < 6) return false;
@@ -306,7 +313,7 @@ for (const t of toc.pages) {
      엑셀 격자를 그대로 그리면 참고셀·작업메모·그래프용 보조열이 전부 딸려온다. */
   const printed = (specByPage.get(String(t.page)) || [])
     .filter((sp) => sp.part === t.file && sp.sheet === t.sheet
-      && sp.valRate >= 0.8 && sp.headerRow && sp.labelCol);
+      && sp.valRate >= 0.9 && sp.rows?.length && sp.cols?.length);
 
   const cells = [];
   let verified = 0, exemptN = 0;
@@ -315,28 +322,29 @@ for (const t of toc.pages) {
   if (printed.length) {
     tableState = 'printed';
     const sp = printed[0];
-    const at = (r, c) => {
-      const ref = colStr(c) + r;
-      const has = ref in comp;
-      return { ref, has, v: has ? comp[ref] : (oc[ref] ?? null), ex: exempt.has(`${pageKey}!${ref}`) };
-    };
-    // 머리행: 인쇄된 머리 라벨을 그대로 쓰되 좌표가 있는 칸만
-    const cols = sp.cols.map((c, i) => ({ c, label: sp.printedHead[i] })).filter((x) => x.c !== null);
-    const rows = sp.rows.map((r, i) => ({ r, label: sp.printedLabels[i] })).filter((x) => x.r !== null);
-    // 1행 = 머리
-    cells.push({ r: 1, c: 1, v: sp.printedHead[0] || '구분', k: 'l' });
-    cols.forEach((x, i) => cells.push({ r: 1, c: i + 2, v: x.label, k: 'l' }));
-    rows.forEach((row, ri) => {
-      cells.push({ r: ri + 2, c: 1, v: row.label, k: 'l' });
-      cols.forEach((x, ci) => {
-        const cell = at(row.r, x.c);
-        if (cell.has && !cell.ex) verified++;
-        if (cell.ex) exemptN++;
-        cells.push({
-          r: ri + 2, c: ci + 2, v: cell.v,
-          o: cell.ex ? oc[cell.ref] : undefined,
-          k: cell.has ? (cell.ex ? 'x' : 'v') : 'l',
-        });
+    /* 명세는 **좌표만** 담는다. 값은 계산값(comp)에서 가져오므로 원데이터가 바뀌면
+       같은 좌표에 새 값이 들어간다. 머리·항목 글자는 **인쇄본 것**을 쓴다. */
+    cells.push({ r: 1, c: 1, v: sp.corner || '구 분', k: 'l' });
+    sp.head.forEach((h, ci) => cells.push({ r: 1, c: ci + 2, v: h, k: 'l' }));
+    sp.rows.forEach((er, ri) => {
+      cells.push({ r: ri + 2, c: 1, v: sp.labels[ri] ?? '', k: 'l' });
+      sp.cols.forEach((ec, ci) => {
+        const ref = colStr(ec) + er;
+        const has = ref in comp;
+        const ex = exempt.has(`${pageKey}!${ref}`);
+        const raw = has ? comp[ref] : (oc[ref] ?? null);
+        // 인쇄본 단위로 환산한다 (배율은 매칭이 찾아낸 값)
+        let v = raw;
+        if (typeof raw === 'number') {
+          const scaled = sp.scale !== 1 ? raw * sp.scale : raw;
+          // 인쇄본과 같은 자리수로 (인원=정수, 비율=소수 첫째자리) — 부동소수 찌꺼기도 여기서 잘린다
+          const d = sp.decimals?.[ci] ?? 0;
+          const pw = Math.pow(10, d);
+          v = Math.round(scaled * pw) / pw;
+        }
+        if (has && !ex) verified++;
+        if (ex) exemptN++;
+        cells.push({ r: ri + 2, c: ci + 2, v, o: ex ? oc[ref] : undefined, k: has ? (ex ? 'x' : 'v') : 'l' });
       });
     });
   } else if (pageKey && (pdfHasTable.has(String(t.page)))) {
@@ -349,6 +357,7 @@ for (const t of toc.pages) {
     title: t.title, sheet: t.sheet, org: src.org, stat: src.stat,
     verified, exempt: exemptN,
     tableState,
+    unit: unitOf.get(String(t.page)) || '',
     charts: pageKey ? buildCharts(t.file, t.sheet) : [],
     cells,
   });
