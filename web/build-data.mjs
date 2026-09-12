@@ -29,6 +29,21 @@ const toc = JSON.parse(readFileSync(ROOT + 'data/toc.json', 'utf8'));
 const layout = JSON.parse(readFileSync(ROOT + 'data/layout.json', 'utf8'));
 const known = JSON.parse(readFileSync(ROOT + 'data/known-divergences.json', 'utf8'));
 const chartDefs = JSON.parse(readFileSync(ROOT + 'data/charts.json', 'utf8'));
+/* 인쇄 표 명세 — 어떤 지면에 표가 있고, 어떤 행·열이 인쇄되었는지.
+   엑셀에는 참고용·작업용 칸이 많아 그대로 그리면 쓰레기가 섞인다(실측: 엑셀 수치칸
+   22,920 중 인쇄된 것은 4,766 = 20.8%). **확인되지 않은 표는 보여주지 않는다.** */
+const tableSpec = JSON.parse(readFileSync(ROOT + 'data/table-spec.json', 'utf8'));
+const pdfPages = JSON.parse(readFileSync(ROOT + 'data/pdf-pages.json', 'utf8'));
+const pdfHasTable = new Set(pdfPages.pages.filter((p) => (p.tables || []).some((t) => {
+  const flat = t.rows.flat().map((c) => String(c).trim()).filter(Boolean);
+  if (flat.length < 6) return false;
+  return flat.filter((c) => /^-?[0-9][0-9,.]*$/.test(c)).length / flat.length >= 0.4;
+})).map((p) => String(p.page)));
+const specByPage = new Map();
+for (const sp of tableSpec.specs) {
+  if (!specByPage.has(String(sp.page))) specByPage.set(String(sp.page), []);
+  specByPage.get(String(sp.page)).push(sp);
+}
 
 const oracle = {};
 for (const f of readdirSync(join(ROOT, 'data/oracle'))) {
@@ -287,24 +302,45 @@ for (const t of toc.pages) {
      `tableCols` 는 근거 기록을 위해 남겨 두되 적용하지 않는다. */
   const thin = null;
 
+  /* 표는 **인쇄본 구성이 확인된 지면만** 만든다.
+     엑셀 격자를 그대로 그리면 참고셀·작업메모·그래프용 보조열이 전부 딸려온다. */
+  const printed = (specByPage.get(String(t.page)) || [])
+    .filter((sp) => sp.part === t.file && sp.sheet === t.sheet
+      && sp.valRate >= 0.8 && sp.headerRow && sp.labelCol);
+
   const cells = [];
   let verified = 0, exemptN = 0;
-  for (const ref of new Set([...Object.keys(oc), ...Object.keys(comp)])) {
-    const pos = parseRef(ref);
-    if (!pos || pos.r <= 3) continue;          // 1~3행은 제목·출처 메타. 머리로 따로 쓴다
-    // 희소 라벨 행이 선언된 지면은 그 시점만 표에 넣는다 (그래프는 전체를 그대로 쓴다)
-    if (thin && !thin.keep.has(pos.c)) continue;
-    if (thin && thin.dropRows.has(pos.r)) continue;  // 매년 라벨 행은 표에서 뺀다
-    const hasComp = ref in comp;
-    const ex = exempt.has(`${pageKey}!${ref}`);
-    if (hasComp && !ex) verified++;
-    if (ex) exemptN++;
-    cells.push({
-      r: pos.r, c: pos.c,
-      v: hasComp ? comp[ref] : (oc[ref] ?? null),
-      o: ex ? oc[ref] : undefined,
-      k: hasComp ? (ex ? 'x' : 'v') : 'l',
+  let tableState = 'none';                     // none · printed · unverified
+
+  if (printed.length) {
+    tableState = 'printed';
+    const sp = printed[0];
+    const at = (r, c) => {
+      const ref = colStr(c) + r;
+      const has = ref in comp;
+      return { ref, has, v: has ? comp[ref] : (oc[ref] ?? null), ex: exempt.has(`${pageKey}!${ref}`) };
+    };
+    // 머리행: 인쇄된 머리 라벨을 그대로 쓰되 좌표가 있는 칸만
+    const cols = sp.cols.map((c, i) => ({ c, label: sp.printedHead[i] })).filter((x) => x.c !== null);
+    const rows = sp.rows.map((r, i) => ({ r, label: sp.printedLabels[i] })).filter((x) => x.r !== null);
+    // 1행 = 머리
+    cells.push({ r: 1, c: 1, v: sp.printedHead[0] || '구분', k: 'l' });
+    cols.forEach((x, i) => cells.push({ r: 1, c: i + 2, v: x.label, k: 'l' }));
+    rows.forEach((row, ri) => {
+      cells.push({ r: ri + 2, c: 1, v: row.label, k: 'l' });
+      cols.forEach((x, ci) => {
+        const cell = at(row.r, x.c);
+        if (cell.has && !cell.ex) verified++;
+        if (cell.ex) exemptN++;
+        cells.push({
+          r: ri + 2, c: ci + 2, v: cell.v,
+          o: cell.ex ? oc[cell.ref] : undefined,
+          k: cell.has ? (cell.ex ? 'x' : 'v') : 'l',
+        });
+      });
     });
+  } else if (pageKey && (pdfHasTable.has(String(t.page)))) {
+    tableState = 'unverified';                 // 인쇄본에 표는 있는데 구성이 확인 안 됨
   }
   cells.sort((a, b) => a.r - b.r || a.c - b.c);
 
@@ -312,7 +348,7 @@ for (const t of toc.pages) {
     page: t.page, part: t.part, chapter: t.chapter, section: t.section,
     title: t.title, sheet: t.sheet, org: src.org, stat: src.stat,
     verified, exempt: exemptN,
-    thin: thin ? { step: thin.step, n: thin.n, sparseRow: thin.sparseRow } : null,
+    tableState,
     charts: pageKey ? buildCharts(t.file, t.sheet) : [],
     cells,
   });
