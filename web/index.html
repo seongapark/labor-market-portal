@@ -178,7 +178,9 @@ footer a{color:var(--down)}
         <li><b>표는 인쇄본에 실제로 실린 것만 냅니다.</b> 엑셀에는 참고용·작업용 칸이 많아
             그대로 그리면 책자에 없는 값이 섞입니다 — 실측으로 엑셀 수치칸 22,920 중 인쇄된 것은
             <b>4,766(20.8%)</b>뿐입니다. 그래서 인쇄본에 표가 없는 지면은 표를 내지 않고,
-            구성이 확인되지 않은 지면도 비워 둡니다. <b>쓰레기보다 없는 편이 낫습니다.</b></li>
+            구성이 확인되지 않은 지면도 비워 둡니다. <b>쓰레기보다 없는 편이 낫습니다.</b>
+            인쇄본이 <b>표 없이 그래프로만</b> 싣는 지면이 110쪽인데, 그 지면들에도 수치는
+            있습니다 — 그래프 안에 있습니다.</li>
         <li><b>붉은 칸은 발간본이 틀린 곳입니다.</b> 세종특별자치시 순이동 3칸 — 인쇄본이 현재 원자료의
             정확히 2배입니다. 마우스를 올리면 두 값이 함께 보입니다. 확정본은 고치지 않았습니다.</li>
         <li><b>한계</b> — 일치 중 <b>586칸</b>은 인쇄값이 <code>0</code>이나 <code>-</code>여서 대조가 사실상
@@ -265,10 +267,13 @@ function node(level, label, count, childrenHtml, open) {
 
 function pageBtn(i) {
   var p = D.pages[i];
-  var nodata = !p.cells.length;
-  return '<button type="button" class="pg' + (nodata ? ' nodata' : '') + '" data-i="' + i + '">'
+  /* 「비어 있음」은 **표도 그래프도 없는** 지면에만 붙인다.
+     인쇄본이 표 없이 그래프로만 싣는 지면이 110쪽인데, 거기에도 수치는 있다 —
+     그래프 안에 있다. 앞 판은 그것들을 「수치 없음」으로 표시해 오해를 불렀다. */
+  var empty = !p.cells.length && !(p.charts && p.charts.length);
+  return '<button type="button" class="pg' + (empty ? ' nodata' : '') + '" data-i="' + i + '">'
     + '<span class="pn">' + p.page + '</span>'
-    + '<span class="tt">' + esc(p.title) + (nodata ? ' (수치 없음)' : '') + '</span>'
+    + '<span class="tt">' + esc(p.title) + (empty ? ' (비어 있음)' : '') + '</span>'
     + (p.exempt ? '<span class="dot" title="발간본이 틀린 칸 포함">●</span>' : '')
     + '</button>';
 }
@@ -368,8 +373,10 @@ function show(i) {
     + (p.tableState === 'printed'
         ? '<span class="chip ok">인쇄본 표 ' + p.verified.toLocaleString('ko-KR') + '칸</span>'
         : p.tableState === 'unverified'
-          ? '<span class="chip">표 구성 확인 필요</span>'
-          : '<span class="chip">그래프 지면 — 인쇄본에 표 없음</span>')
+          ? '<span class="chip">인쇄본에 표 있음 — 구성 확인 필요</span>'
+          : (p.charts && p.charts.length
+              ? '<span class="chip">인쇄본에 표 없는 지면 — 그래프로만 실림</span>'
+              : '<span class="chip">표·그래프 모두 없음</span>'))
     + (p.exempt ? '<span class="chip flag">발간본 오류 ' + p.exempt + '칸</span>' : '')
     + (p.cells.length ? '<span class="chip">' + rs.length + '행 × ' + cs.length + '열</span>' : '')
     + '</div></div>'
